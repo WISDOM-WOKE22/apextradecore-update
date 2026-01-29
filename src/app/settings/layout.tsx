@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Settings | Tesla Share Hub Investment",
+  title: "Settings | ApexTradeCore  Investment",
   description: "Manage your profile, password, and account settings.",
 };
 

@@ -4,7 +4,7 @@ import { EnterpriseCTA } from "@/components/EnterpriseCTA";
 import { Footer } from "@/components/Footer";
 
 export const metadata = {
-  title: "Invest Now | Tesla Share Hub Investment",
+  title: "Invest Now | ApexTradeCore  Investment",
   description:
     "Choose your membership card investment plan. Deluxe, Standard, Premium, and Gold options with guaranteed returns.",
 };

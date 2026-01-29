@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Transactions | Tesla Share Hub Investment",
+  title: "Transactions | ApexTradeCore  Investment",
   description: "View and filter your transaction history, deposits, withdrawals, and top-ups.",
 };
 

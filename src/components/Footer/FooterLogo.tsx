@@ -10,7 +10,7 @@ export function FooterLogo() {
       <Link
         href="/"
         className="flex items-center gap-2 no-underline"
-        aria-label="Tesla Share Hub Investment - Home"
+        aria-label="ApexTradeCore  Investment - Home"
       >
         <span
           className="flex h-10 w-10 shrink-0 items-center justify-center rounded bg-[#cc0000] text-xl font-bold text-white"

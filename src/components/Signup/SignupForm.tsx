@@ -178,7 +178,7 @@ export function SignupForm() {
     // Simulate API call
     setTimeout(() => {
       setIsSubmitting(false);
-      alert("Account created successfully! Welcome to Tesla Share Hub Investment.");
+      alert("Account created successfully! Welcome to ApexTradeCore  Investment.");
       // Reset form
       setFormData({
         fullName: "",
@@ -203,7 +203,7 @@ export function SignupForm() {
           Create your account
         </h1>
         <p className="mt-2 text-base text-text-secondary">
-          Join Tesla Share Hub Investment and start your financial journey
+          Join ApexTradeCore  Investment and start your financial journey
         </p>
       </div>
 

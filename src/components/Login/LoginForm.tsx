@@ -123,7 +123,7 @@ export function LoginForm() {
           Welcome back
         </h1>
         <p className="mt-2 text-base text-text-secondary">
-          Sign in to your Tesla Share Hub Investment account
+          Sign in to your ApexTradeCore  Investment account
         </p>
       </div>
 

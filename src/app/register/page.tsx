@@ -3,9 +3,9 @@ import { SignupSection } from "@/components/Signup";
 import { Footer } from "@/components/Footer";
 
 export const metadata = {
-  title: "Sign Up | Tesla Share Hub Investment",
+  title: "Sign Up | ApexTradeCore  Investment",
   description:
-    "Create your account and join Tesla Share Hub Investment. Start your financial journey with exclusive investment opportunities.",
+    "Create your account and join ApexTradeCore  Investment. Start your financial journey with exclusive investment opportunities.",
 };
 
 export default function RegisterPage() {

@@ -3,6 +3,7 @@
 import { motion } from "motion/react";
 import { Button } from "@/components/ui/Button";
 import { useState, useEffect, useRef } from "react";
+import { useTheme } from "next-themes";
 
 interface DashboardHeaderProps {
   onMenuClick?: () => void;
@@ -12,6 +13,7 @@ export function DashboardHeader({ onMenuClick }: DashboardHeaderProps) {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showDepositModal, setShowDepositModal] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const { theme, setTheme } = useTheme();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -83,6 +85,10 @@ export function DashboardHeader({ onMenuClick }: DashboardHeaderProps) {
                   animate={{ opacity: 1, y: 0 }}
                   className="absolute right-0 mt-2 w-48 rounded-lg border border-[#e5e7eb] bg-white py-2 shadow-lg"
                 >
+                  <div>
+                    <button onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
+                    {theme === "dark" ? "Light" : "Dark"} Theme</button>
+                  </div>
                   <a
                     href="/dashboard/profile"
                     className="block px-4 py-2 text-sm text-[#111827] hover:bg-[#f9fafb]"

@@ -1,7 +1,7 @@
 import { Dashboard } from "@/components/Dashboard";
 
 export const metadata = {
-  title: "Dashboard | Tesla Share Hub Investment",
+  title: "Dashboard | ApexTradeCore  Investment",
   description:
     "Manage your cryptocurrency staking portfolio, view live exchange rates, and track your investments.",
 };

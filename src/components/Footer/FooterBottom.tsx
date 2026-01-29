@@ -3,7 +3,7 @@
 import { motion } from "motion/react";
 
 const COPYRIGHT =
-  "Copyright: © 2026 Tesla Share Hubs Investment. All Rights Reserved.";
+  "Copyright: © 2026 ApexTradeCore s Investment. All Rights Reserved.";
 
 const SOCIAL = [
   {
