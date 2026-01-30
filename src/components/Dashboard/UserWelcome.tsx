@@ -1,8 +1,15 @@
 "use client";
 
 import { motion } from "motion/react";
+import { useAppStore, getInitials } from "@/store/useAppStore";
 
 export function UserWelcome() {
+  const user = useAppStore((s) => s.user);
+  const loading = useAppStore((s) => s.loading);
+
+  const displayName = user?.fullName || "User";
+  const initials = getInitials(displayName);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 8 }}
@@ -12,14 +19,14 @@ export function UserWelcome() {
     >
       <div className="flex items-center gap-4">
         <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-accent to-[#6366f1] text-lg font-bold text-white shadow-lg">
-          RC
+          {loading ? "…" : initials}
         </div>
         <div>
           <h1 className="text-xl font-bold text-[#111827] sm:text-2xl">
-            Welcome back, Ryan
+            {loading ? "Loading…" : `Welcome back, ${displayName.split(" ")[0] || displayName}`}
           </h1>
           <p className="text-sm text-text-secondary">
-            Here's your investment overview for today
+            Here&apos;s your investment overview for today
           </p>
         </div>
       </div>

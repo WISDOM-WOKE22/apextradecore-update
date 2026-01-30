@@ -3,10 +3,26 @@
 import { motion, AnimatePresence } from "motion/react";
 import { useState, useCallback } from "react";
 import { Button } from "@/components/ui/Button";
-
-const MOCK_BALANCE = 54321;
+import { auth } from "@/lib/firebase";
+import { useAppStore } from "@/store/useAppStore";
+import { createPlan } from "@/services/plans/createPlan";
+import { DEFAULT_PLAN_MIN_AMOUNT } from "@/services/plans/defaultPlan";
+import { refreshAccountStats } from "@/services/user/loadUserData";
 
 const PLANS = [
+  {
+    id: "starter",
+    name: "Starter",
+    minAmount: DEFAULT_PLAN_MIN_AMOUNT,
+    description: "400% return in 3 business days. Our default plan — start with as little as $50.",
+    color: "from-[#0ea5e9] to-[#06b6d4]",
+    badge: "Default",
+    icon: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+      </svg>
+    ),
+  },
   {
     id: "deluxe",
     name: "Deluxe",
@@ -65,6 +81,7 @@ const PLANS = [
 type SelectedPlan = (typeof PLANS)[number] | null;
 
 export function InvestmentsView() {
+  const accountBalance = useAppStore((s) => s.accountBalance);
   const [selectedPlan, setSelectedPlan] = useState<SelectedPlan>(null);
   const [amountInput, setAmountInput] = useState("");
   const [amountError, setAmountError] = useState("");
@@ -83,8 +100,13 @@ export function InvestmentsView() {
     setAmountError("");
   }, []);
 
-  const handleConfirm = useCallback(() => {
+  const handleConfirm = useCallback(async () => {
     if (!selectedPlan) return;
+    const userId = auth.currentUser?.uid;
+    if (!userId) {
+      setAmountError("You must be signed in to start an investment.");
+      return;
+    }
     const num = Number(amountInput.replace(/,/g, ""));
     if (Number.isNaN(num) || num < selectedPlan.minAmount) {
       setAmountError(
@@ -92,22 +114,38 @@ export function InvestmentsView() {
       );
       return;
     }
-    if (num > MOCK_BALANCE) {
+    if (num > accountBalance) {
       setAmountError(
-        `Your balance is $${MOCK_BALANCE.toLocaleString()}. Make a deposit to add funds.`
+        `Your balance is $${accountBalance.toLocaleString()}. Make a deposit to add funds.`
       );
       return;
     }
     setAmountError("");
     setIsSubmitting(true);
-    // Simulate API call
-    setTimeout(() => {
-      setIsSubmitting(false);
+    const result = await createPlan({
+      userId,
+      planName: selectedPlan.name,
+      amount: String(num),
+    });
+    setIsSubmitting(false);
+    if (result.success) {
+      const state = useAppStore.getState();
+      state.setAccountStats({
+        accountBalance: state.accountBalance - num,
+        totalInvested: state.totalInvested + num,
+        currentInvestments: state.currentInvestments + 1,
+      });
+      await refreshAccountStats(userId);
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new CustomEvent("app:refresh-transactions"));
+      }
       setShowSuccess(true);
       setSelectedPlan(null);
       setAmountInput("");
-    }, 600);
-  }, [selectedPlan, amountInput]);
+    } else {
+      setAmountError(result.error);
+    }
+  }, [selectedPlan, amountInput, accountBalance]);
 
   const closeSuccess = useCallback(() => setShowSuccess(false), []);
 
@@ -143,7 +181,7 @@ export function InvestmentsView() {
             <div>
               <p className="text-sm font-medium text-text-secondary">Your balance</p>
               <p className="text-xl font-bold text-[#111827] sm:text-2xl">
-                ${MOCK_BALANCE.toLocaleString()}
+                ${accountBalance.toLocaleString()}
               </p>
             </div>
           </div>
@@ -245,7 +283,7 @@ export function InvestmentsView() {
                 <div className="rounded-lg bg-[#f9fafb] p-4">
                   <p className="text-sm text-text-secondary">Your balance</p>
                   <p className="text-lg font-semibold text-[#111827]">
-                    ${MOCK_BALANCE.toLocaleString()}
+                    ${accountBalance.toLocaleString()}
                   </p>
                 </div>
                 <div>

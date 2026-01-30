@@ -4,6 +4,8 @@ import { motion, AnimatePresence } from "motion/react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { useState, useCallback, useEffect, Suspense } from "react";
 import { Button } from "@/components/ui/Button";
+import { auth } from "@/lib/firebase";
+import { createWithdrawal } from "@/services/withdrawals/createWithdrawal";
 
 const CURRENCIES = [
   { id: "ETH", name: "Ethereum", symbol: "ETH" },
@@ -79,11 +81,30 @@ function WithdrawalFlowInner() {
       setPasswordError("Please enter your password to authorize the withdrawal.");
       return;
     }
+    const user = auth.currentUser;
+    if (!user) {
+      setPasswordError("You must be signed in to request a withdrawal.");
+      return;
+    }
+    if (!currency || !amount || Number(amount) <= 0) {
+      setPasswordError("Invalid amount or currency.");
+      return;
+    }
     setIsSubmitting(true);
     try {
-      // Simulate sending withdrawal request + password to admin
-      await new Promise((r) => setTimeout(r, 800));
-      setShowSuccess(true);
+      const walletType = CURRENCIES.find((c) => c.id === currency)?.name ?? currency;
+      const result = await createWithdrawal({
+        userId: user.uid,
+        amount,
+        withdrawalMode: currency,
+        walletType,
+        narration: "withdrawal",
+      });
+      if (result.success) {
+        setShowSuccess(true);
+      } else {
+        setPasswordError(result.error);
+      }
     } finally {
       setIsSubmitting(false);
     }

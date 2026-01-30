@@ -1,9 +1,11 @@
 "use client";
 
 import { motion } from "motion/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
+import { useSignupService } from "@/services/auth/signup";
 
 const COUNTRIES = [
   "United States",
@@ -85,6 +87,8 @@ function FormField({
           value={value}
           onChange={onChange}
           className={inputStyles}
+          aria-invalid={!!error}
+          aria-describedby={error ? `${name}-error` : undefined}
         >
           <option value="">Select your country</option>
           {COUNTRIES.map((country) => (
@@ -103,10 +107,13 @@ function FormField({
           value={value}
           onChange={onChange}
           className={inputStyles}
+          autoComplete={name === "email" ? "email" : undefined}
+          aria-invalid={!!error}
+          aria-describedby={error ? `${name}-error` : undefined}
         />
       )}
       {error && (
-        <p className="mt-1.5 text-sm text-[#ef4444]" role="alert">
+        <p id={`${name}-error`} className="mt-1.5 text-sm text-[#ef4444]" role="alert">
           {error}
         </p>
       )}
@@ -114,9 +121,14 @@ function FormField({
   );
 }
 
+const SESSION_API = "/api/auth/session";
+
 export function SignupForm() {
+  const router = useRouter();
+  const { signUp, error: authError, loading, clearError } = useSignupService();
   const [formData, setFormData] = useState({
     fullName: "",
+    email: "",
     country: "",
     password: "",
     confirmPassword: "",
@@ -124,16 +136,21 @@ export function SignupForm() {
     referralCode: "",
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  useEffect(() => {
+    if (authError) setSubmitError(authError);
+  }, [authError]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    // Clear error when user starts typing
-    if (errors[name]) {
-      setErrors((prev) => ({ ...prev, [name]: "" }));
+    if (errors[name]) setErrors((prev) => ({ ...prev, [name]: "" }));
+    if (submitError) {
+      setSubmitError(null);
+      clearError();
     }
   };
 
@@ -144,14 +161,20 @@ export function SignupForm() {
       newErrors.fullName = "Full name is required";
     }
 
+    if (!formData.email.trim()) {
+      newErrors.email = "Email is required";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = "Please enter a valid email address";
+    }
+
     if (!formData.country) {
       newErrors.country = "Please select your country";
     }
 
     if (!formData.password) {
       newErrors.password = "Password is required";
-    } else if (formData.password.length < 8) {
-      newErrors.password = "Password must be at least 8 characters";
+    } else if (formData.password.length < 6) {
+      newErrors.password = "Password must be at least 6 characters";
     }
 
     if (!formData.confirmPassword) {
@@ -162,7 +185,7 @@ export function SignupForm() {
 
     if (!formData.phoneNumber.trim()) {
       newErrors.phoneNumber = "Phone number is required";
-    } else if (!/^[\d\s\-\+\(\)]+$/.test(formData.phoneNumber)) {
+    } else if (!/^[\d\s\-+()]+$/.test(formData.phoneNumber)) {
       newErrors.phoneNumber = "Please enter a valid phone number";
     }
 
@@ -172,24 +195,47 @@ export function SignupForm() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setSubmitError(null);
     if (!validateForm()) return;
 
-    setIsSubmitting(true);
-    // Simulate API call
-    setTimeout(() => {
-      setIsSubmitting(false);
-      alert("Account created successfully! Welcome to ApexTradeCore  Investment.");
-      // Reset form
-      setFormData({
-        fullName: "",
-        country: "",
-        password: "",
-        confirmPassword: "",
-        phoneNumber: "",
-        referralCode: "",
+    const result = await signUp(
+      formData.email.trim(),
+      formData.password,
+      formData.fullName.trim(),
+      formData.country,
+      formData.phoneNumber.trim(),
+      formData.referralCode.trim()
+    );
+
+    if (!result.success) {
+      setSubmitError(result.error);
+      return;
+    }
+
+    try {
+      const res = await fetch(SESSION_API, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token: result.idToken }),
+        credentials: "include",
       });
-    }, 1500);
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setSubmitError(data?.error ?? "Account created but session failed. Please sign in.");
+        return;
+      }
+    } catch {
+      setSubmitError("Account created. Please sign in to continue.");
+      router.push("/login");
+      router.refresh();
+      return;
+    }
+
+    router.push("/dashboard");
+    router.refresh();
   };
+
+  const isSubmitting = loading;
 
   return (
     <motion.div
@@ -203,11 +249,20 @@ export function SignupForm() {
           Create your account
         </h1>
         <p className="mt-2 text-base text-text-secondary">
-          Join ApexTradeCore  Investment and start your financial journey
+          Join ApexTradeCore Investment and start your financial journey
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-5" noValidate>
+        {submitError && (
+          <div
+            className="rounded-lg border border-[#fecaca] bg-[#fef2f2] px-4 py-3 text-sm text-[#b91c1c]"
+            role="alert"
+          >
+            {submitError}
+          </div>
+        )}
+
         <FormField
           label="Full Name"
           name="fullName"
@@ -216,6 +271,17 @@ export function SignupForm() {
           value={formData.fullName}
           onChange={handleChange}
           error={errors.fullName}
+        />
+
+        <FormField
+          label="Email"
+          name="email"
+          type="email"
+          placeholder="your.email@example.com"
+          required
+          value={formData.email}
+          onChange={handleChange}
+          error={errors.email}
         />
 
         <FormField
@@ -233,7 +299,7 @@ export function SignupForm() {
             label="Password"
             name="password"
             type={showPassword ? "text" : "password"}
-            placeholder="Enter your password"
+            placeholder="Enter your password (min 6 characters)"
             required
             value={formData.password}
             onChange={handleChange}
@@ -246,30 +312,12 @@ export function SignupForm() {
             aria-label={showPassword ? "Hide password" : "Show password"}
           >
             {showPassword ? (
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
                 <line x1="1" y1="1" x2="23" y2="23" />
               </svg>
             ) : (
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
                 <circle cx="12" cy="12" r="3" />
               </svg>
@@ -295,30 +343,12 @@ export function SignupForm() {
             aria-label={showConfirmPassword ? "Hide password" : "Show password"}
           >
             {showConfirmPassword ? (
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
                 <line x1="1" y1="1" x2="23" y2="23" />
               </svg>
             ) : (
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
                 <circle cx="12" cy="12" r="3" />
               </svg>

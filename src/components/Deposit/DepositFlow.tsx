@@ -2,8 +2,10 @@
 
 import { motion, AnimatePresence } from "motion/react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
-import { useState, useCallback, useEffect, Suspense } from "react";
+import { useState, useCallback, Suspense } from "react";
 import { Button } from "@/components/ui/Button";
+import { auth } from "@/lib/firebase";
+import { createDeposit } from "@/services/deposits/createDeposit";
 
 const CURRENCIES = [
   { id: "ETH", name: "Ethereum", symbol: "ETH" },
@@ -68,17 +70,17 @@ function DepositFlowInner() {
   const [proofFile, setProofFile] = useState<File | null>(null);
   const [copied, setCopied] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  useEffect(() => {
-    if (step === 2 && amount) setAmountInput(amount);
-  }, [step, amount]);
-
+  const amountDisplay = step === 2 && amount && !amountInput ? amount : amountInput;
   const walletAddress = currency ? MOCK_WALLETS[currency] || MOCK_WALLETS.ETH : "";
   const qrUrl = walletAddress
     ? `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(walletAddress)}`
     : "";
 
   const goToStep = (s: number, extra?: { currency?: string; amount?: string }) => {
+    setSubmitError(null);
     const updates: { step: number; currency?: string; amount?: string } = { step: s };
     if (extra?.currency) updates.currency = extra.currency;
     if (extra?.amount) updates.amount = extra.amount;
@@ -92,17 +94,36 @@ function DepositFlowInner() {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const handleProofSubmit = (e: React.FormEvent) => {
+  const handleProofSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!proofFile) return;
-    // Simulate upload to admin
-    setShowSuccess(true);
+    if (!currency || !amount) return;
+    const user = auth.currentUser;
+    if (!user) {
+      setSubmitError("You must be signed in to submit a deposit.");
+      return;
+    }
+    setSubmitError(null);
+    setIsSubmitting(true);
+    const paymentMethod = CURRENCIES.find((c) => c.id === currency)?.name ?? currency;
+    const result = await createDeposit({
+      userId: user.uid,
+      amount,
+      paymentMethod,
+      ...(proofFile ? { proofFile } : {}),
+    });
+    setIsSubmitting(false);
+    if (result.success) {
+      setShowSuccess(true);
+    } else {
+      setSubmitError(result.error);
+    }
   };
 
   const closeSuccess = () => {
     setShowSuccess(false);
     setAmountInput("");
     setProofFile(null);
+    setSubmitError(null);
     router.replace(pathname);
   };
 
@@ -111,6 +132,7 @@ function DepositFlowInner() {
       <motion.div
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
         className="mb-8"
       >
         <h1 className="text-2xl font-bold text-[#111827] sm:text-3xl">Deposit funds</h1>
@@ -121,21 +143,24 @@ function DepositFlowInner() {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 0.1 }}
+        transition={{ duration: 0.4, delay: 0.05, ease: [0.22, 1, 0.36, 1] }}
         className="mb-8 flex gap-2 overflow-x-auto pb-2"
       >
-        {STEPS.map((s) => (
-          <div
+        {STEPS.map((s, i) => (
+          <motion.div
             key={s.num}
-            className={`flex shrink-0 items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium ${
-              step >= s.num ? "bg-accent text-white" : "bg-[#f3f4f6] text-text-secondary"
+            initial={{ opacity: 0, x: -8 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.3, delay: 0.05 + i * 0.04, ease: [0.22, 1, 0.36, 1] }}
+            className={`flex shrink-0 items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors duration-200 ${
+              step >= s.num ? "bg-accent text-white shadow-sm" : "bg-[#f3f4f6] text-text-secondary"
             }`}
           >
-            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-white/20 text-xs">
+            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-white/20 text-xs font-medium">
               {s.num}
             </span>
             <span className="hidden sm:inline">{s.label}</span>
-          </div>
+          </motion.div>
         ))}
       </motion.div>
 
@@ -144,10 +169,10 @@ function DepositFlowInner() {
         {step === 1 && (
           <motion.div
             key="step1"
-            initial={{ opacity: 0, x: 12 }}
+            initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -12 }}
-            transition={{ duration: 0.3 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
             className="rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm"
           >
             <h2 className="mb-4 text-lg font-semibold text-[#111827]">Select cryptocurrency</h2>
@@ -177,10 +202,10 @@ function DepositFlowInner() {
         {step === 2 && (
           <motion.div
             key="step2"
-            initial={{ opacity: 0, x: 12 }}
+            initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -12 }}
-            transition={{ duration: 0.3 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
             className="rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm"
           >
             <button
@@ -198,7 +223,7 @@ function DepositFlowInner() {
             <form
               onSubmit={(e) => {
                 e.preventDefault();
-                const val = amountInput.trim();
+                const val = (amountInput || amount).trim();
                 if (val && !Number.isNaN(Number(val))) goToStep(3, { amount: val });
               }}
               className="space-y-4"
@@ -212,7 +237,7 @@ function DepositFlowInner() {
                   type="number"
                   min="0"
                   step="any"
-                  value={amountInput}
+                  value={amountDisplay}
                   onChange={(e) => setAmountInput(e.target.value)}
                   placeholder="0.00"
                   className="w-full rounded-lg border border-[#e5e7eb] bg-[#f9fafb] px-4 py-3 text-lg focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
@@ -229,10 +254,10 @@ function DepositFlowInner() {
         {step === 3 && (
           <motion.div
             key="step3"
-            initial={{ opacity: 0, x: 12 }}
+            initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -12 }}
-            transition={{ duration: 0.3 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
             className="rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm"
           >
             <button
@@ -279,44 +304,66 @@ function DepositFlowInner() {
           </motion.div>
         )}
 
-        {/* Step 4: Upload proof */}
+        {/* Step 4: Proof of payment (optional) */}
         {step === 4 && (
           <motion.div
             key="step4"
-            initial={{ opacity: 0, x: 12 }}
+            initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -12 }}
-            transition={{ duration: 0.3 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
             className="rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm"
           >
             <button
               type="button"
               onClick={() => goToStep(3)}
-              className="mb-4 flex items-center gap-2 text-sm font-medium text-text-secondary hover:text-[#111827]"
+              className="mb-4 flex items-center gap-2 text-sm font-medium text-text-secondary transition-colors hover:text-[#111827]"
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <polyline points="15 18 9 12 15 6" />
               </svg>
               Back
             </button>
-            <h2 className="mb-2 text-lg font-semibold text-[#111827]">Proof of payment</h2>
-            <p className="mb-4 text-sm text-text-secondary">Upload a screenshot or receipt. It will be sent to admin for verification.</p>
+            <h2 className="mb-2 text-lg font-semibold text-[#111827]">
+              Proof of payment <span className="font-normal text-text-secondary">(optional)</span>
+            </h2>
+            <p className="mb-4 text-sm text-text-secondary">
+              Add a screenshot or receipt to speed up verification. You can also submit without it.
+            </p>
 
-            <form onSubmit={handleProofSubmit} className="space-y-4">
-              <div>
-                <label className="mb-2 block text-sm font-medium text-[#374151]">Upload file</label>
-                <label className="flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-[#e5e7eb] bg-[#f9fafb] p-8 transition-colors hover:border-accent hover:bg-[#eef2ff]/30">
+            {submitError && (
+              <motion.div
+                initial={{ opacity: 0, y: -4 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mb-4 rounded-lg border border-[#fecaca] bg-[#fef2f2] px-4 py-3 text-sm text-[#b91c1c]"
+                role="alert"
+              >
+                {submitError}
+              </motion.div>
+            )}
+
+            <form onSubmit={handleProofSubmit} className="space-y-5">
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.1 }}
+              >
+                <label className="mb-2 block text-sm font-medium text-[#374151]">Upload file (optional)</label>
+                <label className="flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-[#e5e7eb] bg-[#f9fafb] p-8 transition-all duration-200 hover:border-accent/60 hover:bg-[#eef2ff]/40">
                   <input
                     type="file"
                     accept="image/*,.pdf"
                     className="hidden"
-                    onChange={(e) => setProofFile(e.target.files?.[0] ?? null)}
+                    onChange={(e) => {
+                      setProofFile(e.target.files?.[0] ?? null);
+                      if (submitError) setSubmitError(null);
+                    }}
                   />
                   {proofFile ? (
                     <span className="text-sm font-medium text-accent">{proofFile.name}</span>
                   ) : (
                     <>
-                      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="mb-2 text-text-secondary">
+                      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="mb-2 text-text-secondary" aria-hidden>
                         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
                         <polyline points="17 8 12 3 7 8" />
                         <line x1="12" y1="3" x2="12" y2="15" />
@@ -326,9 +373,13 @@ function DepositFlowInner() {
                     </>
                   )}
                 </label>
-              </div>
-              <Button type="submit" disabled={!proofFile} className="w-full bg-accent text-white disabled:opacity-50">
-                Submit for approval
+              </motion.div>
+              <Button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full bg-accent text-white transition-opacity hover:opacity-95 disabled:opacity-70"
+              >
+                {isSubmitting ? "Submitting…" : proofFile ? "Submit with proof" : "Submit without proof"}
               </Button>
             </form>
           </motion.div>
@@ -343,23 +394,29 @@ function DepositFlowInner() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-50 bg-black/50"
+              transition={{ duration: 0.25 }}
+              className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm"
               onClick={closeSuccess}
             />
             <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              transition={{ type: "tween", duration: 0.25 }}
-              className="fixed left-1/2 top-1/2 z-50 w-full max-w-md -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-white p-8 shadow-xl"
+              initial={{ opacity: 0, scale: 0.92, y: 8 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.96 }}
+              transition={{ type: "tween", duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+              className="fixed left-1/2 top-1/2 z-50 w-full max-w-md -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-white p-8 shadow-2xl"
             >
               <div className="text-center">
-                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[#d1fae5]">
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#059669" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: "spring", stiffness: 200, damping: 15, delay: 0.1 }}
+                  className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[#d1fae5]"
+                >
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#059669" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                     <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
                     <polyline points="22 4 12 14.01 9 11.01" />
                   </svg>
-                </div>
+                </motion.div>
                 <h3 className="mb-2 text-xl font-bold text-[#111827]">Deposit submitted</h3>
                 <p className="mb-6 text-sm text-text-secondary">
                   Your deposit is pending approval. You&apos;ll be notified once the admin verifies your payment.

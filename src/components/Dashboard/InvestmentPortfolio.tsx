@@ -2,15 +2,26 @@
 
 import { motion } from "motion/react";
 import Link from "next/link";
+import { useAppStore } from "@/store/useAppStore";
+import { useUserPlans } from "@/services/plans/useUserPlans";
+import type { UserPlan } from "@/services/plans/types";
 
-const PACKAGES = [
-  { name: "Deluxe", invested: 13400, returns: 53600, progress: 100, color: "from-[#6366f1] to-[#8b5cf6]", href: "/my-investments" },
-  { name: "Standard", invested: 0, returns: 0, progress: 0, color: "from-[#64748b] to-[#94a3b8]", href: "/invest-now" },
-  { name: "Premium", invested: 30700, returns: 122800, progress: 65, color: "from-[#059669] to-[#10b981]", href: "/my-investments" },
-  { name: "Gold", invested: 0, returns: 0, progress: 0, color: "from-[#b45309] to-[#f59e0b]", href: "/invest-now" },
-];
+const PLAN_COLORS: Record<string, string> = {
+  Starter: "from-[#0ea5e9] to-[#06b6d4]",
+  Deluxe: "from-[#6366f1] to-[#8b5cf6]",
+  Standard: "from-[#64748b] to-[#94a3b8]",
+  Premium: "from-[#059669] to-[#10b981]",
+  Gold: "from-[#b45309] to-[#f59e0b]",
+};
+
+function getPlanColor(planName: string): string {
+  return PLAN_COLORS[planName] ?? "from-[#6366f1] to-[#8b5cf6]";
+}
 
 export function InvestmentPortfolio() {
+  const userId = useAppStore((s) => s.user?.uid ?? null);
+  const { plans, defaultPlan, loading, error } = useUserPlans(userId);
+
   return (
     <motion.section
       initial={{ opacity: 0, y: 20 }}
@@ -26,38 +37,116 @@ export function InvestmentPortfolio() {
           View all
         </Link>
       </div>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {PACKAGES.map((pkg, i) => (
+
+      {error && (
+        <p className="mb-4 text-sm text-[#b91c1c]">{error}</p>
+      )}
+
+      {loading ? (
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          {[1, 2, 3, 4].map((i) => (
+            <div
+              key={i}
+              className="h-40 animate-pulse rounded-xl border border-[#e5e7eb] bg-white p-5"
+            />
+          ))}
+        </div>
+      ) : plans.length === 0 ? (
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
           <motion.div
-            key={pkg.name}
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.3 + i * 0.05, ease: "easeOut" }}
+            transition={{ duration: 0.4, delay: 0.3, ease: "easeOut" }}
             whileHover={{ y: -2 }}
             className="group rounded-xl border border-[#e5e7eb] bg-white p-5 shadow-sm transition-shadow hover:shadow-md"
           >
-            <div className={`mb-4 h-1.5 w-full overflow-hidden rounded-full bg-[#f3f4f6]`}>
-              <motion.div
-                initial={{ width: 0 }}
-                animate={{ width: `${pkg.progress}%` }}
-                transition={{ duration: 0.8, delay: 0.4 + i * 0.1, ease: "easeOut" }}
-                className={`h-full rounded-full bg-linear-to-r ${pkg.color}`}
-              />
+            <div className="mb-4 h-1.5 w-full overflow-hidden rounded-full bg-[#f3f4f6]">
+              <div className="h-full w-0 rounded-full bg-linear-to-r from-[#0ea5e9] to-[#06b6d4]" />
             </div>
-            <h3 className="text-sm font-semibold text-[#111827]">{pkg.name}</h3>
+            <h3 className="text-sm font-semibold text-[#111827]">{defaultPlan.planName}</h3>
             <div className="mt-2 space-y-1 text-xs text-text-secondary">
-              <p>Invested: <span className="font-medium text-[#111827]">${pkg.invested.toLocaleString()}</span></p>
-              <p>Returns: <span className="font-medium text-[#111827]">${pkg.returns.toLocaleString()}</span></p>
+              <p>Invested: <span className="font-medium text-[#111827]">$0</span></p>
+              <p>Start with as little as ${defaultPlan.amountNum} — 400% return.</p>
             </div>
             <Link
-              href={pkg.href}
+              href="/investments"
               className="mt-4 inline-block text-sm font-semibold text-accent no-underline hover:text-[#1552b8]"
             >
-              {pkg.progress > 0 ? "View details →" : "Invest now →"}
+              Invest now →
             </Link>
           </motion.div>
-        ))}
-      </div>
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.35, ease: "easeOut" }}
+            className="rounded-xl border border-dashed border-[#e5e7eb] bg-[#f9fafb] p-5"
+          >
+            <p className="text-sm text-text-secondary">
+              Add more plans from the Investments page.
+            </p>
+            <Link
+              href="/investments"
+              className="mt-3 inline-block text-sm font-semibold text-accent no-underline hover:text-[#1552b8]"
+            >
+              View plans →
+            </Link>
+          </motion.div>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          {plans.map((plan: UserPlan, i: number) => {
+            const invested = plan.amountNum;
+            const expectedReturns = invested * 4;
+            const color = getPlanColor(plan.planName);
+            return (
+              <motion.div
+                key={plan.id}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: 0.3 + i * 0.05, ease: "easeOut" }}
+                whileHover={{ y: -2 }}
+                className="group rounded-xl border border-[#e5e7eb] bg-white p-5 shadow-sm transition-shadow hover:shadow-md"
+              >
+                <div className="mb-4 h-1.5 w-full overflow-hidden rounded-full bg-[#f3f4f6]">
+                  <motion.div
+                    initial={{ width: 0 }}
+                    animate={{ width: "100%" }}
+                    transition={{ duration: 0.8, delay: 0.4 + i * 0.1, ease: "easeOut" }}
+                    className={`h-full rounded-full bg-linear-to-r ${color}`}
+                  />
+                </div>
+                <h3 className="text-sm font-semibold text-[#111827]">{plan.planName}</h3>
+                <div className="mt-2 space-y-1 text-xs text-text-secondary">
+                  <p>Invested: <span className="font-medium text-[#111827]">${invested.toLocaleString()}</span></p>
+                  <p>Expected returns: <span className="font-medium text-[#111827]">${expectedReturns.toLocaleString()}</span></p>
+                </div>
+                <Link
+                  href={`/my-investments/${encodeURIComponent(plan.id)}`}
+                  className="mt-4 inline-block text-sm font-semibold text-accent no-underline hover:text-[#1552b8]"
+                >
+                  View details →
+                </Link>
+              </motion.div>
+            );
+          })}
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.3 + plans.length * 0.05, ease: "easeOut" }}
+            className="rounded-xl border border-dashed border-[#e5e7eb] bg-[#f9fafb] p-5"
+          >
+            <p className="text-sm text-text-secondary">
+              Start another investment.
+            </p>
+            <Link
+              href="/investments"
+              className="mt-3 inline-block text-sm font-semibold text-accent no-underline hover:text-[#1552b8]"
+            >
+              Invest now →
+            </Link>
+          </motion.div>
+        </div>
+      )}
     </motion.section>
   );
 }

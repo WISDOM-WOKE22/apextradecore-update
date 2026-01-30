@@ -105,7 +105,7 @@ export function DashboardSidebar({ mobileOpen = false, onClose }: DashboardSideb
       <div className="mb-6 flex items-center justify-between sm:mb-8">
         <div>
           <h1 className="text-lg font-bold text-[#111827] sm:text-xl">ApexTradeCore </h1>
-          <p className="text-xs text-text-secondary sm:text-sm">Top Staking Assets</p>
+          <p className="text-xs text-text-secondary sm:text-sm">home of investments</p>
         </div>
         {onClose && (
           <button

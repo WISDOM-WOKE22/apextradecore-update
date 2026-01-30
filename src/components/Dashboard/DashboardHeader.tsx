@@ -4,16 +4,37 @@ import { motion } from "motion/react";
 import { Button } from "@/components/ui/Button";
 import { useState, useEffect, useRef } from "react";
 import { useTheme } from "next-themes";
+import { useRouter } from "next/navigation";
+import { useLogoutService } from "@/services/auth/logout";
+import { useAppStore, getInitials } from "@/store/useAppStore";
 
 interface DashboardHeaderProps {
   onMenuClick?: () => void;
 }
 
 export function DashboardHeader({ onMenuClick }: DashboardHeaderProps) {
+  const router = useRouter();
+  const { logout, loading: logoutLoading } = useLogoutService();
+  const user = useAppStore((s) => s.user);
+  const reset = useAppStore((s) => s.reset);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showDepositModal, setShowDepositModal] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const { theme, setTheme } = useTheme();
+
+  const displayName = user?.fullName || "User";
+  const initials = getInitials(displayName);
+  const email = user?.email || "";
+
+  const handleLogout = async () => {
+    setShowUserMenu(false);
+    const result = await logout();
+    if (result.success) {
+      reset();
+      router.push("/login");
+      router.refresh();
+    }
+  };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -51,7 +72,7 @@ export function DashboardHeader({ onMenuClick }: DashboardHeaderProps) {
               </button>
             )}
             <h2 className="text-base font-semibold text-[#111827] sm:text-lg">
-              Top Staking Assets
+              {/* Top Staking Assets */}
             </h2>
           </div>
 
@@ -62,11 +83,13 @@ export function DashboardHeader({ onMenuClick }: DashboardHeaderProps) {
               className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-[#111827] hover:bg-[#f9fafb]"
             >
                 <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#eef2ff] text-xs font-semibold text-accent">
-                  RC
+                  {initials}
                 </div>
                 <div className="hidden text-left sm:block">
-                  <p className="text-xs font-semibold">@ryan997 PRO</p>
-                  <p className="text-xs text-text-secondary">Ryan Crawford</p>
+                  <p className="text-xs font-semibold truncate max-w-[120px]" title={email}>
+                    {email ? `@${email.split("@")[0]}` : "User"}
+                  </p>
+                  <p className="text-xs text-text-secondary truncate max-w-[120px]">{displayName}</p>
                 </div>
                 <svg
                   width="16"
@@ -102,12 +125,14 @@ export function DashboardHeader({ onMenuClick }: DashboardHeaderProps) {
                     Settings
                   </a>
                   <hr className="my-2 border-[#e5e7eb]" />
-                  <a
-                    href="/logout"
-                    className="block px-4 py-2 text-sm text-[#ef4444] hover:bg-[#f9fafb]"
+                  <button
+                    type="button"
+                    onClick={handleLogout}
+                    disabled={logoutLoading}
+                    className="block w-full px-4 py-2 text-left text-sm text-[#ef4444] hover:bg-[#f9fafb] disabled:opacity-70"
                   >
-                    Sign out
-                  </a>
+                    {logoutLoading ? "Signing out..." : "Sign out"}
+                  </button>
                 </motion.div>
               )}
             </div>

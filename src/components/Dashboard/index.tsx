@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useLoadUserData } from "@/services/user/loadUserData";
+import { useUserTransactions } from "@/services/transactions/useUserTransactions";
 import { DashboardSidebar } from "./DashboardSidebar";
 import { DashboardHeader } from "./DashboardHeader";
 import { UserWelcome } from "./UserWelcome";
@@ -11,8 +13,20 @@ import { InvestmentPortfolio } from "./InvestmentPortfolio";
 import { TopStakingAssets } from "./TopStakingAssets";
 import { LiveExchange } from "./LiveExchange";
 
+const REFRESH_TRANSACTIONS_EVENT = "app:refresh-transactions";
+
 export function Dashboard() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  useLoadUserData();
+  const transactions = useUserTransactions();
+
+  useEffect(() => {
+    const handler = () => void transactions.refetch();
+    window.addEventListener(REFRESH_TRANSACTIONS_EVENT, handler);
+    return () => window.removeEventListener(REFRESH_TRANSACTIONS_EVENT, handler);
+    // refetch is stable; we only want to subscribe once
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="flex min-h-screen bg-[#f9fafb]">
@@ -34,8 +48,16 @@ export function Dashboard() {
 
             {/* Transaction chart + Latest transactions */}
             <div className="mb-8 grid grid-cols-1 gap-6 lg:grid-cols-[1fr_380px]">
-              <TransactionChart />
-              <LatestTransactions />
+              <TransactionChart
+                data={transactions.data}
+                loading={transactions.loading}
+                error={transactions.error}
+              />
+              <LatestTransactions
+                data={transactions.data}
+                loading={transactions.loading}
+                error={transactions.error}
+              />
             </div>
 
             {/* Investment portfolio by package */}

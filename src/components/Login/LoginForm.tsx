@@ -1,9 +1,11 @@
 "use client";
 
 import { motion } from "motion/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
+import { useLoginService } from "@/services/auth/login";
 
 interface FormFieldProps {
   label: string;
@@ -52,9 +54,12 @@ function FormField({
         value={value}
         onChange={onChange}
         className={inputStyles}
+        autoComplete={name === "email" ? "email" : name === "password" ? "current-password" : undefined}
+        aria-invalid={!!error}
+        aria-describedby={error ? `${name}-error` : undefined}
       />
       {error && (
-        <p className="mt-1.5 text-sm text-[#ef4444]" role="alert">
+        <p id={`${name}-error`} className="mt-1.5 text-sm text-[#ef4444]" role="alert">
           {error}
         </p>
       )}
@@ -62,54 +67,77 @@ function FormField({
   );
 }
 
+const SESSION_API = "/api/auth/session";
+
 export function LoginForm() {
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
+  const router = useRouter();
+  const { login, error: authError, loading, clearError } = useLoginService();
+  const [formData, setFormData] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
+
+  useEffect(() => {
+    if (authError) setSubmitError(authError);
+  }, [authError]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    // Clear error when user starts typing
-    if (errors[name]) {
-      setErrors((prev) => ({ ...prev, [name]: "" }));
+    if (errors[name]) setErrors((prev) => ({ ...prev, [name]: "" }));
+    if (submitError) {
+      setSubmitError(null);
+      clearError();
     }
   };
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
-
     if (!formData.email.trim()) {
       newErrors.email = "Email is required";
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       newErrors.email = "Please enter a valid email address";
     }
-
     if (!formData.password) {
       newErrors.password = "Password is required";
     }
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setSubmitError(null);
     if (!validateForm()) return;
 
-    setIsSubmitting(true);
-    // Simulate API call
-    setTimeout(() => {
-      setIsSubmitting(false);
-      alert("Login successful! Welcome back.");
-      // In a real app, you'd redirect here
-      // router.push('/dashboard');
-    }, 1500);
+    const result = await login(formData.email.trim(), formData.password);
+    if (!result.success) {
+      setSubmitError(result.error);
+      return;
+    }
+
+    try {
+      const res = await fetch(SESSION_API, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token: result.idToken }),
+        credentials: "include",
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setSubmitError(data?.error ?? "Failed to create session. Please try again.");
+        return;
+      }
+    } catch {
+      setSubmitError("Network error. Please check your connection and try again.");
+      return;
+    }
+
+    router.push("/dashboard");
+    router.refresh();
   };
+
+  const isSubmitting = loading;
 
   return (
     <motion.div
@@ -123,11 +151,20 @@ export function LoginForm() {
           Welcome back
         </h1>
         <p className="mt-2 text-base text-text-secondary">
-          Sign in to your ApexTradeCore  Investment account
+          Sign in to your ApexTradeCore Investment account
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-5" noValidate>
+        {submitError && (
+          <div
+            className="rounded-lg border border-[#fecaca] bg-[#fef2f2] px-4 py-3 text-sm text-[#b91c1c]"
+            role="alert"
+          >
+            {submitError}
+          </div>
+        )}
+
         <FormField
           label="Email"
           name="email"
@@ -157,30 +194,12 @@ export function LoginForm() {
             aria-label={showPassword ? "Hide password" : "Show password"}
           >
             {showPassword ? (
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
                 <line x1="1" y1="1" x2="23" y2="23" />
               </svg>
             ) : (
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
                 <circle cx="12" cy="12" r="3" />
               </svg>
@@ -214,7 +233,7 @@ export function LoginForm() {
         </Button>
 
         <p className="mt-4 text-center text-sm text-text-secondary">
-          Don't have an account?{" "}
+          Don&apos;t have an account?{" "}
           <Link
             href="/register"
             className="font-semibold text-accent no-underline hover:text-[#1552b8]"
