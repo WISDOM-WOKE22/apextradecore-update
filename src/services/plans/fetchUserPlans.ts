@@ -26,6 +26,9 @@ function parsePlans(snapshot: { val: () => Record<string, PlanRecord> | null }):
       typeof data.createdAt === "number" && data.createdAt > 0
         ? data.createdAt
         : parseDbDateToMs(dateStr);
+    const totalProfit = typeof (data as { totalProfit?: number }).totalProfit === "number"
+      ? (data as { totalProfit?: number }).totalProfit!
+      : 0;
     return {
       id: planKey,
       planName: data.plan ?? "Starter",
@@ -35,6 +38,7 @@ function parsePlans(snapshot: { val: () => Record<string, PlanRecord> | null }):
       dateSortKey,
       name: typeof data.name === "number" ? data.name : 0,
       isDefault: false,
+      totalProfit,
       record: data,
     };
   });

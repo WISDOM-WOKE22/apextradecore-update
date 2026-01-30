@@ -31,17 +31,17 @@ function formatRelativeDate(dateSortKey: number): string {
 function formatAmount(amount: string, kind: TransactionKind): string {
   const num = parseFloat(amount) || 0;
   const formatted = num.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  return kind === "deposit" ? `+$${formatted}` : `-$${formatted}`;
+  return kind === "deposit" || kind === "profit" ? `+$${formatted}` : `-$${formatted}`;
 }
 
 function txLabel(kind: TransactionKind): string {
-  return kind === "deposit" ? "Deposit" : kind === "withdrawal" ? "Withdrawal" : "Investment";
+  return kind === "deposit" ? "Deposit" : kind === "withdrawal" ? "Withdrawal" : kind === "profit" ? "Profit" : "Investment";
 }
 
 function txHref(tx: UnifiedTransaction): string {
-  return tx.kind === "investment"
-    ? `/my-investments/${encodeURIComponent(tx.id)}`
-    : `/dashboard/transactions/${tx.kind}/${encodeURIComponent(tx.id)}`;
+  if (tx.kind === "investment") return `/my-investments/${encodeURIComponent(tx.id)}`;
+  if (tx.kind === "profit") return `/my-investments/${encodeURIComponent(tx.reference)}`;
+  return `/dashboard/transactions/${tx.kind}/${encodeURIComponent(tx.id)}`;
 }
 
 export function LatestTransactions({ data, loading, error }: LatestTransactionsProps) {
@@ -96,7 +96,7 @@ export function LatestTransactions({ data, loading, error }: LatestTransactionsP
               </motion.li>
             ) : (
               latest.map((tx: UnifiedTransaction, i: number) => {
-                const isCredit = tx.kind === "deposit";
+                const isCredit = tx.kind === "deposit" || tx.kind === "profit";
                 const isInvestment = tx.kind === "investment";
                 const iconClass = isCredit
                   ? "bg-[#d1fae5] text-[#059669]"

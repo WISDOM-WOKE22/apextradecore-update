@@ -13,6 +13,7 @@ const TABS: { key: TransactionFilter; label: string }[] = [
   { key: "deposit", label: "Deposits" },
   { key: "withdrawal", label: "Withdrawals" },
   { key: "investment", label: "Investments" },
+  { key: "profit", label: "Profits" },
 ];
 
 function formatDate(dateSortKey: number): string {
@@ -29,17 +30,17 @@ function formatDate(dateSortKey: number): string {
 function formatAmount(amount: string, kind: TransactionKind): string {
   const num = parseFloat(amount) || 0;
   const formatted = num.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  return kind === "deposit" ? `+$${formatted}` : `−$${formatted}`;
+  return kind === "deposit" || kind === "profit" ? `+$${formatted}` : `−$${formatted}`;
 }
 
 function txTypeLabel(kind: TransactionKind): string {
-  return kind === "deposit" ? "Deposit" : kind === "withdrawal" ? "Withdrawal" : "Investment";
+  return kind === "deposit" ? "Deposit" : kind === "withdrawal" ? "Withdrawal" : kind === "profit" ? "Profit" : "Investment";
 }
 
 function txDetailHref(tx: UnifiedTransaction): string {
-  return tx.kind === "investment"
-    ? `/my-investments/${encodeURIComponent(tx.id)}`
-    : `/dashboard/transactions/${tx.kind}/${encodeURIComponent(tx.id)}`;
+  if (tx.kind === "investment") return `/my-investments/${encodeURIComponent(tx.id)}`;
+  if (tx.kind === "profit") return `/my-investments/${encodeURIComponent(tx.reference)}`;
+  return `/dashboard/transactions/${tx.kind}/${encodeURIComponent(tx.id)}`;
 }
 
 function StatusBadge({ status }: { status: string }) {
@@ -161,7 +162,7 @@ export function TransactionsView() {
                     <tr>
                       <td colSpan={7} className="px-4 py-12 text-center sm:px-6">
                         <p className="text-sm text-text-secondary">No transactions found for this filter.</p>
-                        <p className="mt-1 text-xs text-text-secondary">Deposits, withdrawals, and investments will appear here.</p>
+                        <p className="mt-1 text-xs text-text-secondary">Deposits, withdrawals, investments, and profits will appear here.</p>
                       </td>
                     </tr>
                   ) : (
@@ -182,7 +183,7 @@ export function TransactionsView() {
                         <td className="px-4 py-3.5 sm:px-6">
                           <span
                             className={`text-sm font-semibold ${
-                              tx.kind === "deposit" ? "text-[#059669]" : "text-[#111827]"
+                              tx.kind === "deposit" || tx.kind === "profit" ? "text-[#059669]" : "text-[#111827]"
                             }`}
                           >
                             {formatAmount(tx.amount, tx.kind)}

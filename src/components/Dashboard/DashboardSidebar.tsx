@@ -12,6 +12,7 @@ const USER_NAV_ITEMS = [
   { label: "Investments", href: "/investments", icon: "investments" },
   { label: "My Investments", href: "/my-investments", icon: "my-investments" },
   { label: "Transactions", href: "/transactions", icon: "transactions" },
+  { label: "Notifications", href: "/dashboard/notifications", icon: "notifications" },
   { label: "Settings", href: "/settings", icon: "settings" },
 ];
 
@@ -62,6 +63,13 @@ function NavIcon({ name, className = "h-5 w-5 shrink-0" }: { name: string; class
       return (
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={iconClass}>
           <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+        </svg>
+      );
+    case "notifications":
+      return (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={iconClass}>
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+          <path d="M13.73 21a2 2 0 0 1-3.46 0" />
         </svg>
       );
     case "support":

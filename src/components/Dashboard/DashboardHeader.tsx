@@ -1,12 +1,14 @@
 "use client";
 
 import { motion } from "motion/react";
+import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { useState, useEffect, useRef } from "react";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
 import { useLogoutService } from "@/services/auth/logout";
 import { useAppStore, getInitials } from "@/store/useAppStore";
+import { useUserNotifications } from "@/services/notifications/useUserNotifications";
 
 interface DashboardHeaderProps {
   onMenuClick?: () => void;
@@ -18,9 +20,12 @@ export function DashboardHeader({ onMenuClick }: DashboardHeaderProps) {
   const user = useAppStore((s) => s.user);
   const reset = useAppStore((s) => s.reset);
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
   const [showDepositModal, setShowDepositModal] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const notificationsRef = useRef<HTMLDivElement>(null);
   const { theme, setTheme } = useTheme();
+  const { notifications, unreadCount, loading: notificationsLoading, markAsRead } = useUserNotifications(user?.uid ?? null);
 
   const displayName = user?.fullName || "User";
   const initials = getInitials(displayName);
@@ -38,19 +43,13 @@ export function DashboardHeader({ onMenuClick }: DashboardHeaderProps) {
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        setShowUserMenu(false);
-      }
+      const target = event.target as Node;
+      if (menuRef.current && !menuRef.current.contains(target)) setShowUserMenu(false);
+      if (notificationsRef.current && !notificationsRef.current.contains(target)) setShowNotifications(false);
     };
-
-    if (showUserMenu) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [showUserMenu]);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   return (
     <>
@@ -137,15 +136,70 @@ export function DashboardHeader({ onMenuClick }: DashboardHeaderProps) {
               )}
             </div>
 
-            <button className="relative rounded-lg p-2 text-text-secondary hover:bg-[#f9fafb] hover:text-[#111827]">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
-                <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-              </svg>
-              <span className="absolute right-1 top-1 flex h-4 w-4 items-center justify-center rounded-full bg-[#ef4444] text-[10px] font-semibold text-white">
-                2
-              </span>
-            </button>
+            <div className="relative" ref={notificationsRef}>
+              <button
+                type="button"
+                onClick={() => setShowNotifications((prev) => !prev)}
+                className="relative rounded-lg p-2 text-text-secondary hover:bg-[#f9fafb] hover:text-[#111827]"
+                aria-label="Notifications"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                  <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+                </svg>
+                {unreadCount > 0 && (
+                  <span className="absolute right-1 top-1 flex h-4 w-4 min-w-4 items-center justify-center rounded-full bg-[#ef4444] px-1 text-[10px] font-semibold text-white">
+                    {unreadCount > 99 ? "99+" : unreadCount}
+                  </span>
+                )}
+              </button>
+              {showNotifications && (
+                <motion.div
+                  initial={{ opacity: 0, y: -8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="absolute right-0 mt-2 w-[320px] max-h-[400px] overflow-hidden rounded-lg border border-[#e5e7eb] bg-white shadow-lg flex flex-col"
+                >
+                  <div className="flex items-center justify-between border-b border-[#e5e7eb] px-4 py-3">
+                    <h3 className="text-sm font-semibold text-[#111827]">Notifications</h3>
+                    {unreadCount > 0 && (
+                      <span className="text-xs text-text-secondary">{unreadCount} unread</span>
+                    )}
+                  </div>
+                  <div className="overflow-y-auto max-h-[320px]">
+                    {notificationsLoading ? (
+                      <div className="flex items-center justify-center py-8">
+                        <div className="h-6 w-6 animate-spin rounded-full border-2 border-accent border-t-transparent" />
+                      </div>
+                    ) : notifications.length === 0 ? (
+                      <p className="px-4 py-6 text-center text-sm text-text-secondary">No notifications yet</p>
+                    ) : (
+                      notifications.slice(0, 8).map((n) => (
+                        <NotificationItem
+                          key={n.id}
+                          notification={n}
+                          onSelect={() => {
+                            if (!n.read) markAsRead(n.id);
+                            setShowNotifications(false);
+                            if (n.link) router.push(n.link);
+                          }}
+                        />
+                      ))
+                    )}
+                  </div>
+                  {notifications.length > 0 && (
+                    <div className="border-t border-[#e5e7eb] p-2">
+                      <Link
+                        href="/dashboard/notifications"
+                        onClick={() => setShowNotifications(false)}
+                        className="block rounded-lg py-2 text-center text-sm font-medium text-accent hover:bg-[#eef2ff]"
+                      >
+                        View all notifications
+                      </Link>
+                    </div>
+                  )}
+                </motion.div>
+              )}
+            </div>
 
           </div>
         </div>
@@ -155,6 +209,49 @@ export function DashboardHeader({ onMenuClick }: DashboardHeaderProps) {
         <DepositModal onClose={() => setShowDepositModal(false)} />
       )}
     </>
+  );
+}
+
+function formatNotificationDate(createdAt: number): string {
+  const d = new Date(createdAt);
+  const now = new Date();
+  const diffMs = now.getTime() - d.getTime();
+  const diffMins = Math.floor(diffMs / 60000);
+  const diffHours = Math.floor(diffMs / 3600000);
+  const diffDays = Math.floor(diffMs / 86400000);
+  if (diffMins < 1) return "Just now";
+  if (diffMins < 60) return `${diffMins}m ago`;
+  if (diffHours < 24) return `${diffHours}h ago`;
+  if (diffDays < 7) return `${diffDays}d ago`;
+  return d.toLocaleDateString();
+}
+
+function NotificationItem({
+  notification,
+  onSelect,
+}: {
+  notification: { id: string; title: string; body: string; read: boolean; createdAt: number; link?: string };
+  onSelect: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onSelect}
+      className={`w-full px-4 py-3 text-left hover:bg-[#f9fafb] border-b border-[#f3f4f6] last:border-b-0 ${!notification.read ? "bg-[#eef2ff]/50" : ""}`}
+    >
+      <div className="flex items-start justify-between gap-2">
+        <div className="min-w-0 flex-1">
+          <p className="text-sm font-medium text-[#111827] truncate">{notification.title}</p>
+          <p className="text-xs text-text-secondary line-clamp-2 mt-0.5">{notification.body}</p>
+        </div>
+        <span className="text-[10px] text-text-secondary shrink-0 whitespace-nowrap">
+          {formatNotificationDate(notification.createdAt)}
+        </span>
+      </div>
+      {!notification.read && (
+        <span className="mt-1 inline-block h-1.5 w-1.5 rounded-full bg-accent" aria-hidden />
+      )}
+    </button>
   );
 }
 

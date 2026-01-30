@@ -25,8 +25,17 @@ export interface WithdrawalRecord {
 /** Plan record used when kind is "investment" (from Plans/{uid}) */
 export type PlanRecord = import("@/services/plans/types").PlanRecord;
 
-/** Unified transaction for list view (deposits, withdrawals, investments) */
-export type TransactionKind = "deposit" | "withdrawal" | "investment";
+/** Profit record from profits/{uid}/{profitId} — added by admin per plan */
+export interface ProfitRecord {
+  amount: string;
+  planId: string;
+  planName: string;
+  date: string;
+  createdAt: number;
+}
+
+/** Unified transaction for list view (deposits, withdrawals, investments, profits) */
+export type TransactionKind = "deposit" | "withdrawal" | "investment" | "profit";
 
 export interface UnifiedTransaction {
   kind: TransactionKind;
@@ -36,10 +45,10 @@ export interface UnifiedTransaction {
   date: string;
   dateSortKey: number;
   status: string;
-  /** Deposit: paymentMethod; Withdrawal: withdrawalMode; Investment: plan name */
+  /** Deposit: paymentMethod; Withdrawal: withdrawalMode; Investment: plan name; Profit: plan name */
   asset: string;
-  /** Deposit: transactionId; Withdrawal: timestamp; Investment: plan id */
+  /** Deposit: transactionId; Withdrawal: timestamp; Investment: plan id; Profit: plan id */
   reference: string;
   /** Full record for detail page */
-  record: DepositRecord | WithdrawalRecord | PlanRecord;
+  record: DepositRecord | WithdrawalRecord | PlanRecord | ProfitRecord;
 }

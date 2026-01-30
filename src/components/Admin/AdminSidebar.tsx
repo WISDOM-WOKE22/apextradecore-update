@@ -8,6 +8,7 @@ const ADMIN_NAV_ITEMS = [
   { label: "Admin Dashboard", href: "/admin", icon: "dashboard" },
   { label: "Users", href: "/admin/users", icon: "users" },
   { label: "Transactions", href: "/admin/transactions", icon: "transactions" },
+  { label: "Wallets", href: "/admin/wallets", icon: "wallets" },
   { label: "Plans", href: "/admin/plans", icon: "plans" },
   { label: "Settings", href: "/admin/settings", icon: "settings" },
 ];
@@ -44,6 +45,13 @@ function NavIcon({ name, className = "h-5 w-5 shrink-0" }: { name: string; class
           <line x1="12" y1="20" x2="12" y2="10" />
           <line x1="18" y1="20" x2="18" y2="4" />
           <line x1="6" y1="20" x2="6" y2="16" />
+        </svg>
+      );
+    case "wallets":
+      return (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={iconClass}>
+          <rect x="1" y="4" width="22" height="16" rx="2" ry="2" />
+          <line x1="1" y1="10" x2="23" y2="10" />
         </svg>
       );
     case "settings":

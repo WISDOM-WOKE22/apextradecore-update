@@ -35,6 +35,9 @@ export async function fetchPlanDetail(
         ? data.createdAt
         : parseDbDateToMs(dateStr);
 
+    const totalProfit = typeof (data as { totalProfit?: number }).totalProfit === "number"
+      ? (data as { totalProfit?: number }).totalProfit!
+      : 0;
     const plan: UserPlan = {
       id: planId,
       planName: data.plan ?? "Starter",
@@ -44,6 +47,7 @@ export async function fetchPlanDetail(
       dateSortKey,
       name: typeof data.name === "number" ? data.name : 0,
       isDefault: false,
+      totalProfit,
       record: data,
     };
     return { success: true, plan };

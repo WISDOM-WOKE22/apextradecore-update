@@ -1,9 +1,13 @@
 "use client";
 
 import { motion } from "motion/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
-import Link from "next/link";
+import { useAppStore } from "@/store/useAppStore";
+import { useLogoutService } from "@/services/auth/logout";
+import { useChangePassword } from "@/services/auth/changePassword";
+import { updateUserProfile } from "@/services/user/updateUserProfile";
 
 const baseInput =
   "w-full rounded-lg border px-4 py-3 text-base text-[#111827] placeholder:text-[#9ca3af] focus:outline-none focus:ring-2 transition-colors";
@@ -12,68 +16,140 @@ const inputStyles = (error: boolean) =>
     ? `${baseInput} border-[#ef4444] bg-[#fef2f2] focus:border-[#ef4444] focus:ring-[#ef4444]/20`
     : `${baseInput} border-[#e5e7eb] bg-[#f9fafb] focus:border-accent focus:bg-white focus:ring-accent/20`;
 
-export function SettingsView() {
-  const [fullName, setFullName] = useState("Ryan Crawford");
-  const [nameError, setNameError] = useState("");
-  const [nameSaved, setNameSaved] = useState(false);
+export interface SettingsViewProps {
+  title?: string;
+  subtitle?: string;
+}
+
+export function SettingsView({
+  title = "Settings",
+  subtitle = "Manage your account and preferences",
+}: SettingsViewProps) {
+  const router = useRouter();
+  const user = useAppStore((s) => s.user);
+  const setUser = useAppStore((s) => s.setUser);
+  const reset = useAppStore((s) => s.reset);
+
+  const [fullName, setFullName] = useState("");
+  const [country, setCountry] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [profileError, setProfileError] = useState("");
+  const [profileSaved, setProfileSaved] = useState(false);
+  const [profileLoading, setProfileLoading] = useState(false);
 
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordErrors, setPasswordErrors] = useState<Record<string, string>>({});
-  const [passwordSaved, setPasswordSaved] = useState(false);
+  const [passwordSuccess, setPasswordSuccess] = useState(false);
   const [showPasswords, setShowPasswords] = useState(false);
 
-  const handleSaveName = (e: React.FormEvent) => {
+  const { changePassword, loading: passwordLoading, error: passwordAuthError, clearError: clearPasswordError } = useChangePassword();
+  const { logout, loading: logoutLoading } = useLogoutService();
+
+  useEffect(() => {
+    if (user) {
+      setFullName(user.fullName || "");
+      setCountry(user.country || "");
+      setPhoneNumber(user.phoneNumber || "");
+    }
+  }, [user]);
+
+  const handleSaveProfile = async (e: React.FormEvent) => {
     e.preventDefault();
+    setProfileError("");
+    setProfileSaved(false);
     const trimmed = fullName.trim();
     if (!trimmed) {
-      setNameError("Full name is required");
+      setProfileError("Full name is required");
       return;
     }
-    setNameError("");
-    setNameSaved(true);
-    setTimeout(() => setNameSaved(false), 3000);
+    if (!user?.uid) {
+      setProfileError("You must be signed in to update your profile.");
+      return;
+    }
+    setProfileLoading(true);
+    const result = await updateUserProfile(user.uid, {
+      fullName: trimmed,
+      country: country.trim() || undefined,
+      phoneNumber: phoneNumber.trim() || undefined,
+    });
+    setProfileLoading(false);
+    if (result.success) {
+      setUser({
+        ...user,
+        fullName: trimmed,
+        country: country.trim() || user.country,
+        phoneNumber: phoneNumber.trim() || user.phoneNumber,
+      });
+      setProfileSaved(true);
+      setTimeout(() => setProfileSaved(false), 3000);
+    } else {
+      setProfileError(result.error);
+    }
   };
 
-  const handleChangePassword = (e: React.FormEvent) => {
+  const handleChangePassword = async (e: React.FormEvent) => {
     e.preventDefault();
+    clearPasswordError();
+    setPasswordErrors({});
+    setPasswordSuccess(false);
     const errors: Record<string, string> = {};
     if (!currentPassword) errors.currentPassword = "Current password is required";
     if (!newPassword) errors.newPassword = "New password is required";
-    else if (newPassword.length < 8) errors.newPassword = "Password must be at least 8 characters";
+    else if (newPassword.length < 6) errors.newPassword = "Password must be at least 6 characters";
     if (newPassword !== confirmPassword) errors.confirmPassword = "Passwords do not match";
     setPasswordErrors(errors);
     if (Object.keys(errors).length > 0) return;
-    setPasswordSaved(true);
-    setCurrentPassword("");
-    setNewPassword("");
-    setConfirmPassword("");
-    setTimeout(() => setPasswordSaved(false), 3000);
+
+    const result = await changePassword(currentPassword, newPassword);
+    if (result.success) {
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+      setPasswordSuccess(true);
+      setTimeout(() => setPasswordSuccess(false), 3000);
+    }
   };
 
+  const handleLogout = async () => {
+    const result = await logout();
+    if (result.success) {
+      reset();
+      router.push("/login");
+      router.refresh();
+    }
+  };
+
+  if (!user) {
+    return (
+      <div className="mx-auto w-full rounded-xl border border-[#e5e7eb] bg-white p-8 text-center shadow-sm">
+        <p className="text-text-secondary">Loading your account…</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="mx-auto">
-      {/* <motion.div
+    <div className="mx-auto w-full">
+      <motion.div
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
+        transition={{ duration: 0.3 }}
         className="mb-8"
       >
-        <h1 className="text-2xl font-bold text-[#111827] sm:text-3xl">Settings</h1>
-        <p className="mt-1 text-sm text-text-secondary">Manage your account and preferences</p>
-      </motion.div> */}
+        <h1 className="text-2xl font-bold text-[#111827] sm:text-3xl">{title}</h1>
+        <p className="mt-1 text-sm text-text-secondary">{subtitle}</p>
+      </motion.div>
 
-      {/* Profile – Full name */}
+      {/* Profile */}
       <motion.section
-        initial={{ opacity: 0, y: 16 }}
+        initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, delay: 0.05, ease: [0.22, 1, 0.36, 1] }}
-        whileHover={{ y: -1 }}
-        className="mb-6 rounded-xl border border-[#e5e7eb] bg-white p-5 shadow-sm transition-shadow hover:shadow-md sm:p-6"
+        transition={{ duration: 0.3, delay: 0.05 }}
+        className="mb-6 rounded-xl border border-[#e5e7eb] bg-white p-5 shadow-sm sm:p-6"
       >
         <div className="mb-4 flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#eef2ff] text-accent">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#eef2ff] text-accent">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
               <circle cx="12" cy="7" r="4" />
@@ -81,10 +157,10 @@ export function SettingsView() {
           </div>
           <div>
             <h2 className="text-lg font-semibold text-[#111827]">Profile</h2>
-            <p className="text-sm text-text-secondary">Update your display name</p>
+            <p className="text-sm text-text-secondary">Update your display name and contact info</p>
           </div>
         </div>
-        <form onSubmit={handleSaveName} className="space-y-4">
+        <form onSubmit={handleSaveProfile} className="space-y-4">
           <div>
             <label htmlFor="fullName" className="mb-2 block text-sm font-medium text-[#374151]">
               Full name
@@ -95,33 +171,60 @@ export function SettingsView() {
               value={fullName}
               onChange={(e) => {
                 setFullName(e.target.value);
-                setNameError("");
+                setProfileError("");
               }}
               placeholder="Your full name"
-              className={inputStyles(!!nameError)}
+              className={inputStyles(!!profileError)}
             />
-            {nameError && (
-              <p className="mt-1.5 text-sm text-[#ef4444]" role="alert">{nameError}</p>
-            )}
           </div>
-          <motion.div whileTap={{ scale: 0.98 }}>
-            <Button type="submit" className="bg-accent text-white hover:bg-[#1552b8]">
-              {nameSaved ? "✓ Saved" : "Save name"}
-            </Button>
-          </motion.div>
+          <div>
+            <label htmlFor="country" className="mb-2 block text-sm font-medium text-[#374151]">
+              Country
+            </label>
+            <input
+              id="country"
+              type="text"
+              value={country}
+              onChange={(e) => setCountry(e.target.value)}
+              placeholder="e.g. United States"
+              className={inputStyles(false)}
+            />
+          </div>
+          <div>
+            <label htmlFor="phoneNumber" className="mb-2 block text-sm font-medium text-[#374151]">
+              Phone number
+            </label>
+            <input
+              id="phoneNumber"
+              type="tel"
+              value={phoneNumber}
+              onChange={(e) => setPhoneNumber(e.target.value)}
+              placeholder="e.g. +1 234 567 8900"
+              className={inputStyles(false)}
+            />
+          </div>
+          {profileError && (
+            <p className="text-sm text-[#ef4444]" role="alert">{profileError}</p>
+          )}
+          <Button
+            type="submit"
+            disabled={profileLoading}
+            className="bg-accent text-white hover:bg-[#1552b8] disabled:opacity-70"
+          >
+            {profileLoading ? "Saving…" : profileSaved ? "✓ Saved" : "Save profile"}
+          </Button>
         </form>
       </motion.section>
 
-      {/* Password change */}
+      {/* Password */}
       <motion.section
-        initial={{ opacity: 0, y: 16 }}
+        initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-        whileHover={{ y: -1 }}
-        className="mb-6 rounded-xl border border-[#e5e7eb] bg-white p-5 shadow-sm transition-shadow hover:shadow-md sm:p-6"
+        transition={{ duration: 0.3, delay: 0.1 }}
+        className="mb-6 rounded-xl border border-[#e5e7eb] bg-white p-5 shadow-sm sm:p-6"
       >
         <div className="mb-4 flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#eef2ff] text-accent">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#eef2ff] text-accent">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
               <path d="M7 11V7a5 5 0 0 1 10 0v4" />
@@ -142,7 +245,10 @@ export function SettingsView() {
                 id="currentPassword"
                 type={showPasswords ? "text" : "password"}
                 value={currentPassword}
-                onChange={(e) => setCurrentPassword(e.target.value)}
+                onChange={(e) => {
+                  setCurrentPassword(e.target.value);
+                  setPasswordErrors((p) => ({ ...p, currentPassword: "" }));
+                }}
                 placeholder="Enter current password"
                 className={inputStyles(!!passwordErrors.currentPassword)}
               />
@@ -177,7 +283,10 @@ export function SettingsView() {
               id="newPassword"
               type={showPasswords ? "text" : "password"}
               value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
+              onChange={(e) => {
+                setNewPassword(e.target.value);
+                setPasswordErrors((p) => ({ ...p, newPassword: "" }));
+              }}
               placeholder="Enter new password"
               className={inputStyles(!!passwordErrors.newPassword)}
             />
@@ -193,7 +302,10 @@ export function SettingsView() {
               id="confirmPassword"
               type={showPasswords ? "text" : "password"}
               value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
+              onChange={(e) => {
+                setConfirmPassword(e.target.value);
+                setPasswordErrors((p) => ({ ...p, confirmPassword: "" }));
+              }}
               placeholder="Confirm new password"
               className={inputStyles(!!passwordErrors.confirmPassword)}
             />
@@ -201,23 +313,52 @@ export function SettingsView() {
               <p className="mt-1.5 text-sm text-[#ef4444]" role="alert">{passwordErrors.confirmPassword}</p>
             )}
           </div>
-          <motion.div whileTap={{ scale: 0.98 }}>
-            <Button type="submit" className="bg-accent text-white hover:bg-[#1552b8]">
-              {passwordSaved ? "✓ Password updated" : "Update password"}
-            </Button>
-          </motion.div>
+          {(passwordAuthError || passwordSuccess) && (
+            <p className={`text-sm ${passwordSuccess ? "text-[#059669]" : "text-[#ef4444]"}`} role="alert">
+              {passwordSuccess ? "✓ Password updated successfully." : passwordAuthError}
+            </p>
+          )}
+          <Button
+            type="submit"
+            disabled={passwordLoading}
+            className="bg-accent text-white hover:bg-[#1552b8] disabled:opacity-70"
+          >
+            {passwordLoading ? "Updating…" : "Update password"}
+          </Button>
         </form>
       </motion.section>
 
-      {/* Logout */}
+      {/* Account info (read-only) */}
       <motion.section
-        initial={{ opacity: 0, y: 16 }}
+        initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ duration: 0.3, delay: 0.15 }}
+        className="mb-6 rounded-xl border border-[#e5e7eb] bg-[#f9fafb] p-5 sm:p-6"
+      >
+        <div className="mb-3 flex items-center gap-3">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#e5e7eb] text-[#6b7280]">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+              <polyline points="22,6 12,13 2,6" />
+            </svg>
+          </div>
+          <div>
+            <h2 className="text-lg font-semibold text-[#111827]">Account</h2>
+            <p className="text-sm text-text-secondary">Your sign-in email (cannot be changed here)</p>
+          </div>
+        </div>
+        <p className="text-sm font-medium text-[#374151]">{user.email}</p>
+      </motion.section>
+
+      {/* Sign out */}
+      <motion.section
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, delay: 0.2 }}
         className="rounded-xl border border-[#fecaca] bg-[#fef2f2] p-5 sm:p-6"
       >
         <div className="mb-4 flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#fee2e2] text-[#dc2626]">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#fee2e2] text-[#dc2626]">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
               <polyline points="16 17 21 12 16 7" />
@@ -229,19 +370,14 @@ export function SettingsView() {
             <p className="text-sm text-text-secondary">End your session on this device</p>
           </div>
         </div>
-        <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-          <Link
-            href="/login"
-            className="inline-flex items-center justify-center rounded-lg border border-[#f87171] bg-[#ef4444] px-6 py-3 text-base font-semibold text-white transition-colors hover:bg-[#dc2626]"
-          >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="mr-2">
-            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-            <polyline points="16 17 21 12 16 7" />
-            <line x1="21" y1="12" x2="9" y2="12" />
-          </svg>
-          Log out
-          </Link>
-        </motion.div>
+        <Button
+          type="button"
+          onClick={handleLogout}
+          disabled={logoutLoading}
+          className="border border-[#f87171] bg-[#ef4444] text-white hover:bg-[#dc2626] disabled:opacity-70"
+        >
+          {logoutLoading ? "Signing out…" : "Log out"}
+        </Button>
       </motion.section>
     </div>
   );

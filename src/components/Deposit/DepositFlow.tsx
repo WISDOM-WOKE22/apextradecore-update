@@ -6,24 +6,7 @@ import { useState, useCallback, Suspense } from "react";
 import { Button } from "@/components/ui/Button";
 import { auth } from "@/lib/firebase";
 import { createDeposit } from "@/services/deposits/createDeposit";
-
-const CURRENCIES = [
-  { id: "ETH", name: "Ethereum", symbol: "ETH" },
-  { id: "BTC", name: "Bitcoin", symbol: "BTC" },
-  { id: "USDT", name: "Tether", symbol: "USDT" },
-  { id: "USDC", name: "USD Coin", symbol: "USDC" },
-  { id: "SOL", name: "Solana", symbol: "SOL" },
-  { id: "AVAX", name: "Avalanche", symbol: "AVAX" },
-];
-
-const MOCK_WALLETS: Record<string, string> = {
-  ETH: "0x742d35Cc6634C0532925a3b844Bc9e7595f2bE1a",
-  BTC: "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh",
-  USDT: "0x742d35Cc6634C0532925a3b844Bc9e7595f2bE1a",
-  USDC: "0x742d35Cc6634C0532925a3b844Bc9e7595f2bE1a",
-  SOL: "7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU",
-  AVAX: "0x742d35Cc6634C0532925a3b844Bc9e7595f2bE1a",
-};
+import { useDepositWallets } from "@/services/wallets/useDepositWallets";
 
 const STEPS = [
   { num: 1, label: "Select currency" },
@@ -66,6 +49,7 @@ function DepositFlowInner() {
   const pathname = usePathname();
   const router = useRouter();
   const { step, currency, amount, setParams } = useDepositParams();
+  const { wallets, loading: walletsLoading, error: walletsError } = useDepositWallets();
   const [amountInput, setAmountInput] = useState(amount);
   const [proofFile, setProofFile] = useState<File | null>(null);
   const [copied, setCopied] = useState(false);
@@ -73,8 +57,10 @@ function DepositFlowInner() {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const walletId = currency;
+  const selectedWallet = walletId ? wallets.find((w) => w.id === walletId) : null;
   const amountDisplay = step === 2 && amount && !amountInput ? amount : amountInput;
-  const walletAddress = currency ? MOCK_WALLETS[currency] || MOCK_WALLETS.ETH : "";
+  const walletAddress = selectedWallet?.address ?? "";
   const qrUrl = walletAddress
     ? `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(walletAddress)}`
     : "";
@@ -96,7 +82,7 @@ function DepositFlowInner() {
 
   const handleProofSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!currency || !amount) return;
+    if (!selectedWallet || !amount) return;
     const user = auth.currentUser;
     if (!user) {
       setSubmitError("You must be signed in to submit a deposit.");
@@ -104,7 +90,7 @@ function DepositFlowInner() {
     }
     setSubmitError(null);
     setIsSubmitting(true);
-    const paymentMethod = CURRENCIES.find((c) => c.id === currency)?.name ?? currency;
+    const paymentMethod = selectedWallet.name;
     const result = await createDeposit({
       userId: user.uid,
       amount,
@@ -165,7 +151,7 @@ function DepositFlowInner() {
       </motion.div>
 
       <AnimatePresence mode="wait">
-        {/* Step 1: Select currency */}
+        {/* Step 1: Select wallet */}
         {step === 1 && (
           <motion.div
             key="step1"
@@ -175,26 +161,44 @@ function DepositFlowInner() {
             transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
             className="rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm"
           >
-            <h2 className="mb-4 text-lg font-semibold text-[#111827]">Select cryptocurrency</h2>
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-              {CURRENCIES.map((c) => (
-                <motion.button
-                  key={c.id}
-                  type="button"
-                  onClick={() => goToStep(2, { currency: c.id })}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className={`rounded-xl border-2 p-4 text-left transition-colors ${
-                    currency === c.id
-                      ? "border-accent bg-[#eef2ff]"
-                      : "border-[#e5e7eb] bg-[#f9fafb] hover:border-accent/50 hover:bg-[#f9fafb]"
-                  }`}
-                >
-                  <span className="block text-sm font-semibold text-[#111827]">{c.name}</span>
-                  <span className="text-xs text-text-secondary">{c.symbol}</span>
-                </motion.button>
-              ))}
-            </div>
+            <h2 className="mb-4 text-lg font-semibold text-[#111827]">Select deposit wallet</h2>
+            {walletsLoading ? (
+              <div className="flex flex-col items-center justify-center gap-3 py-12">
+                <div className="h-8 w-8 animate-spin rounded-full border-2 border-accent border-t-transparent" />
+                <p className="text-sm text-text-secondary">Loading options…</p>
+              </div>
+            ) : walletsError ? (
+              <div className="rounded-lg border border-[#fecaca] bg-[#fef2f2] px-4 py-3 text-sm text-[#b91c1c]">
+                {walletsError}
+              </div>
+            ) : wallets.length === 0 ? (
+              <div className="py-12 text-center">
+                <p className="text-text-secondary">No deposit options available at the moment.</p>
+                <p className="mt-1 text-sm text-text-secondary">Please try again later or contact support.</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                {wallets.map((w) => (
+                  <motion.button
+                    key={w.id}
+                    type="button"
+                    onClick={() => goToStep(2, { currency: w.id })}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className={`rounded-xl border-2 p-4 text-left transition-colors ${
+                      walletId === w.id
+                        ? "border-accent bg-[#eef2ff]"
+                        : "border-[#e5e7eb] bg-[#f9fafb] hover:border-accent/50 hover:bg-[#f9fafb]"
+                    }`}
+                  >
+                    <span className="block text-sm font-semibold text-[#111827]">{w.name}</span>
+                    <span className="mt-1 block truncate text-xs font-mono text-text-secondary" title={w.address}>
+                      {w.address.slice(0, 12)}…
+                    </span>
+                  </motion.button>
+                ))}
+              </div>
+            )}
           </motion.div>
         )}
 
@@ -218,8 +222,17 @@ function DepositFlowInner() {
               </svg>
               Back
             </button>
-            <h2 className="mb-4 text-lg font-semibold text-[#111827]">Enter amount</h2>
-            <p className="mb-4 text-sm text-text-secondary">Currency: {CURRENCIES.find((c) => c.id === currency)?.name ?? currency}</p>
+            {!selectedWallet ? (
+              <div className="py-8 text-center">
+                <p className="text-text-secondary">This wallet is no longer available.</p>
+                <Button type="button" onClick={() => goToStep(1)} className="mt-4 bg-accent text-white">
+                  Choose another wallet
+                </Button>
+              </div>
+            ) : (
+              <>
+                <h2 className="mb-4 text-lg font-semibold text-[#111827]">Enter amount</h2>
+                <p className="mb-4 text-sm text-text-secondary">Wallet: {selectedWallet.name}</p>
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -247,6 +260,8 @@ function DepositFlowInner() {
                 Continue
               </Button>
             </form>
+              </>
+            )}
           </motion.div>
         )}
 
@@ -270,37 +285,48 @@ function DepositFlowInner() {
               </svg>
               Back
             </button>
-            <h2 className="mb-2 text-lg font-semibold text-[#111827]">Deposit address</h2>
-            <p className="mb-4 text-sm text-text-secondary">
-              Send exactly {amount} {currency} to this address. Wrong network or amount may result in loss.
-            </p>
-
-            <div className="mb-4 flex justify-center rounded-xl bg-[#f9fafb] p-4">
-              <img src={qrUrl} alt="QR code for wallet address" className="h-[220px] w-[220px] rounded-lg" />
-            </div>
-
-            <div className="mb-4">
-              <label className="mb-2 block text-xs font-medium text-text-secondary">Wallet address</label>
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  readOnly
-                  value={walletAddress}
-                  className="flex-1 rounded-lg border border-[#e5e7eb] bg-[#f9fafb] px-4 py-2.5 font-mono text-sm"
-                />
-                <Button
-                  type="button"
-                  onClick={handleCopy}
-                  className="shrink-0 bg-[#111827] text-white hover:bg-[#374151]"
-                >
-                  {copied ? "Copied!" : "Copy"}
+            {!selectedWallet ? (
+              <div className="py-8 text-center">
+                <p className="text-text-secondary">This wallet is no longer available.</p>
+                <Button type="button" onClick={() => goToStep(1)} className="mt-4 bg-accent text-white">
+                  Choose another wallet
                 </Button>
               </div>
-            </div>
+            ) : (
+              <>
+                <h2 className="mb-2 text-lg font-semibold text-[#111827]">Deposit address</h2>
+                <p className="mb-4 text-sm text-text-secondary">
+                  Send exactly {amount} to this address for {selectedWallet.name}. Wrong address may result in loss.
+                </p>
 
-            <Button type="button" onClick={() => goToStep(4)} className="w-full bg-accent text-white">
-              I&apos;ve sent the funds
-            </Button>
+                <div className="mb-4 flex justify-center rounded-xl bg-[#f9fafb] p-4">
+                  <img src={qrUrl} alt="QR code for wallet address" className="h-[220px] w-[220px] rounded-lg" />
+                </div>
+
+                <div className="mb-4">
+                  <label className="mb-2 block text-xs font-medium text-text-secondary">Wallet address</label>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      readOnly
+                      value={walletAddress}
+                      className="flex-1 rounded-lg border border-[#e5e7eb] bg-[#f9fafb] px-4 py-2.5 font-mono text-sm"
+                    />
+                    <Button
+                      type="button"
+                      onClick={handleCopy}
+                      className="shrink-0 bg-[#111827] text-white hover:bg-[#374151]"
+                    >
+                      {copied ? "Copied!" : "Copy"}
+                    </Button>
+                  </div>
+                </div>
+
+                <Button type="button" onClick={() => goToStep(4)} className="w-full bg-accent text-white">
+                  I&apos;ve sent the funds
+                </Button>
+              </>
+            )}
           </motion.div>
         )}
 

@@ -1,6 +1,6 @@
 /**
  * Raw plan record from Realtime DB: Plans/{uid}/{planKey}
- * Matches structure: amount, date, name, plan (e.g. "Starter")
+ * Matches structure: amount, date, name, plan (e.g. "Starter"), totalProfit (optional)
  */
 export interface PlanRecord {
   amount: string;
@@ -8,6 +8,8 @@ export interface PlanRecord {
   createdAt?: number;
   name: number;
   plan: string;
+  /** Running total of profit credited to this plan (admin-added) */
+  totalProfit?: number;
 }
 
 /** Unified plan for UI: from DB or default */
@@ -22,6 +24,8 @@ export interface UserPlan {
   name: number;
   /** True when this is the default (Starter) placeholder for users with no plans yet */
   isDefault: boolean;
+  /** Total profit credited to this plan */
+  totalProfit: number;
   /** Full record for detail view */
   record: PlanRecord;
 }

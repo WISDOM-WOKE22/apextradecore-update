@@ -108,6 +108,14 @@ export function MyInvestmentsView() {
                           ${plan.amountNum.toLocaleString()}
                         </span>
                       </span>
+                      {(plan.totalProfit ?? 0) > 0 && (
+                        <span>
+                          Profit:{" "}
+                          <span className="font-medium text-[#059669]">
+                            ${(plan.totalProfit ?? 0).toLocaleString("en-US", { minimumFractionDigits: 2 })}
+                          </span>
+                        </span>
+                      )}
                       <span>
                         Started:{" "}
                         <span className="font-medium text-[#111827]">

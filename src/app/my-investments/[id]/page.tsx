@@ -155,7 +155,7 @@ export default function InvestmentDetailPage() {
       <div className="flex flex-1 flex-col lg:ml-[280px]">
         <DashboardHeader onMenuClick={() => setMobileMenuOpen(true)} />
         <main className="flex-1 p-4 sm:p-6 lg:p-8">
-          {plan && <PlanDetailView plan={plan} />}
+          {plan && <PlanDetailView plan={plan} userId={auth.currentUser?.uid ?? null} />}
         </main>
       </div>
     </div>

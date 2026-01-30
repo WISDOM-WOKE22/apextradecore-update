@@ -16,13 +16,27 @@ export const DB = {
   /** withdrawals.{userId}.{timestamp} */
   withdrawals: "withdrawals",
   userWithdrawals: (uid: string) => `withdrawals/${uid}`,
-  userWithdrawal: (uid: string, timestamp: number) =>
-    `withdrawals/${uid}/${timestamp}`,
+  userWithdrawal: (uid: string, withdrawalId: string | number) =>
+    `withdrawals/${uid}/${withdrawalId}`,
 
   /** Plans.{userId}.{planKey} — each plan: amount, date, name, plan (e.g. "Starter") */
   plans: "Plans",
   userPlans: (uid: string) => `Plans/${uid}`,
   userPlan: (uid: string, planKey: string) => `Plans/${uid}/${planKey}`,
+
+  /** Deposit wallets (admin-managed). wallets.{walletId} */
+  wallets: "wallets",
+  wallet: (id: string) => `wallets/${id}`,
+
+  /** Profit credits per user (added by admin per plan). profits.{uid}.{profitId} */
+  profits: "profits",
+  userProfits: (uid: string) => `profits/${uid}`,
+  userProfit: (uid: string, profitId: string) => `profits/${uid}/${profitId}`,
+
+  /** User notifications. notifications.{uid}.{notificationId} */
+  notifications: "notifications",
+  userNotifications: (uid: string) => `notifications/${uid}`,
+  userNotification: (uid: string, notificationId: string) => `notifications/${uid}/${notificationId}`,
 } as const;
 
 /** Format date like existing DB: "16-7-2025" */
