@@ -1,12 +1,18 @@
+import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
 import type { Metadata } from "next";
+import { UserAreaGuard } from "@/components/guard";
 
 export const metadata: Metadata = {
   title: "Deposit | ApexTradeCore  Investment",
   description: "Deposit funds into your account. Select currency, amount, and complete your deposit.",
 };
 
-export default function DepositLayout({
+export default async function DepositLayout({
   children,
 }: { children: React.ReactNode }) {
-  return children;
+  const cookieStore = await cookies();
+  const token = cookieStore.get("firebase-token")?.value;
+  if (!token) redirect("/login");
+  return <UserAreaGuard>{children}</UserAreaGuard>;
 }

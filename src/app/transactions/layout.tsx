@@ -1,12 +1,18 @@
+import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
 import type { Metadata } from "next";
+import { UserAreaGuard } from "@/components/guard";
 
 export const metadata: Metadata = {
   title: "Transactions | ApexTradeCore  Investment",
   description: "View and filter your transaction history, deposits, withdrawals, and top-ups.",
 };
 
-export default function TransactionsLayout({
+export default async function TransactionsLayout({
   children,
 }: { children: React.ReactNode }) {
-  return children;
+  const cookieStore = await cookies();
+  const token = cookieStore.get("firebase-token")?.value;
+  if (!token) redirect("/login");
+  return <UserAreaGuard>{children}</UserAreaGuard>;
 }

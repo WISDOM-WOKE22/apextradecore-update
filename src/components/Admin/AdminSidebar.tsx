@@ -4,15 +4,12 @@ import { motion, AnimatePresence } from "motion/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-/** User-only nav items. Admin users are redirected to /admin and see AdminSidebar. */
-const USER_NAV_ITEMS = [
-  { label: "Dashboard", href: "/dashboard", icon: "dashboard" },
-  { label: "Deposit", href: "/deposit", icon: "deposit" },
-  { label: "Withdrawal", href: "/withdrawal", icon: "withdrawal" },
-  { label: "Investments", href: "/investments", icon: "investments" },
-  { label: "My Investments", href: "/my-investments", icon: "my-investments" },
-  { label: "Transactions", href: "/transactions", icon: "transactions" },
-  { label: "Settings", href: "/settings", icon: "settings" },
+const ADMIN_NAV_ITEMS = [
+  { label: "Admin Dashboard", href: "/admin", icon: "dashboard" },
+  { label: "Users", href: "/admin/users", icon: "users" },
+  { label: "Transactions", href: "/admin/transactions", icon: "transactions" },
+  { label: "Plans", href: "/admin/plans", icon: "plans" },
+  { label: "Settings", href: "/admin/settings", icon: "settings" },
 ];
 
 function NavIcon({ name, className = "h-5 w-5 shrink-0" }: { name: string; className?: string }) {
@@ -27,35 +24,12 @@ function NavIcon({ name, className = "h-5 w-5 shrink-0" }: { name: string; class
           <rect x="3" y="16" width="7" height="5" rx="1" />
         </svg>
       );
-    case "deposit":
+    case "users":
       return (
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={iconClass}>
-          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-          <polyline points="17 8 12 3 7 8" />
-          <line x1="12" y1="3" x2="12" y2="15" />
-        </svg>
-      );
-    case "withdrawal":
-      return (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={iconClass}>
-          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-          <polyline points="7 10 12 15 17 10" />
-          <line x1="12" y1="15" x2="12" y2="3" />
-        </svg>
-      );
-    case "investments":
-      return (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={iconClass}>
-          <line x1="12" y1="20" x2="12" y2="10" />
-          <line x1="18" y1="20" x2="18" y2="4" />
-          <line x1="6" y1="20" x2="6" y2="16" />
-        </svg>
-      );
-    case "my-investments":
-      return (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={iconClass}>
-          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-          <polyline points="9 22 9 12 15 12 15 22" />
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+          <circle cx="9" cy="7" r="4" />
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
         </svg>
       );
     case "transactions":
@@ -64,12 +38,12 @@ function NavIcon({ name, className = "h-5 w-5 shrink-0" }: { name: string; class
           <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
         </svg>
       );
-    case "support":
+    case "plans":
       return (
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={iconClass}>
-          <circle cx="12" cy="12" r="10" />
-          <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
-          <line x1="12" y1="17" x2="12.01" y2="17" />
+          <line x1="12" y1="20" x2="12" y2="10" />
+          <line x1="18" y1="20" x2="18" y2="4" />
+          <line x1="6" y1="20" x2="6" y2="16" />
         </svg>
       );
     case "settings":
@@ -79,24 +53,17 @@ function NavIcon({ name, className = "h-5 w-5 shrink-0" }: { name: string; class
           <path d="M12 1v6m0 6v6M5.64 5.64l4.24 4.24m4.24 4.24l4.24 4.24M1 12h6m6 0h6M5.64 18.36l4.24-4.24m4.24-4.24l4.24-4.24" />
         </svg>
       );
-    case "exchange":
-      return (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={iconClass}>
-          <polyline points="16 18 22 12 16 6" />
-          <polyline points="8 6 2 12 8 18" />
-        </svg>
-      );
     default:
       return null;
   }
 }
 
-interface DashboardSidebarProps {
+interface AdminSidebarProps {
   mobileOpen?: boolean;
   onClose?: () => void;
 }
 
-export function DashboardSidebar({ mobileOpen = false, onClose }: DashboardSidebarProps) {
+export function AdminSidebar({ mobileOpen = false, onClose }: AdminSidebarProps) {
   const pathname = usePathname();
 
   const navContent = (
@@ -104,7 +71,7 @@ export function DashboardSidebar({ mobileOpen = false, onClose }: DashboardSideb
       <div className="mb-6 flex items-center justify-between sm:mb-8">
         <div>
           <h1 className="text-lg font-bold text-[#111827] sm:text-xl">ApexTradeCore</h1>
-          <p className="text-xs text-text-secondary sm:text-sm">User · home of investments</p>
+          <p className="text-xs text-text-secondary sm:text-sm">Admin</p>
         </div>
         {onClose && (
           <button
@@ -122,8 +89,8 @@ export function DashboardSidebar({ mobileOpen = false, onClose }: DashboardSideb
       </div>
 
       <nav className="space-y-0.5">
-        {USER_NAV_ITEMS.map((item) => {
-          const isActive = pathname === item.href || (item.href !== "/dashboard" && pathname.startsWith(item.href));
+        {ADMIN_NAV_ITEMS.map((item) => {
+          const isActive = pathname === item.href || (item.href !== "/admin" && pathname.startsWith(item.href));
           return (
             <Link
               key={item.href}
@@ -146,12 +113,10 @@ export function DashboardSidebar({ mobileOpen = false, onClose }: DashboardSideb
 
   return (
     <>
-      {/* Desktop: fixed sidebar */}
       <aside className="fixed left-0 top-0 z-30 hidden h-screen w-[260px] border-r border-[#e5e7eb] bg-white lg:block lg:w-[280px]">
         {navContent}
       </aside>
 
-      {/* Mobile: overlay + drawer */}
       <AnimatePresence>
         {mobileOpen && onClose && (
           <>

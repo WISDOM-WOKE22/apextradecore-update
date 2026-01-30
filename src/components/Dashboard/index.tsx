@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useLoadUserData } from "@/services/user/loadUserData";
 import { useUserTransactions } from "@/services/transactions/useUserTransactions";
 import { DashboardSidebar } from "./DashboardSidebar";
 import { DashboardHeader } from "./DashboardHeader";
@@ -10,14 +9,11 @@ import { DashboardStats } from "./DashboardStats";
 import { TransactionChart } from "./TransactionChart";
 import { LatestTransactions } from "./LatestTransactions";
 import { InvestmentPortfolio } from "./InvestmentPortfolio";
-import { TopStakingAssets } from "./TopStakingAssets";
-import { LiveExchange } from "./LiveExchange";
 
 const REFRESH_TRANSACTIONS_EVENT = "app:refresh-transactions";
 
 export function Dashboard() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  useLoadUserData();
   const transactions = useUserTransactions();
 
   useEffect(() => {

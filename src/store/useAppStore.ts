@@ -1,5 +1,7 @@
 import { create } from "zustand";
 
+export type UserRole = "admin" | "user";
+
 export interface UserData {
   uid: string;
   email: string;
@@ -7,6 +9,7 @@ export interface UserData {
   country: string;
   phoneNumber: string;
   referralCode: string | null;
+  role: UserRole;
   createdAt?: { seconds: number } | Date;
   updatedAt?: { seconds: number } | Date;
 }

@@ -37,6 +37,9 @@ export async function refreshAccountStats(uid: string): Promise<void> {
 
 function parseRtdbUser(uid: string, data: Record<string, unknown> | null): UserData | null {
   if (!data) return null;
+  const roleRaw = data.role;
+  const role: UserData["role"] =
+    roleRaw === "admin" ? "admin" : "user";
   return {
     uid,
     email: typeof data.email === "string" ? data.email : "",
@@ -47,6 +50,7 @@ function parseRtdbUser(uid: string, data: Record<string, unknown> | null): UserD
       typeof data.referralCode === "string" && data.referralCode
         ? data.referralCode
         : null,
+    role,
   };
 }
 
@@ -82,26 +86,47 @@ function sumPlanAmounts(
   }, 0);
 }
 
+const LOAD_USER_TIMEOUT_MS = 15_000;
+const AUTH_INIT_TIMEOUT_MS = 8_000;
+
 export function useLoadUserData() {
   const { setUser, setAccountStats, setLoading, setError, reset } = useAppStore();
 
   useEffect(() => {
+    let authInitTimeoutId: ReturnType<typeof setTimeout> | null = setTimeout(() => {
+      setLoading(false);
+    }, AUTH_INIT_TIMEOUT_MS);
+
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (authInitTimeoutId) {
+        clearTimeout(authInitTimeoutId);
+        authInitTimeoutId = null;
+      }
       if (!firebaseUser) {
         reset();
         setLoading(false);
         return;
       }
 
+      // User is signed in; load profile and stats
+
       setLoading(true);
       setError(null);
       const uid = firebaseUser.uid;
+      let timedOut = false;
+      const timeoutId = setTimeout(() => {
+        timedOut = true;
+        setLoading(false);
+        setError("Loading took too long. Please refresh.");
+      }, LOAD_USER_TIMEOUT_MS);
 
       try {
         const userSnap = await get(ref(database, DB.user(uid)));
+        if (timedOut) return;
         const userData = parseRtdbUser(uid, userSnap.val());
         if (!userData) {
           setUser(null);
+          clearTimeout(timeoutId);
           setLoading(false);
           return;
         }
@@ -112,6 +137,7 @@ export function useLoadUserData() {
           get(ref(database, DB.userWithdrawals(uid))),
           get(ref(database, DB.userPlans(uid))),
         ]);
+        if (timedOut) return;
 
         const totalDeposits = sumApprovedAmounts(depositsSnap);
         const totalWithdrawals = sumApprovedAmounts(withdrawalsSnap);
@@ -129,13 +155,19 @@ export function useLoadUserData() {
           currentInvestments,
         });
       } catch (err) {
-        console.error("[loadUserData]", err);
-        setError(err instanceof Error ? err.message : "Failed to load user");
+        if (!timedOut) {
+          console.error("[loadUserData]", err);
+          setError(err instanceof Error ? err.message : "Failed to load user");
+        }
       } finally {
-        setLoading(false);
+        clearTimeout(timeoutId);
+        if (!timedOut) setLoading(false);
       }
     });
 
-    return () => unsubscribe();
+    return () => {
+      if (authInitTimeoutId) clearTimeout(authInitTimeoutId);
+      unsubscribe();
+    };
   }, [setUser, setAccountStats, setLoading, setError, reset]);
 }
