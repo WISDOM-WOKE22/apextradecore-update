@@ -115,7 +115,7 @@ export function PlanDetailView({ plan, userId }: PlanDetailViewProps) {
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35, delay: 0.15 }}
-        className="rounded-xl border border-[#e5e7eb] bg-white shadow-sm dark:border-[#2a2a2a] dark:bg-[#1a1a1a]"
+        className="min-w-0 rounded-xl border border-[#e5e7eb] bg-white shadow-sm dark:border-[#2a2a2a] dark:bg-[#1a1a1a]"
       >
         <div className="flex flex-col gap-4 border-b border-[#e5e7eb] px-4 py-4 dark:border-[#2a2a2a] sm:flex-row sm:items-center sm:justify-between sm:px-6">
           <h2 className="text-lg font-bold text-[#111827] dark:text-[#f5f5f5]">Plan transactions</h2>
@@ -157,7 +157,7 @@ export function PlanDetailView({ plan, userId }: PlanDetailViewProps) {
             No transactions yet. Investment and profit credits will appear here.
           </div>
         ) : viewMode === "table" ? (
-          <div className="table-scroll-wrap -mx-2 sm:mx-0">
+          <div className="table-scroll-wrap mx-0 sm:-mx-2">
             <table className="w-full min-w-[400px]">
               <thead>
                 <tr className="border-b border-[#e5e7eb] bg-[#f9fafb] text-left text-xs font-semibold uppercase tracking-wider text-text-secondary dark:border-[#2a2a2a] dark:bg-[#262626] dark:text-[#a3a3a3]">

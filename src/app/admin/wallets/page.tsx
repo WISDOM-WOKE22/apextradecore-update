@@ -157,7 +157,7 @@ export default function AdminWalletsPage() {
         </div>
       )}
 
-      <div className="overflow-hidden rounded-xl border border-[#e5e7eb] bg-white shadow-sm dark:border-[#2a2a2a] dark:bg-[#1a1a1a]">
+      <div className="min-w-0 overflow-hidden rounded-xl border border-[#e5e7eb] bg-white shadow-sm dark:border-[#2a2a2a] dark:bg-[#1a1a1a]">
         {loading ? (
           <div className="flex flex-col items-center justify-center gap-3 py-16">
             <div className="h-8 w-8 animate-spin rounded-full border-2 border-accent border-t-transparent" />
@@ -176,7 +176,7 @@ export default function AdminWalletsPage() {
             </button>
           </div>
         ) : (
-          <div className="table-scroll-wrap -mx-2 sm:mx-0">
+          <div className="table-scroll-wrap mx-0 sm:-mx-2">
             <table className="w-full min-w-[640px]">
               <thead>
                 <tr className="border-b border-[#e5e7eb] bg-[#f9fafb] dark:border-[#2a2a2a] dark:bg-[#262626]">

@@ -281,7 +281,7 @@ export default function AdminDashboardPage() {
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: 0.2 }}
-        className="mt-8 overflow-hidden rounded-xl border border-[#e5e7eb] bg-white shadow-sm dark:border-[#2a2a2a] dark:bg-[#1a1a1a]"
+        className="mt-8 min-w-0 overflow-hidden rounded-xl border border-[#e5e7eb] bg-white shadow-sm dark:border-[#2a2a2a] dark:bg-[#1a1a1a]"
       >
         <div className="flex items-center justify-between border-b border-[#e5e7eb] bg-[#f9fafb] px-4 py-3 dark:border-[#2a2a2a] dark:bg-[#262626] sm:px-6">
           <h2 className="text-lg font-bold text-[#111827] dark:text-[#f5f5f5]">Latest transactions</h2>
@@ -302,7 +302,7 @@ export default function AdminDashboardPage() {
             No transactions yet.
           </div>
         ) : (
-          <div className="table-scroll-wrap -mx-2 sm:mx-0">
+          <div className="table-scroll-wrap mx-0 sm:-mx-2">
             <table className="w-full min-w-[520px]">
               <thead>
                 <tr className="border-b border-[#e5e7eb] text-left text-xs font-semibold uppercase text-text-secondary dark:border-[#2a2a2a] dark:text-[#a3a3a3]">

@@ -46,18 +46,46 @@ body {
   font-family: var(--font-sans), system-ui, sans-serif;
 }
 
-/* Responsive table scroll: smooth horizontal scroll on mobile, touch-friendly */
+/* Responsive table scroll: horizontal + vertical on mobile so table doesn't overlap viewport */
 .table-scroll-wrap {
+  display: block;
+  width: 100%;
+  min-width: 0; /* allow shrink in flex so overflow-x works */
   overflow-x: auto;
   overflow-y: visible;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior-x: contain;
   scroll-behavior: smooth;
   scrollbar-width: thin;
+  isolation: isolate; /* contain scroll context */
+}
+
+@media (max-width: 768px) {
+  .table-scroll-wrap {
+    width: 100%;
+    max-width: 100%;
+    /* overflow-x: scroll; */
+     /* always show horizontal scrollbar on mobile so users know they can scroll */
+    overflow-y: auto;
+    /* max-height: 65vh; */
+    overscroll-behavior: contain;
+    /* ensure scrollbar is visible and touch-friendly */
+    scrollbar-width: auto;
+    padding-bottom: 2px; /* small gap so horizontal scrollbar isn't flush with content */
+  }
+}
+
+/* taller scrollbar on mobile for touch */
+@media (max-width: 768px) {
+  .table-scroll-wrap::-webkit-scrollbar {
+    height: 8px;
+    width: 8px;
+  }
 }
 
 .table-scroll-wrap::-webkit-scrollbar {
   height: 6px;
+  width: 6px;
 }
 
 .table-scroll-wrap::-webkit-scrollbar-track {

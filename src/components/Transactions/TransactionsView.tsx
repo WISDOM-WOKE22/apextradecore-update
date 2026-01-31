@@ -139,7 +139,7 @@ export function TransactionsView() {
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-        className="overflow-hidden rounded-xl border border-[#e5e7eb] bg-white shadow-sm dark:border-[#2a2a2a] dark:bg-[#1a1a1a]"
+        className="min-w-0 overflow-hidden rounded-xl border border-[#e5e7eb] bg-white shadow-sm dark:border-[#2a2a2a] dark:bg-[#1a1a1a]"
       >
         {error && (
           <div className="border-b border-[#fecaca] bg-[#fef2f2] px-4 py-3 text-sm text-[#b91c1c] dark:border-[#7f1d1d] dark:bg-[#450a0a] dark:text-[#fca5a5]" role="alert">
@@ -160,7 +160,7 @@ export function TransactionsView() {
             <p className="text-sm text-text-secondary dark:text-[#a3a3a3]">Loading transactions…</p>
           </div>
         ) : (
-          <div className="table-scroll-wrap -mx-2 sm:mx-0">
+          <div className="table-scroll-wrap mx-0 sm:-mx-2">
             <table className="w-full min-w-[640px]">
               <thead>
                 <tr className="border-b border-[#e5e7eb] bg-[#f9fafb] dark:border-[#2a2a2a] dark:bg-[#262626]">

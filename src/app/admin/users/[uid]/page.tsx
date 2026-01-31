@@ -253,7 +253,7 @@ export default function AdminUserDetailPage() {
         )}
       </div>
 
-      <div className="rounded-xl border border-[#e5e7eb] bg-white shadow-sm dark:border-[#2a2a2a] dark:bg-[#1a1a1a]">
+      <div className="min-w-0 rounded-xl border border-[#e5e7eb] bg-white shadow-sm dark:border-[#2a2a2a] dark:bg-[#1a1a1a]">
         <div className="flex gap-1 border-b border-[#e5e7eb] p-1 dark:border-[#2a2a2a]">
           {tabs.map((tab) => (
             <button
@@ -272,7 +272,7 @@ export default function AdminUserDetailPage() {
         </div>
 
         <div className="p-3 sm:p-4 lg:p-6">
-          <div className="table-scroll-wrap -mx-1 sm:mx-0">
+          <div className="table-scroll-wrap mx-0 sm:-mx-1">
           {activeTab === "deposits" && (
             <table className="w-full min-w-[480px]">
               <thead>

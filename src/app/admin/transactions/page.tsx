@@ -49,6 +49,7 @@ export default function AdminTransactionsPage() {
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
+      className="min-w-0"
     >
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
@@ -73,7 +74,7 @@ export default function AdminTransactionsPage() {
         </div>
       )}
 
-      <div className="overflow-hidden rounded-xl border border-[#e5e7eb] bg-white shadow-sm dark:border-[#2a2a2a] dark:bg-[#1a1a1a]">
+      <div className="min-w-0 overflow-hidden rounded-xl border border-[#e5e7eb] bg-white shadow-sm dark:border-[#2a2a2a] dark:bg-[#1a1a1a]">
         {loading ? (
           <div className="flex flex-col items-center justify-center gap-3 py-16">
             <div className="h-8 w-8 animate-spin rounded-full border-2 border-accent border-t-transparent" />
@@ -85,7 +86,7 @@ export default function AdminTransactionsPage() {
           </div>
         ) : (
           <>
-            <div className="table-scroll-wrap -mx-2 sm:mx-0">
+            <div className="table-scroll-wrap mx-0 sm:-mx-2">
               <table className="w-full min-w-[720px]">
                 <thead>
                   <tr className="border-b border-[#e5e7eb] bg-[#f9fafb] dark:border-[#2a2a2a] dark:bg-[#262626]">

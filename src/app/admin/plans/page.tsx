@@ -498,7 +498,7 @@ export default function AdminPlansPage() {
                   </form>
                 </section>
 
-                <section className="overflow-hidden rounded-xl border border-[#e5e7eb] bg-white shadow-sm dark:border-[#2a2a2a] dark:bg-[#1a1a1a]">
+                <section className="min-w-0 overflow-hidden rounded-xl border border-[#e5e7eb] bg-white shadow-sm dark:border-[#2a2a2a] dark:bg-[#1a1a1a]">
                   <div className="border-b border-[#e5e7eb] bg-[#f9fafb] px-4 py-3 dark:border-[#2a2a2a] dark:bg-[#262626] sm:px-6">
                     <h2 className="text-lg font-bold text-[#111827] dark:text-[#f5f5f5]">Current plans</h2>
                     <p className="mt-0.5 text-sm text-text-secondary dark:text-[#a3a3a3]">{selectedUser.fullName || selectedUser.email}&apos;s investment plans</p>
@@ -516,7 +516,7 @@ export default function AdminPlansPage() {
                       <p className="mt-1 text-sm text-text-secondary dark:text-[#a3a3a3]">Add a plan using the form above.</p>
                     </div>
                   ) : (
-                    <div className="table-scroll-wrap -mx-2 sm:mx-0">
+                    <div className="table-scroll-wrap mx-0 sm:-mx-2">
                       <table className="w-full min-w-[440px]">
                         <thead>
                           <tr className="border-b border-[#e5e7eb] text-left text-xs font-semibold uppercase tracking-wider text-text-secondary dark:border-[#2a2a2a] dark:bg-[#262626] dark:text-[#a3a3a3]">
@@ -693,7 +693,7 @@ export default function AdminPlansPage() {
               </form>
             </section>
 
-            <section className="overflow-hidden rounded-xl border border-[#e5e7eb] bg-white shadow-sm dark:border-[#2a2a2a] dark:bg-[#1a1a1a]">
+            <section className="min-w-0 overflow-hidden rounded-xl border border-[#e5e7eb] bg-white shadow-sm dark:border-[#2a2a2a] dark:bg-[#1a1a1a]">
               <div className="border-b border-[#e5e7eb] bg-[#f9fafb] px-4 py-3 dark:border-[#2a2a2a] dark:bg-[#262626] sm:px-6">
                 <h2 className="text-lg font-bold text-[#111827] dark:text-[#f5f5f5]">Plan templates</h2>
                 <p className="mt-0.5 text-sm text-text-secondary dark:text-[#a3a3a3]">Drag rows to reorder. Edit or disable plans as needed.</p>
@@ -709,7 +709,7 @@ export default function AdminPlansPage() {
                   <p className="mt-1 text-sm text-text-secondary dark:text-[#a3a3a3]">Create one above. Users will see hardcoded plans until you add templates.</p>
                 </div>
               ) : (
-                <div className="table-scroll-wrap -mx-2 sm:mx-0">
+                <div className="table-scroll-wrap mx-0 sm:-mx-2">
                   <table className="w-full min-w-[520px]">
                     <thead>
                       <tr className="border-b border-[#e5e7eb] text-left text-xs font-semibold uppercase tracking-wider text-text-secondary dark:border-[#2a2a2a] dark:bg-[#262626] dark:text-[#a3a3a3]">
