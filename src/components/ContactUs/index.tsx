@@ -7,12 +7,9 @@ import contactImage from "@/assets/contact.webp"
 
 const HEADLINE =
   "Have any questions? Don't hesitate to reach us.";
-const EMAIL = "info@teslasharehubs.org";
-const PHONE = "+1 (512) 300-7038";
-const ADDRESS = "2138 Main Street Austin, TX 78701";
-
-const CONTACT_IMAGE =
-  "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=720&q=85";
+const EMAIL = process.env.NEXT_PUBLIC_CONTACT_EMAIL;
+const PHONE = process.env.NEXT_PUBLIC_CONTACT_PHONE;
+const ADDRESS = process.env.NEXT_PUBLIC_CONTACT_ADDRESS;
 
 const EnvelopeIcon = () => (
   <svg
@@ -101,25 +98,25 @@ export function ContactUs() {
             {HEADLINE}
           </motion.h2>
           <div className="flex flex-col gap-5">
-            <ContactItem icon={<EnvelopeIcon />} index={0}>
-              <a
-                href={`mailto:${EMAIL}`}
-                className="text-inherit no-underline hover:text-accent"
-              >
-                {EMAIL}
-              </a>
-            </ContactItem>
-            <ContactItem icon={<PhoneIcon />} index={1}>
+            {EMAIL && <ContactItem icon={<EnvelopeIcon />} index={0}>
+                <a
+                  href={`mailto:${EMAIL}`}
+                  className="text-inherit no-underline hover:text-accent"
+                >
+                  {EMAIL}
+                </a>
+              </ContactItem>}
+           {PHONE && <ContactItem icon={<PhoneIcon />} index={1}>
               <a
                 href={`tel:${PHONE.replace(/\s/g, "")}`}
                 className="text-inherit no-underline hover:text-accent"
               >
                 {PHONE}
               </a>
-            </ContactItem>
-            <ContactItem icon={<LocationIcon />} index={2}>
+            </ContactItem>}
+           {ADDRESS && <ContactItem icon={<LocationIcon />} index={2}>
               {ADDRESS}
-            </ContactItem>
+            </ContactItem>}
           </div>
         </div>
       </div>

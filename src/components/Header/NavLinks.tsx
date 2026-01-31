@@ -3,9 +3,8 @@
 import { motion } from "motion/react";
 import Link from "next/link";
 
-const links = [
+export const navLinks = [
   { href: "/", label: "Home" },
-  // { href: "/membership-card", label: "Membership Card" },
   { href: "/invest-now", label: "Invest Now" },
   { href: "/contact", label: "Contact" },
 ];
@@ -14,7 +13,7 @@ export function NavLinks() {
   return (
     <nav aria-label="Main navigation">
       <ul className="flex list-none gap-8">
-        {links.map((link, i) => (
+        {navLinks.map((link, i) => (
           <motion.li
             key={link.href}
             initial={{ opacity: 0, y: -8 }}
