@@ -78,14 +78,14 @@ export function AdminSidebar({ mobileOpen = false, onClose }: AdminSidebarProps)
     <div className="flex h-full flex-col overflow-y-auto px-4 py-6 sm:px-6">
       <div className="mb-6 flex items-center justify-between sm:mb-8">
         <div>
-          <h1 className="text-lg font-bold text-[#111827] sm:text-xl">ApexTradeCore</h1>
+          <h1 className="text-lg font-bold text-[#111827] dark:text-[#f5f5f5] sm:text-xl">ApexTradeCore</h1>
           <p className="text-xs text-text-secondary sm:text-sm">Admin</p>
         </div>
         {onClose && (
           <button
             type="button"
             onClick={onClose}
-            className="rounded-lg p-2 text-text-secondary hover:bg-[#f3f4f6] hover:text-[#111827] lg:hidden"
+            className="rounded-lg p-2 text-text-secondary hover:bg-[#f3f4f6] hover:text-[#111827] dark:hover:bg-[#262626] dark:hover:text-[#f5f5f5] lg:hidden"
             aria-label="Close menu"
           >
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -106,8 +106,8 @@ export function AdminSidebar({ mobileOpen = false, onClose }: AdminSidebarProps)
               onClick={onClose}
               className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors active:scale-[0.98] ${
                 isActive
-                  ? "bg-[#eef2ff] text-accent"
-                  : "text-text-secondary hover:bg-[#f9fafb] hover:text-[#111827]"
+                  ? "bg-[#eef2ff] text-accent dark:bg-accent/20 dark:text-accent"
+                  : "text-text-secondary hover:bg-[#f9fafb] hover:text-[#111827] dark:hover:bg-[#262626] dark:hover:text-[#f5f5f5]"
               }`}
             >
               <NavIcon name={item.icon} />
@@ -121,7 +121,7 @@ export function AdminSidebar({ mobileOpen = false, onClose }: AdminSidebarProps)
 
   return (
     <>
-      <aside className="fixed left-0 top-0 z-30 hidden h-screen w-[260px] border-r border-[#e5e7eb] bg-white lg:block lg:w-[280px]">
+      <aside className="fixed left-0 top-0 z-30 hidden h-screen w-[260px] border-r border-[#e5e7eb] bg-white dark:border-[#2a2a2a] dark:bg-[#0f0f0f] lg:block lg:w-[280px]">
         {navContent}
       </aside>
 
@@ -142,7 +142,7 @@ export function AdminSidebar({ mobileOpen = false, onClose }: AdminSidebarProps)
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
               transition={{ type: "tween", duration: 0.25, ease: "easeOut" }}
-              className="fixed left-0 top-0 z-50 h-screen w-[280px] max-w-[85vw] border-r border-[#e5e7eb] bg-white shadow-xl lg:hidden"
+              className="fixed left-0 top-0 z-50 h-screen w-[280px] max-w-[85vw] border-r border-[#e5e7eb] bg-white shadow-xl dark:border-[#2a2a2a] dark:bg-[#0f0f0f] lg:hidden"
             >
               {navContent}
             </motion.aside>

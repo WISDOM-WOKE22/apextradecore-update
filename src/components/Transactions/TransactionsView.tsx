@@ -143,24 +143,24 @@ export function TransactionsView() {
             <p className="text-sm text-text-secondary">Loading transactions…</p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
+          <div className="table-scroll-wrap -mx-2 sm:mx-0">
             <table className="w-full min-w-[640px]">
               <thead>
                 <tr className="border-b border-[#e5e7eb] bg-[#f9fafb]">
-                  <th className="px-4 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-text-secondary sm:px-6">Type</th>
-                  <th className="px-4 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-text-secondary sm:px-6">Amount</th>
-                  <th className="px-4 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-text-secondary sm:px-6">Date</th>
-                  <th className="px-4 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-text-secondary sm:px-6">Status</th>
-                  <th className="px-4 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-text-secondary sm:px-6">Reference</th>
-                  <th className="px-4 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-text-secondary sm:px-6">Asset</th>
-                  <th className="px-4 py-3.5 text-right text-xs font-semibold uppercase tracking-wider text-text-secondary sm:px-6">Action</th>
+                  <th className="whitespace-nowrap px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-text-secondary sm:px-4 sm:py-3.5 lg:px-6">Type</th>
+                  <th className="whitespace-nowrap px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-text-secondary sm:px-4 sm:py-3.5 lg:px-6">Amount</th>
+                  <th className="whitespace-nowrap px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-text-secondary sm:px-4 sm:py-3.5 lg:px-6">Date</th>
+                  <th className="whitespace-nowrap px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-text-secondary sm:px-4 sm:py-3.5 lg:px-6">Status</th>
+                  <th className="whitespace-nowrap px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-text-secondary sm:px-4 sm:py-3.5 lg:px-6">Reference</th>
+                  <th className="whitespace-nowrap px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-text-secondary sm:px-4 sm:py-3.5 lg:px-6">Asset</th>
+                  <th className="whitespace-nowrap px-3 py-3 text-right text-xs font-semibold uppercase tracking-wider text-text-secondary sm:px-4 sm:py-3.5 lg:px-6">Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#f3f4f6]">
                 <AnimatePresence mode="popLayout">
                   {filtered.length === 0 ? (
                     <tr>
-                      <td colSpan={7} className="px-4 py-12 text-center sm:px-6">
+                      <td colSpan={7} className="px-3 py-12 text-center sm:px-4 sm:py-12 lg:px-6">
                         <p className="text-sm text-text-secondary">No transactions found for this filter.</p>
                         <p className="mt-1 text-xs text-text-secondary">Deposits, withdrawals, investments, and profits will appear here.</p>
                       </td>
@@ -175,12 +175,12 @@ export function TransactionsView() {
                         transition={{ duration: 0.25, delay: i * 0.02, ease: [0.22, 1, 0.36, 1] }}
                         className="group transition-colors hover:bg-[#f9fafb]"
                       >
-                        <td className="px-4 py-3.5 sm:px-6">
+                        <td className="whitespace-nowrap px-3 py-3 sm:px-4 sm:py-3.5 lg:px-6">
                           <span className="text-sm font-medium text-[#111827]">
                             {txTypeLabel(tx.kind)}
                           </span>
                         </td>
-                        <td className="px-4 py-3.5 sm:px-6">
+                        <td className="whitespace-nowrap px-3 py-3 sm:px-4 sm:py-3.5 lg:px-6">
                           <span
                             className={`text-sm font-semibold ${
                               tx.kind === "deposit" || tx.kind === "profit" ? "text-[#059669]" : "text-[#111827]"
@@ -189,17 +189,17 @@ export function TransactionsView() {
                             {formatAmount(tx.amount, tx.kind)}
                           </span>
                         </td>
-                        <td className="px-4 py-3.5 text-sm text-text-secondary sm:px-6">
+                        <td className="whitespace-nowrap px-3 py-3 text-sm text-text-secondary sm:px-4 sm:py-3.5 lg:px-6">
                           {formatDate(tx.dateSortKey)}
                         </td>
-                        <td className="px-4 py-3.5 sm:px-6">
+                        <td className="whitespace-nowrap px-3 py-3 sm:px-4 sm:py-3.5 lg:px-6">
                           <StatusBadge status={tx.status} />
                         </td>
-                        <td className="px-4 py-3.5 font-mono text-xs text-text-secondary sm:px-6">
+                        <td className="whitespace-nowrap px-3 py-3 font-mono text-xs text-text-secondary sm:px-4 sm:py-3.5 lg:px-6">
                           {tx.reference}
                         </td>
-                        <td className="px-4 py-3.5 text-sm text-text-secondary sm:px-6">{tx.asset}</td>
-                        <td className="px-4 py-3.5 text-right sm:px-6">
+                        <td className="whitespace-nowrap px-3 py-3 text-sm text-text-secondary sm:px-4 sm:py-3.5 lg:px-6">{tx.asset}</td>
+                        <td className="whitespace-nowrap px-3 py-3 text-right sm:px-4 sm:py-3.5 lg:px-6">
                           <Link
                             href={txDetailHref(tx)}
                             className="inline-flex items-center gap-1 text-sm font-medium text-accent transition-colors hover:text-[#1552b8]"

@@ -2,6 +2,7 @@
 
 import { motion } from "motion/react";
 import Link from "next/link";
+import { Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { useState, useEffect, useRef } from "react";
 import { useTheme } from "next-themes";
@@ -24,7 +25,7 @@ export function DashboardHeader({ onMenuClick }: DashboardHeaderProps) {
   const [showDepositModal, setShowDepositModal] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const notificationsRef = useRef<HTMLDivElement>(null);
-  const { theme, setTheme } = useTheme();
+  const { resolvedTheme, setTheme } = useTheme();
   const { notifications, unreadCount, loading: notificationsLoading, markAsRead } = useUserNotifications(user?.uid ?? null);
 
   const displayName = user?.fullName || "User";
@@ -53,14 +54,14 @@ export function DashboardHeader({ onMenuClick }: DashboardHeaderProps) {
 
   return (
     <>
-      <header className="sticky top-0 z-40 border-b border-[#e5e7eb] bg-white/95 backdrop-blur-sm">
+      <header className="sticky top-0 z-40 border-b border-[#e5e7eb] bg-white/95 backdrop-blur-sm dark:border-[#2a2a2a] dark:bg-[#0f0f0f]/95">
         <div className="flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-3 sm:gap-4">
             {onMenuClick && (
               <button
                 type="button"
                 onClick={onMenuClick}
-                className="flex h-10 w-10 items-center justify-center rounded-lg text-text-secondary hover:bg-[#f3f4f6] hover:text-[#111827] lg:hidden"
+                className="flex h-10 w-10 items-center justify-center rounded-lg text-text-secondary hover:bg-[#f3f4f6] hover:text-[#111827] dark:hover:bg-[#262626] dark:hover:text-[#f5f5f5] lg:hidden"
                 aria-label="Open menu"
               >
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -70,7 +71,7 @@ export function DashboardHeader({ onMenuClick }: DashboardHeaderProps) {
                 </svg>
               </button>
             )}
-            <h2 className="text-base font-semibold text-[#111827] sm:text-lg">
+            <h2 className="text-base font-semibold text-[#111827] dark:text-[#f5f5f5] sm:text-lg">
               {/* Top Staking Assets */}
             </h2>
           </div>
@@ -79,13 +80,13 @@ export function DashboardHeader({ onMenuClick }: DashboardHeaderProps) {
           <div className="relative" ref={menuRef}>
             <button
               onClick={() => setShowUserMenu(!showUserMenu)}
-              className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-[#111827] hover:bg-[#f9fafb]"
+              className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-[#111827] hover:bg-[#f9fafb] dark:text-[#f5f5f5] dark:hover:bg-[#262626]"
             >
                 <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#eef2ff] text-xs font-semibold text-accent">
                   {initials}
                 </div>
                 <div className="hidden text-left sm:block">
-                  <p className="text-xs font-semibold truncate max-w-[120px]" title={email}>
+                  <p className="text-xs font-semibold truncate max-w-[120px] text-[#111827] dark:text-[#f5f5f5]" title={email}>
                     {email ? `@${email.split("@")[0]}` : "User"}
                   </p>
                   <p className="text-xs text-text-secondary truncate max-w-[120px]">{displayName}</p>
@@ -105,30 +106,48 @@ export function DashboardHeader({ onMenuClick }: DashboardHeaderProps) {
                 <motion.div
                   initial={{ opacity: 0, y: -8 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="absolute right-0 mt-2 w-48 rounded-lg border border-[#e5e7eb] bg-white py-2 shadow-lg"
+                  className="absolute right-0 mt-2 w-48 rounded-lg border border-[#e5e7eb] bg-white py-2 shadow-lg dark:border-[#2a2a2a] dark:bg-[#1a1a1a]"
                 >
-                  <div>
-                    <button onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
-                    {theme === "dark" ? "Light" : "Dark"} Theme</button>
-                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
+                    className="flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm font-medium text-[#111827] hover:bg-[#f9fafb] dark:text-[#f5f5f5] dark:hover:bg-[#262626]"
+                  >
+                    {resolvedTheme === "dark" ? (
+                      <>
+                        <Sun className="h-4 w-4 shrink-0" />
+                        Light mode
+                      </>
+                    ) : resolvedTheme === "light" ? (
+                      <>
+                        <Moon className="h-4 w-4 shrink-0" />
+                        Dark mode
+                      </>
+                    ) : (
+                      <>
+                        <span className="h-4 w-4 shrink-0" aria-hidden />
+                        Theme
+                      </>
+                    )}
+                  </button>
                   <a
                     href="/dashboard/profile"
-                    className="block px-4 py-2 text-sm text-[#111827] hover:bg-[#f9fafb]"
+                    className="block px-4 py-2 text-sm text-[#111827] hover:bg-[#f9fafb] dark:text-[#f5f5f5] dark:hover:bg-[#262626]"
                   >
                     Profile
                   </a>
                   <a
                     href="/dashboard/settings"
-                    className="block px-4 py-2 text-sm text-[#111827] hover:bg-[#f9fafb]"
+                    className="block px-4 py-2 text-sm text-[#111827] hover:bg-[#f9fafb] dark:text-[#f5f5f5] dark:hover:bg-[#262626]"
                   >
                     Settings
                   </a>
-                  <hr className="my-2 border-[#e5e7eb]" />
+                  <hr className="my-2 border-[#e5e7eb] dark:border-[#2a2a2a]" />
                   <button
                     type="button"
                     onClick={handleLogout}
                     disabled={logoutLoading}
-                    className="block w-full px-4 py-2 text-left text-sm text-[#ef4444] hover:bg-[#f9fafb] disabled:opacity-70"
+                    className="block w-full px-4 py-2 text-left text-sm text-[#ef4444] hover:bg-[#f9fafb] dark:hover:bg-[#262626] disabled:opacity-70"
                   >
                     {logoutLoading ? "Signing out..." : "Sign out"}
                   </button>
@@ -157,12 +176,12 @@ export function DashboardHeader({ onMenuClick }: DashboardHeaderProps) {
                 <motion.div
                   initial={{ opacity: 0, y: -8 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="absolute right-0 mt-2 w-[320px] max-h-[400px] overflow-hidden rounded-lg border border-[#e5e7eb] bg-white shadow-lg flex flex-col"
+                  className="absolute right-0 mt-2 w-[320px] max-h-[400px] overflow-hidden rounded-lg border border-[#e5e7eb] bg-white shadow-lg flex flex-col dark:border-[#2a2a2a] dark:bg-[#1a1a1a]"
                 >
-                  <div className="flex items-center justify-between border-b border-[#e5e7eb] px-4 py-3">
-                    <h3 className="text-sm font-semibold text-[#111827]">Notifications</h3>
+                  <div className="flex items-center justify-between border-b border-[#e5e7eb] dark:border-[#2a2a2a] px-4 py-3">
+                    <h3 className="text-sm font-semibold text-[#111827] dark:text-[#f5f5f5]">Notifications</h3>
                     {unreadCount > 0 && (
-                      <span className="text-xs text-text-secondary">{unreadCount} unread</span>
+                      <span className="text-xs text-text-secondary dark:text-[#a3a3a3]">{unreadCount} unread</span>
                     )}
                   </div>
                   <div className="overflow-y-auto max-h-[320px]">
@@ -171,7 +190,7 @@ export function DashboardHeader({ onMenuClick }: DashboardHeaderProps) {
                         <div className="h-6 w-6 animate-spin rounded-full border-2 border-accent border-t-transparent" />
                       </div>
                     ) : notifications.length === 0 ? (
-                      <p className="px-4 py-6 text-center text-sm text-text-secondary">No notifications yet</p>
+                      <p className="px-4 py-6 text-center text-sm text-text-secondary dark:text-[#a3a3a3]">No notifications yet</p>
                     ) : (
                       notifications.slice(0, 8).map((n) => (
                         <NotificationItem
@@ -187,11 +206,11 @@ export function DashboardHeader({ onMenuClick }: DashboardHeaderProps) {
                     )}
                   </div>
                   {notifications.length > 0 && (
-                    <div className="border-t border-[#e5e7eb] p-2">
+                    <div className="border-t border-[#e5e7eb] dark:border-[#2a2a2a] p-2">
                       <Link
                         href="/dashboard/notifications"
                         onClick={() => setShowNotifications(false)}
-                        className="block rounded-lg py-2 text-center text-sm font-medium text-accent hover:bg-[#eef2ff]"
+                        className="block rounded-lg py-2 text-center text-sm font-medium text-accent hover:bg-[#eef2ff] dark:hover:bg-accent/20"
                       >
                         View all notifications
                       </Link>
@@ -237,14 +256,14 @@ function NotificationItem({
     <button
       type="button"
       onClick={onSelect}
-      className={`w-full px-4 py-3 text-left hover:bg-[#f9fafb] border-b border-[#f3f4f6] last:border-b-0 ${!notification.read ? "bg-[#eef2ff]/50" : ""}`}
+      className={`w-full px-4 py-3 text-left hover:bg-[#f9fafb] dark:hover:bg-[#262626] border-b border-[#f3f4f6] dark:border-[#2a2a2a] last:border-b-0 ${!notification.read ? "bg-[#eef2ff]/50 dark:bg-accent/10" : ""}`}
     >
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0 flex-1">
-          <p className="text-sm font-medium text-[#111827] truncate">{notification.title}</p>
+          <p className="text-sm font-medium text-[#111827] dark:text-[#f5f5f5] truncate">{notification.title}</p>
           <p className="text-xs text-text-secondary line-clamp-2 mt-0.5">{notification.body}</p>
         </div>
-        <span className="text-[10px] text-text-secondary shrink-0 whitespace-nowrap">
+        <span className="text-[10px] text-text-secondary dark:text-[#a3a3a3] shrink-0 whitespace-nowrap">
           {formatNotificationDate(notification.createdAt)}
         </span>
       </div>

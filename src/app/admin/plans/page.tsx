@@ -516,29 +516,29 @@ export default function AdminPlansPage() {
                       <p className="mt-1 text-sm text-text-secondary">Add a plan using the form above.</p>
                     </div>
                   ) : (
-                    <div className="overflow-x-auto">
-                      <table className="w-full min-w-[480px]">
+                    <div className="table-scroll-wrap -mx-2 sm:mx-0">
+                      <table className="w-full min-w-[440px]">
                         <thead>
                           <tr className="border-b border-[#e5e7eb] text-left text-xs font-semibold uppercase tracking-wider text-text-secondary">
-                            <th className="px-4 py-3.5 sm:px-6">Plan</th>
-                            <th className="px-4 py-3.5 sm:px-6">Amount</th>
-                            <th className="px-4 py-3.5 sm:px-6">Profit</th>
-                            <th className="px-4 py-3.5 sm:px-6">Date</th>
-                            <th className="px-4 py-3.5 text-right sm:px-6">Actions</th>
+                            <th className="whitespace-nowrap px-3 py-3 sm:px-4 sm:py-3.5 lg:px-6">Plan</th>
+                            <th className="whitespace-nowrap px-3 py-3 sm:px-4 sm:py-3.5 lg:px-6">Amount</th>
+                            <th className="whitespace-nowrap px-3 py-3 sm:px-4 sm:py-3.5 lg:px-6">Profit</th>
+                            <th className="whitespace-nowrap px-3 py-3 sm:px-4 sm:py-3.5 lg:px-6">Date</th>
+                            <th className="whitespace-nowrap px-3 py-3 text-right sm:px-4 sm:py-3.5 lg:px-6">Actions</th>
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-[#f3f4f6]">
                           {plans.map((plan) => (
                             <tr key={plan.id} className="transition-colors hover:bg-[#fafafa]">
-                              <td className="px-4 py-3.5 font-medium text-[#111827] sm:px-6">{plan.planName}</td>
-                              <td className="px-4 py-3.5 text-sm text-[#111827] sm:px-6">${plan.amount}</td>
-                              <td className="px-4 py-3.5 text-sm sm:px-6">
+                              <td className="whitespace-nowrap px-3 py-3 font-medium text-[#111827] sm:px-4 sm:py-3.5 lg:px-6">{plan.planName}</td>
+                              <td className="whitespace-nowrap px-3 py-3 text-sm text-[#111827] sm:px-4 sm:py-3.5 lg:px-6">${plan.amount}</td>
+                              <td className="whitespace-nowrap px-3 py-3 text-sm sm:px-4 sm:py-3.5 lg:px-6">
                                 <span className="font-medium text-[#059669]">
                                   ${(plan.totalProfit ?? 0).toLocaleString("en-US", { minimumFractionDigits: 2 })}
                                 </span>
                               </td>
-                              <td className="px-4 py-3.5 text-sm text-text-secondary sm:px-6">{formatDate(plan.date, plan.dateSortKey)}</td>
-                              <td className="px-4 py-3.5 text-right sm:px-6">
+                              <td className="whitespace-nowrap px-3 py-3 text-sm text-text-secondary sm:px-4 sm:py-3.5 lg:px-6">{formatDate(plan.date, plan.dateSortKey)}</td>
+                              <td className="whitespace-nowrap px-3 py-3 text-right sm:px-4 sm:py-3.5 lg:px-6">
                                 {deleteConfirmId === plan.id ? (
                                   <span className="flex items-center justify-end gap-2">
                                     <span className="text-xs text-[#6b7280]">Delete?</span>
@@ -709,17 +709,17 @@ export default function AdminPlansPage() {
                   <p className="mt-1 text-sm text-text-secondary">Create one above. Users will see hardcoded plans until you add templates.</p>
                 </div>
               ) : (
-                <div className="overflow-x-auto">
+                <div className="table-scroll-wrap -mx-2 sm:mx-0">
                   <table className="w-full min-w-[520px]">
                     <thead>
                       <tr className="border-b border-[#e5e7eb] text-left text-xs font-semibold uppercase tracking-wider text-text-secondary">
-                        <th className="w-10 px-2 py-3.5 sm:px-3" aria-label="Drag to reorder" />
-                        <th className="px-4 py-3.5 sm:px-6">Name</th>
-                        <th className="px-4 py-3.5 sm:px-6">Min amount</th>
-                        <th className="px-4 py-3.5 sm:px-6">Expected return</th>
-                        <th className="px-4 py-3.5 sm:px-6">Return in</th>
-                        <th className="px-4 py-3.5 sm:px-6">Status</th>
-                        <th className="px-4 py-3.5 text-right sm:px-6">Actions</th>
+                        <th className="w-10 shrink-0 px-2 py-3 sm:px-3" aria-label="Drag to reorder" />
+                        <th className="whitespace-nowrap px-3 py-3 sm:px-4 sm:py-3.5 lg:px-6">Name</th>
+                        <th className="whitespace-nowrap px-3 py-3 sm:px-4 sm:py-3.5 lg:px-6">Min amount</th>
+                        <th className="whitespace-nowrap px-3 py-3 sm:px-4 sm:py-3.5 lg:px-6">Expected return</th>
+                        <th className="whitespace-nowrap px-3 py-3 sm:px-4 sm:py-3.5 lg:px-6">Return in</th>
+                        <th className="whitespace-nowrap px-3 py-3 sm:px-4 sm:py-3.5 lg:px-6">Status</th>
+                        <th className="whitespace-nowrap px-3 py-3 text-right sm:px-4 sm:py-3.5 lg:px-6">Actions</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-[#f3f4f6]">
@@ -735,7 +735,7 @@ export default function AdminPlansPage() {
                           className={`cursor-grab active:cursor-grabbing transition-colors hover:bg-[#fafafa] ${t.disabled ? "opacity-60" : ""} ${draggedTemplateId === t.id ? "opacity-50" : ""} ${dropTargetIndex === index ? "bg-[#eef2ff] ring-1 ring-inset ring-accent/30" : ""}`}
                         >
                           <td
-                            className="px-2 py-3.5 sm:px-3 text-text-secondary"
+                            className="w-10 shrink-0 px-2 py-3 text-text-secondary sm:px-3"
                             onClick={(e) => e.stopPropagation()}
                           >
                             <span className="inline-flex cursor-grab active:cursor-grabbing touch-none" aria-hidden>
@@ -745,24 +745,24 @@ export default function AdminPlansPage() {
                               </svg>
                             </span>
                           </td>
-                          <td className="px-4 py-3.5 font-medium text-[#111827] sm:px-6">{t.name}</td>
-                          <td className="px-4 py-3.5 text-sm text-[#111827] sm:px-6">${t.minAmount.toLocaleString("en-US", { minimumFractionDigits: 2 })}</td>
-                          <td className="px-4 py-3.5 text-sm text-[#111827] sm:px-6">
+                          <td className="whitespace-nowrap px-3 py-3 font-medium text-[#111827] sm:px-4 sm:py-3.5 lg:px-6">{t.name}</td>
+                          <td className="whitespace-nowrap px-3 py-3 text-sm text-[#111827] sm:px-4 sm:py-3.5 lg:px-6">${t.minAmount.toLocaleString("en-US", { minimumFractionDigits: 2 })}</td>
+                          <td className="whitespace-nowrap px-3 py-3 text-sm text-[#111827] sm:px-4 sm:py-3.5 lg:px-6">
                             {t.expectedReturn > 0 && t.minAmount > 0
                               ? `$${t.expectedReturn.toLocaleString("en-US", { minimumFractionDigits: 2 })} (${Math.round((t.expectedReturn / t.minAmount) * 100)}%)`
                               : t.expectedReturn > 0
                                 ? `$${t.expectedReturn.toLocaleString("en-US", { minimumFractionDigits: 2 })}`
                                 : "—"}
                           </td>
-                          <td className="px-4 py-3.5 text-sm text-[#111827] sm:px-6">
+                          <td className="whitespace-nowrap px-3 py-3 text-sm text-[#111827] sm:px-4 sm:py-3.5 lg:px-6">
                             {t.returnDays > 0 ? `${t.returnDays} day${t.returnDays === 1 ? "" : "s"}` : "—"}
                           </td>
-                          <td className="px-4 py-3.5 sm:px-6">
+                          <td className="whitespace-nowrap px-3 py-3 sm:px-4 sm:py-3.5 lg:px-6">
                             <span className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium ${t.disabled ? "bg-[#fef3c7] text-[#b45309]" : "bg-[#d1fae5] text-[#059669]"}`}>
                               {t.disabled ? "Disabled" : "Active"}
                             </span>
                           </td>
-                          <td className="px-4 py-3.5 text-right sm:px-6">
+                          <td className="whitespace-nowrap px-3 py-3 text-right sm:px-4 sm:py-3.5 lg:px-6">
                             {deleteTemplateId === t.id ? (
                               <span className="flex items-center justify-end gap-2">
                                 <span className="text-xs text-[#6b7280]">Delete template?</span>

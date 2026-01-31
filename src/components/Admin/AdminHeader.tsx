@@ -41,14 +41,14 @@ export function AdminHeader({ onMenuClick }: AdminHeaderProps) {
   }, [showUserMenu]);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-[#e5e7eb] bg-white/95 backdrop-blur-sm">
+    <header className="sticky top-0 z-40 border-b border-[#e5e7eb] bg-white/95 backdrop-blur-sm dark:border-[#2a2a2a] dark:bg-[#0f0f0f]/95">
       <div className="flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
         <div className="flex items-center gap-3 sm:gap-4">
           {onMenuClick && (
             <button
               type="button"
               onClick={onMenuClick}
-              className="flex h-10 w-10 items-center justify-center rounded-lg text-text-secondary hover:bg-[#f3f4f6] hover:text-[#111827] lg:hidden"
+              className="flex h-10 w-10 items-center justify-center rounded-lg text-text-secondary hover:bg-[#f3f4f6] hover:text-[#111827] dark:hover:bg-[#262626] dark:hover:text-[#f5f5f5] lg:hidden"
               aria-label="Open menu"
             >
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -58,32 +58,32 @@ export function AdminHeader({ onMenuClick }: AdminHeaderProps) {
               </svg>
             </button>
           )}
-          <h2 className="text-base font-semibold text-[#111827] sm:text-lg">Admin</h2>
+          <h2 className="text-base font-semibold text-[#111827] dark:text-[#f5f5f5] sm:text-lg">Admin</h2>
         </div>
 
         <div className="relative" ref={menuRef}>
           <button
             type="button"
             onClick={() => setShowUserMenu((v) => !v)}
-            className="flex items-center gap-2 rounded-lg px-2 py-1.5 text-left text-sm hover:bg-[#f9fafb]"
+            className="flex items-center gap-2 rounded-lg px-2 py-1.5 text-left text-sm hover:bg-[#f9fafb] dark:hover:bg-[#262626]"
             aria-expanded={showUserMenu}
             aria-haspopup="true"
           >
             <span className="flex h-8 w-8 items-center justify-center rounded-full bg-accent/20 text-sm font-medium text-accent">
               {initials}
             </span>
-            <span className="hidden text-[#111827] sm:inline">{displayName}</span>
+            <span className="hidden text-[#111827] dark:text-[#f5f5f5] sm:inline">{displayName}</span>
           </button>
           {showUserMenu && (
-            <div className="absolute right-0 top-full z-50 mt-1 w-48 rounded-lg border border-[#e5e7eb] bg-white py-1 shadow-lg">
-              <div className="border-b border-[#e5e7eb] px-3 py-2 text-xs text-text-secondary">
+            <div className="absolute right-0 top-full z-50 mt-1 w-48 rounded-lg border border-[#e5e7eb] bg-white py-1 shadow-lg dark:border-[#2a2a2a] dark:bg-[#1a1a1a]">
+              <div className="border-b border-[#e5e7eb] dark:border-[#2a2a2a] px-3 py-2 text-xs text-text-secondary">
                 {user?.email}
               </div>
               <button
                 type="button"
                 onClick={handleLogout}
                 disabled={logoutLoading}
-                className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-[#111827] hover:bg-[#f9fafb] disabled:opacity-60"
+                className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-[#111827] hover:bg-[#f9fafb] dark:text-[#f5f5f5] dark:hover:bg-[#262626] disabled:opacity-60"
               >
                 Sign out
               </button>

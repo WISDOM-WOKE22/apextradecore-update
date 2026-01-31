@@ -30,7 +30,7 @@ export function UserAreaGuard({ children }: { children: React.ReactNode }) {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#f9fafb]">
+      <div className="flex min-h-screen items-center justify-center bg-[#f9fafb] dark:bg-[#0f0f0f]">
         <div className="h-10 w-10 animate-spin rounded-full border-2 border-accent border-t-transparent" />
       </div>
     );

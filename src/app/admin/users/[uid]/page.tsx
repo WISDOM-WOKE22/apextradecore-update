@@ -271,16 +271,17 @@ export default function AdminUserDetailPage() {
           ))}
         </div>
 
-        <div className="overflow-x-auto p-4 sm:p-6">
+        <div className="p-3 sm:p-4 lg:p-6">
+          <div className="table-scroll-wrap -mx-1 sm:mx-0">
           {activeTab === "deposits" && (
-            <table className="w-full min-w-[520px]">
+            <table className="w-full min-w-[480px]">
               <thead>
                 <tr className="border-b border-[#e5e7eb] text-left text-xs font-semibold uppercase text-text-secondary">
-                  <th className="pb-2">Date</th>
-                  <th className="pb-2">Amount</th>
-                  <th className="pb-2">Status</th>
-                  <th className="pb-2">Payment method</th>
-                  <th className="pb-2 text-right">Action</th>
+                  <th className="whitespace-nowrap px-3 py-2.5 sm:px-4">Date</th>
+                  <th className="whitespace-nowrap px-3 py-2.5 sm:px-4">Amount</th>
+                  <th className="whitespace-nowrap px-3 py-2.5 sm:px-4">Status</th>
+                  <th className="whitespace-nowrap px-3 py-2.5 sm:px-4">Payment method</th>
+                  <th className="whitespace-nowrap px-3 py-2.5 text-right sm:px-4">Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#f3f4f6]">
@@ -293,15 +294,15 @@ export default function AdminUserDetailPage() {
                 ) : (
                   deposits.map((d) => (
                     <tr key={d.id}>
-                      <td className="py-2.5 text-sm text-[#111827]">{d.date}</td>
-                      <td className="py-2.5 font-medium text-[#111827]">
+                      <td className="whitespace-nowrap px-3 py-2.5 text-sm text-[#111827] sm:px-4">{d.date}</td>
+                      <td className="whitespace-nowrap px-3 py-2.5 font-medium text-[#111827] sm:px-4">
                         ${d.amountStr}
                       </td>
-                      <td className="py-2.5">
+                      <td className="whitespace-nowrap px-3 py-2.5 sm:px-4">
                         <StatusBadge status={d.status} />
                       </td>
-                      <td className="py-2.5 text-sm text-text-secondary">{d.paymentMethod}</td>
-                      <td className="py-2.5 text-right">
+                      <td className="whitespace-nowrap px-3 py-2.5 text-sm text-text-secondary sm:px-4">{d.paymentMethod}</td>
+                      <td className="whitespace-nowrap px-3 py-2.5 text-right sm:px-4">
                         <Link
                           href={`/admin/transactions/deposit/${encodeURIComponent(profile.uid)}/${encodeURIComponent(d.id)}`}
                           className="text-sm font-medium text-accent hover:underline"
@@ -317,14 +318,14 @@ export default function AdminUserDetailPage() {
           )}
 
           {activeTab === "withdrawals" && (
-            <table className="w-full min-w-[520px]">
+            <table className="w-full min-w-[480px]">
               <thead>
                 <tr className="border-b border-[#e5e7eb] text-left text-xs font-semibold uppercase text-text-secondary">
-                  <th className="pb-2">Date</th>
-                  <th className="pb-2">Amount</th>
-                  <th className="pb-2">Status</th>
-                  <th className="pb-2">Mode</th>
-                  <th className="pb-2 text-right">Action</th>
+                  <th className="whitespace-nowrap px-3 py-2.5 sm:px-4">Date</th>
+                  <th className="whitespace-nowrap px-3 py-2.5 sm:px-4">Amount</th>
+                  <th className="whitespace-nowrap px-3 py-2.5 sm:px-4">Status</th>
+                  <th className="whitespace-nowrap px-3 py-2.5 sm:px-4">Mode</th>
+                  <th className="whitespace-nowrap px-3 py-2.5 text-right sm:px-4">Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#f3f4f6]">
@@ -337,15 +338,15 @@ export default function AdminUserDetailPage() {
                 ) : (
                   withdrawals.map((w) => (
                     <tr key={w.id}>
-                      <td className="py-2.5 text-sm text-[#111827]">{w.date}</td>
-                      <td className="py-2.5 font-medium text-[#111827]">
+                      <td className="whitespace-nowrap px-3 py-2.5 text-sm text-[#111827] sm:px-4">{w.date}</td>
+                      <td className="whitespace-nowrap px-3 py-2.5 font-medium text-[#111827] sm:px-4">
                         ${w.amountStr}
                       </td>
-                      <td className="py-2.5">
+                      <td className="whitespace-nowrap px-3 py-2.5 sm:px-4">
                         <StatusBadge status={w.status} />
                       </td>
-                      <td className="py-2.5 text-sm text-text-secondary">{w.withdrawalMode}</td>
-                      <td className="py-2.5 text-right">
+                      <td className="whitespace-nowrap px-3 py-2.5 text-sm text-text-secondary sm:px-4">{w.withdrawalMode}</td>
+                      <td className="whitespace-nowrap px-3 py-2.5 text-right sm:px-4">
                         <Link
                           href={`/admin/transactions/withdrawal/${encodeURIComponent(profile.uid)}/${encodeURIComponent(w.id)}`}
                           className="text-sm font-medium text-accent hover:underline"
@@ -361,13 +362,13 @@ export default function AdminUserDetailPage() {
           )}
 
           {activeTab === "investments" && (
-            <table className="w-full min-w-[520px]">
+            <table className="w-full min-w-[480px]">
               <thead>
                 <tr className="border-b border-[#e5e7eb] text-left text-xs font-semibold uppercase text-text-secondary">
-                  <th className="pb-2">Date</th>
-                  <th className="pb-2">Amount</th>
-                  <th className="pb-2">Plan</th>
-                  <th className="pb-2 text-right">Action</th>
+                  <th className="whitespace-nowrap px-3 py-2.5 sm:px-4">Date</th>
+                  <th className="whitespace-nowrap px-3 py-2.5 sm:px-4">Amount</th>
+                  <th className="whitespace-nowrap px-3 py-2.5 sm:px-4">Plan</th>
+                  <th className="whitespace-nowrap px-3 py-2.5 text-right sm:px-4">Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#f3f4f6]">
@@ -380,12 +381,12 @@ export default function AdminUserDetailPage() {
                 ) : (
                   investments.map((inv) => (
                     <tr key={inv.id}>
-                      <td className="py-2.5 text-sm text-[#111827]">{inv.date}</td>
-                      <td className="py-2.5 font-medium text-[#111827]">
+                      <td className="whitespace-nowrap px-3 py-2.5 text-sm text-[#111827] sm:px-4">{inv.date}</td>
+                      <td className="whitespace-nowrap px-3 py-2.5 font-medium text-[#111827] sm:px-4">
                         ${inv.amountStr}
                       </td>
-                      <td className="py-2.5 text-sm text-text-secondary">{inv.planName}</td>
-                      <td className="py-2.5 text-right">
+                      <td className="whitespace-nowrap px-3 py-2.5 text-sm text-text-secondary sm:px-4">{inv.planName}</td>
+                      <td className="whitespace-nowrap px-3 py-2.5 text-right sm:px-4">
                         <Link
                           href={`/admin/transactions/investment/${encodeURIComponent(profile.uid)}/${encodeURIComponent(inv.id)}`}
                           className="text-sm font-medium text-accent hover:underline"
@@ -399,6 +400,7 @@ export default function AdminUserDetailPage() {
               </tbody>
             </table>
           )}
+          </div>
         </div>
       </div>
     </motion.div>

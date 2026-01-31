@@ -110,25 +110,17 @@ export default function AdminUsersPage() {
           </div>
         ) : (
           <>
-            <div className="overflow-x-auto">
-              <table className="w-full min-w-[720px]">
+            <div className="table-scroll-wrap -mx-2 sm:mx-0">
+              <table className="w-full min-w-[640px]">
                 <thead>
                   <tr className="border-b border-[#e5e7eb] bg-[#f9fafb]">
-                    <th className="px-4 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-text-secondary sm:px-6">
+                    <th className="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-text-secondary sm:px-4 sm:py-3.5 lg:px-6">
                       Name
                     </th>
-                    <th className="px-4 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-text-secondary sm:px-6">
-                      Email
-                    </th>
-                    <th className="px-4 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-text-secondary sm:px-6">
-                      Country
-                    </th>
-                    <th className="px-4 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-text-secondary sm:px-6">
-                      Joined
-                    </th>
-                    <th className="px-4 py-3.5 text-right text-xs font-semibold uppercase tracking-wider text-text-secondary sm:px-6">
-                      Action
-                    </th>
+                    <th className="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-text-secondary sm:px-4 sm:py-3.5 lg:px-6">Email</th>
+                    <th className="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-text-secondary sm:px-4 sm:py-3.5 lg:px-6">Country</th>
+                    <th className="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-text-secondary sm:px-4 sm:py-3.5 lg:px-6">Joined</th>
+                    <th className="px-3 py-3 text-right text-xs font-semibold uppercase tracking-wider text-text-secondary sm:px-4 sm:py-3.5 lg:px-6">Action</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#f3f4f6]">
@@ -137,21 +129,13 @@ export default function AdminUsersPage() {
                     key={user.uid}
                     className="transition-colors hover:bg-[#f9fafb]"
                   >
-                    <td className="px-4 py-3.5 sm:px-6">
-                      <span className="font-medium text-[#111827]">
-                        {user.fullName || "—"}
-                      </span>
+                    <td className="whitespace-nowrap px-3 py-3 text-sm sm:px-4 sm:py-3.5 lg:px-6">
+                      <span className="font-medium text-[#111827]">{user.fullName || "—"}</span>
                     </td>
-                    <td className="px-4 py-3.5 text-sm text-text-secondary sm:px-6">
-                      {user.email || "—"}
-                    </td>
-                    <td className="px-4 py-3.5 text-sm text-text-secondary sm:px-6">
-                      {user.country || "—"}
-                    </td>
-                    <td className="px-4 py-3.5 text-sm text-text-secondary sm:px-6">
-                      {user.date || "—"}
-                    </td>
-                    <td className="px-4 py-3.5 text-right sm:px-6">
+                    <td className="whitespace-nowrap px-3 py-3 text-sm text-text-secondary sm:px-4 sm:py-3.5 lg:px-6">{user.email || "—"}</td>
+                    <td className="whitespace-nowrap px-3 py-3 text-sm text-text-secondary sm:px-4 sm:py-3.5 lg:px-6">{user.country || "—"}</td>
+                    <td className="whitespace-nowrap px-3 py-3 text-sm text-text-secondary sm:px-4 sm:py-3.5 lg:px-6">{user.date || "—"}</td>
+                    <td className="whitespace-nowrap px-3 py-3 text-right sm:px-4 sm:py-3.5 lg:px-6">
                       <Link
                         href={`/admin/users/${encodeURIComponent(user.uid)}`}
                         className="inline-flex items-center gap-1 text-sm font-medium text-accent transition-colors hover:text-[#1552b8]"
@@ -168,7 +152,7 @@ export default function AdminUsersPage() {
               </table>
             </div>
             {totalPages > 1 && (
-              <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[#e5e7eb] bg-[#f9fafb] px-4 py-3 sm:px-6">
+              <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[#e5e7eb] bg-[#f9fafb] px-3 py-3 sm:px-4 lg:px-6">
                 <p className="text-sm text-text-secondary">
                   Showing {(pageIndex - 1) * PAGE_SIZE + 1}–{Math.min(pageIndex * PAGE_SIZE, filteredUsers.length)} of {filteredUsers.length}
                 </p>

@@ -85,26 +85,26 @@ export default function AdminTransactionsPage() {
           </div>
         ) : (
           <>
-            <div className="overflow-x-auto">
+            <div className="table-scroll-wrap -mx-2 sm:mx-0">
               <table className="w-full min-w-[720px]">
                 <thead>
                   <tr className="border-b border-[#e5e7eb] bg-[#f9fafb]">
-                    <th className="px-4 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-text-secondary sm:px-6">
+                    <th className="whitespace-nowrap px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-text-secondary sm:px-4 sm:py-3.5 lg:px-6">
                       Type
                     </th>
-                    <th className="px-4 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-text-secondary sm:px-6">
+                    <th className="whitespace-nowrap px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-text-secondary sm:px-4 sm:py-3.5 lg:px-6">
                       User
                     </th>
-                    <th className="px-4 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-text-secondary sm:px-6">
+                    <th className="whitespace-nowrap px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-text-secondary sm:px-4 sm:py-3.5 lg:px-6">
                       Amount
                     </th>
-                    <th className="px-4 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-text-secondary sm:px-6">
+                    <th className="whitespace-nowrap px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-text-secondary sm:px-4 sm:py-3.5 lg:px-6">
                       Date
                     </th>
-                    <th className="px-4 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-text-secondary sm:px-6">
+                    <th className="whitespace-nowrap px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-text-secondary sm:px-4 sm:py-3.5 lg:px-6">
                       Status
                     </th>
-                    <th className="px-4 py-3.5 text-right text-xs font-semibold uppercase tracking-wider text-text-secondary sm:px-6">
+                    <th className="whitespace-nowrap px-3 py-3 text-right text-xs font-semibold uppercase tracking-wider text-text-secondary sm:px-4 sm:py-3.5 lg:px-6">
                       Action
                     </th>
                   </tr>
@@ -112,25 +112,25 @@ export default function AdminTransactionsPage() {
                 <tbody className="divide-y divide-[#f3f4f6]">
                   {paginatedTransactions.map((tx) => (
                   <tr key={`${tx.kind}-${tx.userId}-${tx.id}`} className="transition-colors hover:bg-[#f9fafb]">
-                    <td className="px-4 py-3.5 sm:px-6">
+                    <td className="whitespace-nowrap px-3 py-3 sm:px-4 sm:py-3.5 lg:px-6">
                       <span className="font-medium text-[#111827]">{kindLabel(tx.kind)}</span>
                     </td>
-                    <td className="px-4 py-3.5 sm:px-6">
-                      <div>
-                        <p className="font-medium text-[#111827]">{tx.userFullName || "—"}</p>
-                        <p className="text-xs text-text-secondary">{tx.userEmail || "—"}</p>
+                    <td className="min-w-0 px-3 py-3 sm:px-4 sm:py-3.5 lg:px-6">
+                      <div className="min-w-0">
+                        <p className="truncate font-medium text-[#111827]">{tx.userFullName || "—"}</p>
+                        <p className="truncate text-xs text-text-secondary">{tx.userEmail || "—"}</p>
                       </div>
                     </td>
-                    <td className="px-4 py-3.5 font-medium text-[#111827] sm:px-6">
+                    <td className="whitespace-nowrap px-3 py-3 font-medium text-[#111827] sm:px-4 sm:py-3.5 lg:px-6">
                       ${tx.amountStr}
                     </td>
-                    <td className="px-4 py-3.5 text-sm text-text-secondary sm:px-6">
+                    <td className="whitespace-nowrap px-3 py-3 text-sm text-text-secondary sm:px-4 sm:py-3.5 lg:px-6">
                       {tx.date}
                     </td>
-                    <td className="px-4 py-3.5 sm:px-6">
+                    <td className="whitespace-nowrap px-3 py-3 sm:px-4 sm:py-3.5 lg:px-6">
                       <StatusBadge status={tx.status} />
                     </td>
-                    <td className="px-4 py-3.5 text-right sm:px-6">
+                    <td className="whitespace-nowrap px-3 py-3 text-right sm:px-4 sm:py-3.5 lg:px-6">
                       <Link
                         href={`/admin/transactions/${tx.kind}/${encodeURIComponent(tx.userId)}/${encodeURIComponent(tx.id)}`}
                         className="inline-flex items-center gap-1 text-sm font-medium text-accent transition-colors hover:text-[#1552b8]"

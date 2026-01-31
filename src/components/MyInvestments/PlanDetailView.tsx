@@ -157,13 +157,13 @@ export function PlanDetailView({ plan, userId }: PlanDetailViewProps) {
             No transactions yet. Investment and profit credits will appear here.
           </div>
         ) : viewMode === "table" ? (
-          <div className="overflow-x-auto">
+          <div className="table-scroll-wrap -mx-2 sm:mx-0">
             <table className="w-full min-w-[400px]">
               <thead>
                 <tr className="border-b border-[#e5e7eb] bg-[#f9fafb] text-left text-xs font-semibold uppercase tracking-wider text-text-secondary">
-                  <th className="px-4 py-3.5 sm:px-6">Date</th>
-                  <th className="px-4 py-3.5 sm:px-6">Type</th>
-                  <th className="px-4 py-3.5 text-right sm:px-6">Amount</th>
+                  <th className="whitespace-nowrap px-3 py-3 sm:px-4 sm:py-3.5 lg:px-6">Date</th>
+                  <th className="whitespace-nowrap px-3 py-3 sm:px-4 sm:py-3.5 lg:px-6">Type</th>
+                  <th className="whitespace-nowrap px-3 py-3 text-right sm:px-4 sm:py-3.5 lg:px-6">Amount</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#f3f4f6]">
@@ -176,10 +176,10 @@ export function PlanDetailView({ plan, userId }: PlanDetailViewProps) {
                       transition={{ duration: 0.25, delay: 0.02 * i }}
                       className="transition-colors hover:bg-[#fafafa]"
                     >
-                      <td className="px-4 py-3.5 text-sm text-[#111827] sm:px-6">
+                      <td className="whitespace-nowrap px-3 py-3 text-sm text-[#111827] sm:px-4 sm:py-3.5 lg:px-6">
                         {tx.date}
                       </td>
-                      <td className="px-4 py-3.5 sm:px-6">
+                      <td className="whitespace-nowrap px-3 py-3 sm:px-4 sm:py-3.5 lg:px-6">
                         <span
                           className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium ${
                             tx.type === "investment"
@@ -190,7 +190,7 @@ export function PlanDetailView({ plan, userId }: PlanDetailViewProps) {
                           {tx.label}
                         </span>
                       </td>
-                      <td className="px-4 py-3.5 text-right font-medium sm:px-6">
+                      <td className="whitespace-nowrap px-3 py-3 text-right font-medium sm:px-4 sm:py-3.5 lg:px-6">
                         <span className={tx.type === "profit" ? "text-[#059669]" : "text-[#111827]"}>
                           {tx.type === "profit" ? "+" : ""}$
                           {tx.amountNum.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}

@@ -176,31 +176,21 @@ export default function AdminWalletsPage() {
             </button>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[720px]">
+          <div className="table-scroll-wrap -mx-2 sm:mx-0">
+            <table className="w-full min-w-[640px]">
               <thead>
                 <tr className="border-b border-[#e5e7eb] bg-[#f9fafb]">
-                  <th className="px-4 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-text-secondary sm:px-6">
-                    Name
-                  </th>
-                  <th className="px-4 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-text-secondary sm:px-6">
-                    Network / chain
-                  </th>
-                  <th className="px-4 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-text-secondary sm:px-6">
-                    Address
-                  </th>
-                  <th className="px-4 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-text-secondary sm:px-6">
-                    Status
-                  </th>
-                  <th className="px-4 py-3.5 text-right text-xs font-semibold uppercase tracking-wider text-text-secondary sm:px-6">
-                    Actions
-                  </th>
+                  <th className="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-text-secondary sm:px-4 sm:py-3.5 lg:px-6">Name</th>
+                  <th className="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-text-secondary sm:px-4 sm:py-3.5 lg:px-6">Network / chain</th>
+                  <th className="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-text-secondary sm:px-4 sm:py-3.5 lg:px-6">Address</th>
+                  <th className="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-text-secondary sm:px-4 sm:py-3.5 lg:px-6">Status</th>
+                  <th className="px-3 py-3 text-right text-xs font-semibold uppercase tracking-wider text-text-secondary sm:px-4 sm:py-3.5 lg:px-6">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#f3f4f6]">
                 {wallets.map((w) => (
                   <tr key={w.id} className="transition-colors hover:bg-[#fafafa]">
-                    <td className="px-4 py-3.5 sm:px-6">
+                    <td className="whitespace-nowrap px-3 py-3 sm:px-4 sm:py-3.5 lg:px-6">
                       {editingId === w.id ? (
                         <input
                           type="text"
@@ -213,7 +203,7 @@ export default function AdminWalletsPage() {
                         <span className="font-medium text-[#111827]">{w.name || "—"}</span>
                       )}
                     </td>
-                    <td className="px-4 py-3.5 sm:px-6">
+                    <td className="whitespace-nowrap px-3 py-3 sm:px-4 sm:py-3.5 lg:px-6">
                       {editingId === w.id ? (
                         <input
                           type="text"
@@ -228,7 +218,7 @@ export default function AdminWalletsPage() {
                         </span>
                       )}
                     </td>
-                    <td className="px-4 py-3.5 sm:px-6">
+                    <td className="whitespace-nowrap px-3 py-3 sm:px-4 sm:py-3.5 lg:px-6">
                       {editingId === w.id ? (
                         <input
                           type="text"
@@ -243,10 +233,10 @@ export default function AdminWalletsPage() {
                         </span>
                       )}
                     </td>
-                    <td className="px-4 py-3.5 sm:px-6">
+                    <td className="whitespace-nowrap px-3 py-3 sm:px-4 sm:py-3.5 lg:px-6">
                       <StatusPill enabled={w.enabled} />
                     </td>
-                    <td className="px-4 py-3.5 text-right sm:px-6">
+                    <td className="whitespace-nowrap px-3 py-3 text-right sm:px-4 sm:py-3.5 lg:px-6">
                       {editingId === w.id ? (
                         <div className="flex justify-end gap-2">
                           <button
