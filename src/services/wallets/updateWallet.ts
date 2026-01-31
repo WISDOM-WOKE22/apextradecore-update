@@ -7,6 +7,7 @@ import { DB } from "@/lib/realtime-db";
 export interface UpdateWalletInput {
   name?: string;
   address?: string;
+  networkChain?: string;
   enabled?: boolean;
   order?: number;
 }
@@ -24,6 +25,7 @@ export async function updateWallet(
     const updates: Record<string, string | number | boolean> = {};
     if (input.name !== undefined) updates.name = input.name.trim();
     if (input.address !== undefined) updates.address = input.address.trim();
+    if (input.networkChain !== undefined) updates.networkChain = input.networkChain.trim();
     if (input.enabled !== undefined) updates.enabled = input.enabled;
     if (input.order !== undefined) updates.order = input.order;
     if (Object.keys(updates).length === 0) return { success: true };

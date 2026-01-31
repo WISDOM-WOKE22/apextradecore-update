@@ -1,94 +1,87 @@
 "use client";
 
 import { motion, AnimatePresence } from "motion/react";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { Button } from "@/components/ui/Button";
 import { auth } from "@/lib/firebase";
 import { useAppStore } from "@/store/useAppStore";
 import { createPlan } from "@/services/plans/createPlan";
 import { DEFAULT_PLAN_MIN_AMOUNT } from "@/services/plans/defaultPlan";
 import { refreshAccountStats } from "@/services/user/loadUserData";
+import { usePlanTemplates } from "@/services/plans/usePlanTemplates";
 
-const PLANS = [
-  {
-    id: "starter",
-    name: "Starter",
-    minAmount: DEFAULT_PLAN_MIN_AMOUNT,
-    description: "400% return in 3 business days. Our default plan — start with as little as $50.",
-    color: "from-[#0ea5e9] to-[#06b6d4]",
-    badge: "Default",
-    icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-      </svg>
-    ),
-  },
-  {
-    id: "deluxe",
-    name: "Deluxe",
-    minAmount: 13400,
-    description: "400% return in 3 business days. Tailored financial advice and high security.",
-    color: "from-[#6366f1] to-[#8b5cf6]",
-    icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M12 2L2 7l10 5 10-5-10-5z" />
-        <path d="M2 17l10 5 10-5" />
-      </svg>
-    ),
-  },
-  {
-    id: "standard",
-    name: "Standard",
-    minAmount: 22999,
-    description: "400% return in 3 business days. Dedicated support and priority processing.",
-    color: "from-[#64748b] to-[#94a3b8]",
-    icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <line x1="12" y1="20" x2="12" y2="10" />
-        <line x1="18" y1="20" x2="18" y2="4" />
-        <line x1="6" y1="20" x2="6" y2="16" />
-      </svg>
-    ),
-  },
-  {
-    id: "premium",
-    name: "Premium",
-    minAmount: 30700,
-    description: "400% return in 3 business days. Premium support and custom plans.",
-    color: "from-[#059669] to-[#10b981]",
-    badge: "Best Value",
-    icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-      </svg>
-    ),
-  },
-  {
-    id: "gold",
-    name: "Gold",
-    minAmount: 48400,
-    description: "400% return in 3 business days. VIP support and complimentary Tesla Model 3.",
-    color: "from-[#b45309] to-[#f59e0b]",
-    icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="12" cy="12" r="10" />
-        <path d="M12 6v6l4 2" />
-      </svg>
-    ),
-  },
+const FALLBACK_PLANS = [
+  { id: "starter", name: "Starter", minAmount: DEFAULT_PLAN_MIN_AMOUNT, description: "400% return in 3 business days. Our default plan — start with as little as $50.", color: "from-[#0ea5e9] to-[#06b6d4]", badge: "Default" as string | undefined, iconIndex: 0 },
+  { id: "deluxe", name: "Deluxe", minAmount: 13400, description: "400% return in 3 business days. Tailored financial advice and high security.", color: "from-[#6366f1] to-[#8b5cf6]", badge: undefined, iconIndex: 1 },
+  { id: "standard", name: "Standard", minAmount: 22999, description: "400% return in 3 business days. Dedicated support and priority processing.", color: "from-[#64748b] to-[#94a3b8]", badge: undefined, iconIndex: 2 },
+  { id: "premium", name: "Premium", minAmount: 30700, description: "400% return in 3 business days. Premium support and custom plans.", color: "from-[#059669] to-[#10b981]", badge: "Best Value", iconIndex: 3 },
+  { id: "gold", name: "Gold", minAmount: 48400, description: "400% return in 3 business days. VIP support and complimentary Tesla Model 3.", color: "from-[#b45309] to-[#f59e0b]", badge: undefined, iconIndex: 4 },
 ];
 
-type SelectedPlan = (typeof PLANS)[number] | null;
+const PLAN_ICONS = [
+  <svg key="0" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" /></svg>,
+  <svg key="1" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z" /><path d="M2 17l10 5 10-5" /></svg>,
+  <svg key="2" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="20" x2="12" y2="10" /><line x1="18" y1="20" x2="18" y2="4" /><line x1="6" y1="20" x2="6" y2="16" /></svg>,
+  <svg key="3" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" /></svg>,
+  <svg key="4" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" /></svg>,
+];
+
+const PLAN_COLORS = ["from-[#0ea5e9] to-[#06b6d4]", "from-[#6366f1] to-[#8b5cf6]", "from-[#64748b] to-[#94a3b8]", "from-[#059669] to-[#10b981]", "from-[#b45309] to-[#f59e0b]"];
+
+export type PlanCard = {
+  id: string;
+  name: string;
+  minAmount: number;
+  description: string;
+  color: string;
+  badge?: string;
+  icon: React.ReactNode;
+};
+
+type SelectedPlan = PlanCard | null;
 
 export function InvestmentsView() {
   const accountBalance = useAppStore((s) => s.accountBalance);
+  const { templates, loading: templatesLoading } = usePlanTemplates();
   const [selectedPlan, setSelectedPlan] = useState<SelectedPlan>(null);
   const [amountInput, setAmountInput] = useState("");
   const [amountError, setAmountError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
 
-  const openPlan = useCallback((plan: (typeof PLANS)[number]) => {
+  const plans = useMemo((): PlanCard[] => {
+    const active = templates.filter((t) => !t.disabled);
+    if (active.length > 0) {
+      return active.map((t, i) => {
+        let returnText = "";
+        if (t.expectedReturn > 0) {
+          const pct = t.minAmount > 0 ? Math.round((t.expectedReturn / t.minAmount) * 100) : 0;
+          const daysText = t.returnDays > 0 ? ` in ${t.returnDays} day${t.returnDays === 1 ? "" : "s"}` : "";
+          returnText = `Expected return: $${t.expectedReturn.toLocaleString("en-US", { minimumFractionDigits: 2 })}${pct > 0 ? ` (${pct}%)` : ""}${daysText}. `;
+        }
+        return {
+          id: t.id,
+          name: t.name,
+          minAmount: t.minAmount,
+          description: `${returnText}Minimum investment $${t.minAmount.toLocaleString("en-US", { minimumFractionDigits: 2 })}.`,
+          color: PLAN_COLORS[i % PLAN_COLORS.length],
+          badge: i === 0 ? "Default" : undefined,
+          icon: PLAN_ICONS[i % PLAN_ICONS.length],
+        };
+      });
+    }
+    return FALLBACK_PLANS.map((p, i) => ({
+      id: p.id,
+      name: p.name,
+      minAmount: p.minAmount,
+      description: p.description,
+      color: p.color,
+      badge: p.badge,
+      icon: PLAN_ICONS[p.iconIndex] ?? PLAN_ICONS[0],
+    }));
+  }, [templates]);
+
+  const openPlan = useCallback((plan: PlanCard) => {
     setSelectedPlan(plan);
     setAmountInput(String(plan.minAmount));
     setAmountError("");
@@ -150,7 +143,7 @@ export function InvestmentsView() {
   const closeSuccess = useCallback(() => setShowSuccess(false), []);
 
   return (
-    <div className="mx-auto max-w-[1200px]">
+    <div className="mx-auto">
       {/* Header + balance */}
       <motion.div
         initial={{ opacity: 0, y: 8 }}
@@ -190,7 +183,7 @@ export function InvestmentsView() {
 
       {/* Plan cards */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {PLANS.map((plan, i) => (
+        {plans.map((plan, i) => (
           <motion.article
             key={plan.id}
             initial={{ opacity: 0, y: 16 }}
@@ -209,7 +202,7 @@ export function InvestmentsView() {
               aria-hidden
             />
             <div className="flex flex-1 flex-col p-5">
-              <div className={`mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br ${plan.color} text-white`}>
+              <div className={`mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br ${plan.color} text-white [&>svg]:shrink-0`}>
                 {plan.icon}
               </div>
               <h2 className="text-lg font-bold text-[#111827]">{plan.name}</h2>

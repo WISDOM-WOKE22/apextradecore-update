@@ -7,19 +7,32 @@ import { auth, database } from "@/lib/firebase";
 import { useAppStore, type UserData } from "@/store/useAppStore";
 import { DB } from "@/lib/realtime-db";
 
+function getBalanceAdjustment(val: unknown): number {
+  if (val == null || typeof val !== "object") return 0;
+  const v = (val as { balanceAdjustment?: number }).balanceAdjustment;
+  if (typeof v === "number") return v;
+  if (typeof v === "string") return parseFloat(v) || 0;
+  return 0;
+}
+
 /** Fetch deposits, withdrawals, plans and update account stats in the store. Call from anywhere to refresh balance without reload. */
 export async function refreshAccountStats(uid: string): Promise<void> {
   const setAccountStats = useAppStore.getState().setAccountStats;
   try {
-    const [depositsSnap, withdrawalsSnap, plansSnap] = await Promise.all([
+    const [userSnap, depositsSnap, withdrawalsSnap, plansSnap, profitsSnap] = await Promise.all([
+      get(ref(database, DB.user(uid))),
       get(ref(database, DB.userDeposits(uid))),
       get(ref(database, DB.userWithdrawals(uid))),
       get(ref(database, DB.userPlans(uid))),
+      get(ref(database, DB.userProfits(uid))),
     ]);
     const totalDeposits = sumApprovedAmounts(depositsSnap);
     const totalWithdrawals = sumApprovedAmounts(withdrawalsSnap);
     const totalInvested = sumPlanAmounts(plansSnap);
-    const accountBalance = totalDeposits - totalWithdrawals - totalInvested;
+    const totalProfits = sumProfitAmounts(profitsSnap);
+    const computed = totalDeposits - totalWithdrawals - totalInvested + totalProfits;
+    const adjustment = getBalanceAdjustment(userSnap.val());
+    const accountBalance = computed + adjustment;
     const plansVal = plansSnap.val();
     const currentInvestments =
       plansVal && typeof plansVal === "object" ? Object.keys(plansVal).length : 0;
@@ -86,6 +99,19 @@ function sumPlanAmounts(
   }, 0);
 }
 
+function sumProfitAmounts(
+  snapshot: { val: () => Record<string, { amount?: string | number }> | null }
+): number {
+  const val = snapshot.val();
+  if (!val || typeof val !== "object") return 0;
+  return Object.values(val).reduce((sum, item) => {
+    const amt = item?.amount;
+    if (typeof amt === "number") return sum + amt;
+    if (typeof amt === "string") return sum + (parseFloat(amt) || 0);
+    return sum;
+  }, 0);
+}
+
 const LOAD_USER_TIMEOUT_MS = 15_000;
 const AUTH_INIT_TIMEOUT_MS = 8_000;
 
@@ -132,17 +158,21 @@ export function useLoadUserData() {
         }
         setUser(userData);
 
-        const [depositsSnap, withdrawalsSnap, plansSnap] = await Promise.all([
+        const [depositsSnap, withdrawalsSnap, plansSnap, profitsSnap] = await Promise.all([
           get(ref(database, DB.userDeposits(uid))),
           get(ref(database, DB.userWithdrawals(uid))),
           get(ref(database, DB.userPlans(uid))),
+          get(ref(database, DB.userProfits(uid))),
         ]);
         if (timedOut) return;
 
         const totalDeposits = sumApprovedAmounts(depositsSnap);
         const totalWithdrawals = sumApprovedAmounts(withdrawalsSnap);
         const totalInvested = sumPlanAmounts(plansSnap);
-        const accountBalance = totalDeposits - totalWithdrawals - totalInvested;
+        const totalProfits = sumProfitAmounts(profitsSnap);
+        const computed = totalDeposits - totalWithdrawals - totalInvested + totalProfits;
+        const adjustment = getBalanceAdjustment(userSnap.val());
+        const accountBalance = computed + adjustment;
         const plansVal = plansSnap.val();
         const currentInvestments =
           plansVal && typeof plansVal === "object" ? Object.keys(plansVal).length : 0;

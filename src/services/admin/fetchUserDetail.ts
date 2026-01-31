@@ -40,11 +40,12 @@ export type FetchUserDetailResult =
 
 export async function fetchUserDetail(uid: string): Promise<FetchUserDetailResult> {
   try {
-    const [userSnap, depositsSnap, withdrawalsSnap, plansSnap] = await Promise.all([
+    const [userSnap, depositsSnap, withdrawalsSnap, plansSnap, profitsSnap] = await Promise.all([
       get(ref(database, DB.user(uid))),
       get(ref(database, DB.userDeposits(uid))),
       get(ref(database, DB.userWithdrawals(uid))),
       get(ref(database, DB.userPlans(uid))),
+      get(ref(database, DB.userProfits(uid))),
     ]);
 
     const userVal = userSnap.val() as UserRecord | null;
@@ -140,13 +141,28 @@ export async function fetchUserDetail(uid: string): Promise<FetchUserDetailResul
     }
     investments.sort((a, b) => b.dateSortKey - a.dateSortKey);
 
-    const accountBalance = totalDepositsApproved - totalWithdrawalsApproved - totalInvested;
+    let totalProfits = 0;
+    const profitsVal = profitsSnap.val() as Record<string, { amount?: string | number }> | null;
+    if (profitsVal && typeof profitsVal === "object") {
+      for (const data of Object.values(profitsVal)) {
+        const amt = data?.amount;
+        totalProfits += typeof amt === "number" ? amt : (parseFloat(String(amt ?? 0)) || 0);
+      }
+    }
+
+    const computedBalance = totalDepositsApproved - totalWithdrawalsApproved - totalInvested + totalProfits;
+    const adjustment =
+      typeof userVal.balanceAdjustment === "number"
+        ? userVal.balanceAdjustment
+        : parseFloat(String(userVal.balanceAdjustment ?? 0)) || 0;
+    const accountBalance = computedBalance + adjustment;
 
     const data: AdminUserDetail = {
       profile,
       totalDeposits: totalDepositsApproved,
       totalWithdrawals: totalWithdrawalsApproved,
       totalInvested,
+      totalProfits,
       accountBalance,
       depositsCount: deposits.length,
       withdrawalsCount: withdrawals.length,

@@ -33,18 +33,21 @@ export default function AdminWalletsPage() {
     updateWalletEnabled,
     updateWalletName,
     updateWalletAddress,
+    updateWalletNetworkChain,
     removeWallet,
   } = useWallets();
 
   const [showAdd, setShowAdd] = useState(false);
   const [addName, setAddName] = useState("");
   const [addAddress, setAddAddress] = useState("");
+  const [addNetworkChain, setAddNetworkChain] = useState("");
   const [addSubmitting, setAddSubmitting] = useState(false);
   const [addError, setAddError] = useState<string | null>(null);
 
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editName, setEditName] = useState("");
   const [editAddress, setEditAddress] = useState("");
+  const [editNetworkChain, setEditNetworkChain] = useState("");
   const [editSubmitting, setEditSubmitting] = useState(false);
 
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
@@ -56,12 +59,13 @@ export default function AdminWalletsPage() {
     e.preventDefault();
     setAddError(null);
     setAddSubmitting(true);
-    const result = await addWallet(addName, addAddress);
+    const result = await addWallet(addName, addAddress, addNetworkChain || undefined);
     setAddSubmitting(false);
     if (result.success) {
       setShowAdd(false);
       setAddName("");
       setAddAddress("");
+      setAddNetworkChain("");
     } else {
       setAddError(result.error ?? "Failed to add wallet");
     }
@@ -71,24 +75,27 @@ export default function AdminWalletsPage() {
     setEditingId(w.id);
     setEditName(w.name);
     setEditAddress(w.address);
+    setEditNetworkChain(w.networkChain ?? "");
   };
 
   const cancelEdit = () => {
     setEditingId(null);
     setEditName("");
     setEditAddress("");
+    setEditNetworkChain("");
   };
 
   const handleEditSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!editingId) return;
     setEditSubmitting(true);
-    const [nameRes, addressRes] = await Promise.all([
+    const [nameRes, addressRes, networkRes] = await Promise.all([
       updateWalletName(editingId, editName),
       updateWalletAddress(editingId, editAddress),
+      updateWalletNetworkChain(editingId, editNetworkChain),
     ]);
     setEditSubmitting(false);
-    if (nameRes.success && addressRes.success) {
+    if (nameRes.success && addressRes.success && networkRes.success) {
       cancelEdit();
     }
   };
@@ -116,7 +123,7 @@ export default function AdminWalletsPage() {
         <div>
           <h1 className="text-2xl font-bold text-[#111827] sm:text-3xl">Deposit wallets</h1>
           <p className="mt-1 text-sm text-text-secondary">
-            Add, edit, enable or disable wallets. Only enabled wallets appear on the user deposit page.
+            Add deposit wallets and set the network/chain so users know exactly which network to use. Only enabled wallets appear on the deposit page.
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -135,6 +142,7 @@ export default function AdminWalletsPage() {
               setAddError(null);
               setAddName("");
               setAddAddress("");
+              setAddNetworkChain("");
             }}
             className="rounded-lg bg-accent px-4 py-2.5 text-sm font-medium text-white transition-colors hover:opacity-95"
           >
@@ -169,11 +177,14 @@ export default function AdminWalletsPage() {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[640px]">
+            <table className="w-full min-w-[720px]">
               <thead>
                 <tr className="border-b border-[#e5e7eb] bg-[#f9fafb]">
                   <th className="px-4 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-text-secondary sm:px-6">
                     Name
+                  </th>
+                  <th className="px-4 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-text-secondary sm:px-6">
+                    Network / chain
                   </th>
                   <th className="px-4 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-text-secondary sm:px-6">
                     Address
@@ -195,7 +206,7 @@ export default function AdminWalletsPage() {
                           type="text"
                           value={editName}
                           onChange={(e) => setEditName(e.target.value)}
-                          className="w-full max-w-[180px] rounded-lg border border-[#e5e7eb] bg-white px-3 py-2 text-sm focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+                          className="w-full min-w-0 max-w-[160px] rounded-lg border border-[#e5e7eb] bg-white px-3 py-2 text-sm focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
                           placeholder="Wallet name"
                         />
                       ) : (
@@ -206,14 +217,29 @@ export default function AdminWalletsPage() {
                       {editingId === w.id ? (
                         <input
                           type="text"
+                          value={editNetworkChain}
+                          onChange={(e) => setEditNetworkChain(e.target.value)}
+                          className="w-full min-w-0 max-w-[180px] rounded-lg border border-[#e5e7eb] bg-white px-3 py-2 text-sm focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+                          placeholder="e.g. ERC-20, TRC-20"
+                        />
+                      ) : (
+                        <span className="text-sm text-text-secondary">
+                          {w.networkChain || "—"}
+                        </span>
+                      )}
+                    </td>
+                    <td className="px-4 py-3.5 sm:px-6">
+                      {editingId === w.id ? (
+                        <input
+                          type="text"
                           value={editAddress}
                           onChange={(e) => setEditAddress(e.target.value)}
-                          className="w-full max-w-[280px] rounded-lg border border-[#e5e7eb] bg-white px-3 py-2 font-mono text-sm focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+                          className="w-full min-w-0 max-w-[240px] rounded-lg border border-[#e5e7eb] bg-white px-3 py-2 font-mono text-sm focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
                           placeholder="Address"
                         />
                       ) : (
                         <span className="font-mono text-sm text-text-secondary">
-                          {truncate(w.address, 20)}
+                          {truncate(w.address, 18)}
                         </span>
                       )}
                     </td>
@@ -320,7 +346,7 @@ export default function AdminWalletsPage() {
             >
               <h2 className="text-lg font-bold text-[#111827]">Add wallet</h2>
               <p className="mt-1 text-sm text-text-secondary">
-                This wallet will appear on the user deposit page when enabled.
+                Add a deposit wallet. Set the network/chain so users know exactly which network to use.
               </p>
               {addError && (
                 <div className="mt-4 rounded-lg border border-[#fecaca] bg-[#fef2f2] px-4 py-3 text-sm text-[#b91c1c]">
@@ -337,10 +363,26 @@ export default function AdminWalletsPage() {
                     type="text"
                     value={addName}
                     onChange={(e) => setAddName(e.target.value)}
-                    placeholder="e.g. Bitcoin (BTC)"
+                    placeholder="e.g. USDT, Bitcoin (BTC)"
                     required
                     className="w-full rounded-lg border border-[#e5e7eb] bg-white px-4 py-2.5 text-sm focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
                   />
+                </div>
+                <div>
+                  <label htmlFor="add-network" className="mb-1.5 block text-sm font-medium text-[#374151]">
+                    Network / chain
+                  </label>
+                  <input
+                    id="add-network"
+                    type="text"
+                    value={addNetworkChain}
+                    onChange={(e) => setAddNetworkChain(e.target.value)}
+                    placeholder="e.g. Ethereum (ERC-20), Bitcoin, TRC-20"
+                    className="w-full rounded-lg border border-[#e5e7eb] bg-white px-4 py-2.5 text-sm focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
+                  />
+                  <p className="mt-1 text-xs text-text-secondary">
+                    Shown to users so they send funds on the correct network.
+                  </p>
                 </div>
                 <div>
                   <label htmlFor="add-address" className="mb-1.5 block text-sm font-medium text-[#374151]">

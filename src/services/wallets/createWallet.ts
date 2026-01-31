@@ -7,6 +7,8 @@ import { DB } from "@/lib/realtime-db";
 export interface CreateWalletInput {
   name: string;
   address: string;
+  /** Network or chain (e.g. "Ethereum (ERC-20)") so users know which network to deposit on */
+  networkChain?: string;
 }
 
 export type CreateWalletResult =
@@ -17,6 +19,7 @@ export async function createWallet(input: CreateWalletInput): Promise<CreateWall
   try {
     const name = (input.name ?? "").trim();
     const address = (input.address ?? "").trim();
+    const networkChain = (input.networkChain ?? "").trim();
     if (!name) return { success: false, error: "Wallet name is required" };
     if (!address) return { success: false, error: "Wallet address is required" };
 
@@ -35,6 +38,7 @@ export async function createWallet(input: CreateWalletInput): Promise<CreateWall
     await set(newRef, {
       name,
       address,
+      ...(networkChain ? { networkChain } : {}),
       enabled: true,
       order: maxOrder + 1,
       createdAt,

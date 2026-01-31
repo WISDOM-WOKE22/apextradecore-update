@@ -5,6 +5,17 @@ import { database } from "@/lib/firebase";
 import { DB } from "@/lib/realtime-db";
 import type { AdminUserSummary, UserRecord } from "./types";
 
+/** Parse DB date string "d-m-yyyy" to milliseconds for sorting. Returns 0 if invalid. */
+function parseDbDateToMs(dateStr: string): number {
+  if (!dateStr || typeof dateStr !== "string") return 0;
+  const parts = dateStr.trim().split("-").map(Number);
+  if (parts.length !== 3) return 0;
+  const [d, m, y] = parts;
+  if (!y || !m || !d) return 0;
+  const t = new Date(y, m - 1, d).getTime();
+  return Number.isFinite(t) ? t : 0;
+}
+
 export interface FetchAllUsersResult {
   users: AdminUserSummary[];
   error?: string;
@@ -31,7 +42,13 @@ export async function fetchAllUsers(): Promise<FetchAllUsersResult> {
         role,
       });
     }
-    users.sort((a, b) => (b.date || "").localeCompare(a.date || ""));
+    // Sort by creation date descending (newest first). Same date → stable order by uid.
+    users.sort((a, b) => {
+      const ta = parseDbDateToMs(a.date);
+      const tb = parseDbDateToMs(b.date);
+      if (tb !== ta) return tb - ta;
+      return (b.uid || "").localeCompare(a.uid || "");
+    });
     return { users };
   } catch (err) {
     console.error("[fetchAllUsers]", err);

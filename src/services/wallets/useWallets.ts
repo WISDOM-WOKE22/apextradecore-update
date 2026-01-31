@@ -12,10 +12,11 @@ export interface UseWalletsResult {
   loading: boolean;
   error: string | null;
   refetch: () => Promise<void>;
-  addWallet: (name: string, address: string) => Promise<{ success: boolean; error?: string }>;
+  addWallet: (name: string, address: string, networkChain?: string) => Promise<{ success: boolean; error?: string }>;
   updateWalletEnabled: (id: string, enabled: boolean) => Promise<{ success: boolean; error?: string }>;
   updateWalletName: (id: string, name: string) => Promise<{ success: boolean; error?: string }>;
   updateWalletAddress: (id: string, address: string) => Promise<{ success: boolean; error?: string }>;
+  updateWalletNetworkChain: (id: string, networkChain: string) => Promise<{ success: boolean; error?: string }>;
   removeWallet: (id: string) => Promise<{ success: boolean; error?: string }>;
 }
 
@@ -38,8 +39,12 @@ export function useWallets(): UseWalletsResult {
   }, [refetch]);
 
   const addWallet = useCallback(
-    async (name: string, address: string) => {
-      const result = await createWallet({ name: name.trim(), address: address.trim() });
+    async (name: string, address: string, networkChain?: string) => {
+      const result = await createWallet({
+        name: name.trim(),
+        address: address.trim(),
+        networkChain: networkChain?.trim() ?? "",
+      });
       if (result.success) await refetch();
       return result.success ? { success: true } : { success: false, error: result.error };
     },
@@ -73,6 +78,15 @@ export function useWallets(): UseWalletsResult {
     [refetch]
   );
 
+  const updateWalletNetworkChain = useCallback(
+    async (id: string, networkChain: string) => {
+      const result = await updateWallet(id, { networkChain: networkChain.trim() });
+      if (result.success) await refetch();
+      return result.success ? { success: true } : { success: false, error: result.error };
+    },
+    [refetch]
+  );
+
   const removeWallet = useCallback(
     async (id: string) => {
       const result = await deleteWallet(id);
@@ -91,6 +105,7 @@ export function useWallets(): UseWalletsResult {
     updateWalletEnabled,
     updateWalletName,
     updateWalletAddress,
+    updateWalletNetworkChain,
     removeWallet,
   };
 }

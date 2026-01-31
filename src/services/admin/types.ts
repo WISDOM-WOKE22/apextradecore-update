@@ -8,6 +8,8 @@ export interface UserRecord {
   date?: string;
   role?: string;
   referralCode?: string;
+  /** Admin-only adjustment to computed balance (add/subtract). */
+  balanceAdjustment?: number;
 }
 
 /** Summary for admin users list (excludes admins) */
@@ -27,6 +29,8 @@ export interface AdminUserDetail {
   totalDeposits: number;
   totalWithdrawals: number;
   totalInvested: number;
+  /** Sum of all investment profits credited to the user */
+  totalProfits: number;
   accountBalance: number;
   depositsCount: number;
   withdrawalsCount: number;

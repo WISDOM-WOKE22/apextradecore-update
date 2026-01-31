@@ -29,3 +29,30 @@ export interface UserPlan {
   /** Full record for detail view */
   record: PlanRecord;
 }
+
+/** Raw plan template from Realtime DB: planTemplates/{id} — admin-defined investment plan types */
+export interface PlanTemplateRecord {
+  name: string;
+  minAmount: number;
+  /** Expected return in dollars (e.g. 2000). Percentage is derived as (expectedReturn / minAmount) * 100 */
+  expectedReturn?: number;
+  /** Number of days until expected return is received */
+  returnDays?: number;
+  disabled?: boolean;
+  order?: number;
+  createdAt?: number;
+}
+
+/** Plan template for UI (with id) */
+export interface PlanTemplate {
+  id: string;
+  name: string;
+  minAmount: number;
+  /** Expected return in dollars. Use expectedReturnPercent for display: (expectedReturn / minAmount) * 100 */
+  expectedReturn: number;
+  /** Number of days until expected return is received */
+  returnDays: number;
+  disabled: boolean;
+  order: number;
+  createdAt?: number;
+}

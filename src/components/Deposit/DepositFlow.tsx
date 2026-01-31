@@ -192,6 +192,9 @@ function DepositFlowInner() {
                     }`}
                   >
                     <span className="block text-sm font-semibold text-[#111827]">{w.name}</span>
+                    {w.networkChain ? (
+                      <span className="mt-1 block text-xs font-medium text-accent">{w.networkChain}</span>
+                    ) : null}
                     <span className="mt-1 block truncate text-xs font-mono text-text-secondary" title={w.address}>
                       {w.address.slice(0, 12)}…
                     </span>
@@ -232,7 +235,14 @@ function DepositFlowInner() {
             ) : (
               <>
                 <h2 className="mb-4 text-lg font-semibold text-[#111827]">Enter amount</h2>
-                <p className="mb-4 text-sm text-text-secondary">Wallet: {selectedWallet.name}</p>
+                <p className="mb-4 text-sm text-text-secondary">
+                  Wallet: {selectedWallet.name}
+                  {selectedWallet.networkChain ? (
+                    <span className="ml-2 rounded bg-[#eef2ff] px-2 py-0.5 text-xs font-medium text-accent">
+                      {selectedWallet.networkChain}
+                    </span>
+                  ) : null}
+                </p>
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -295,6 +305,15 @@ function DepositFlowInner() {
             ) : (
               <>
                 <h2 className="mb-2 text-lg font-semibold text-[#111827]">Deposit address</h2>
+                {selectedWallet.networkChain ? (
+                  <div className="mb-4 rounded-lg border-2 border-accent/30 bg-[#eef2ff] px-4 py-3">
+                    <p className="text-xs font-semibold uppercase tracking-wider text-accent">Use this network only</p>
+                    <p className="mt-1 text-sm font-semibold text-[#111827]">{selectedWallet.networkChain}</p>
+                    <p className="mt-1 text-xs text-text-secondary">
+                      Send only on this network. Wrong network may result in permanent loss of funds.
+                    </p>
+                  </div>
+                ) : null}
                 <p className="mb-4 text-sm text-text-secondary">
                   Send exactly {amount} to this address for {selectedWallet.name}. Wrong address may result in loss.
                 </p>
@@ -304,7 +323,9 @@ function DepositFlowInner() {
                 </div>
 
                 <div className="mb-4">
-                  <label className="mb-2 block text-xs font-medium text-text-secondary">Wallet address</label>
+                  <label className="mb-2 block text-xs font-medium text-text-secondary">
+                    Wallet address{selectedWallet.networkChain ? ` (${selectedWallet.networkChain})` : ""}
+                  </label>
                   <div className="flex gap-2">
                     <input
                       type="text"

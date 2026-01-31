@@ -37,6 +37,10 @@ export const DB = {
   notifications: "notifications",
   userNotifications: (uid: string) => `notifications/${uid}`,
   userNotification: (uid: string, notificationId: string) => `notifications/${uid}/${notificationId}`,
+
+  /** Investment plan templates (admin-managed). planTemplates.{templateId} */
+  planTemplates: "planTemplates",
+  planTemplate: (id: string) => `planTemplates/${id}`,
 } as const;
 
 /** Format date like existing DB: "16-7-2025" */

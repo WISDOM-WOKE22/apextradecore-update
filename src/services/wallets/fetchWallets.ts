@@ -24,6 +24,7 @@ export async function fetchWallets(): Promise<FetchWalletsResult> {
         id,
         name: typeof w.name === "string" ? w.name : "",
         address: typeof w.address === "string" ? w.address : "",
+        networkChain: typeof w.networkChain === "string" ? w.networkChain : "",
         enabled: w.enabled === true,
         order: typeof w.order === "number" ? w.order : 0,
         createdAt: typeof w.createdAt === "number" ? w.createdAt : 0,

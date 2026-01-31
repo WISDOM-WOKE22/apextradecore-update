@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { motion } from "motion/react";
 import { fetchUserDetail } from "@/services/admin/fetchUserDetail";
+import { updateUserBalanceAdjustment } from "@/services/admin/updateUserBalanceAdjustment";
 import type { AdminUserDetail } from "@/services/admin/types";
 import { formatCurrency } from "@/store/useAppStore";
 
@@ -32,6 +33,20 @@ export default function AdminUserDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<"deposits" | "withdrawals" | "investments">("deposits");
+  const [balanceAmount, setBalanceAmount] = useState("");
+  const [balanceUpdating, setBalanceUpdating] = useState(false);
+  const [balanceMessage, setBalanceMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+
+  const refetch = useCallback(() => {
+    if (!uid) return;
+    setLoading(true);
+    fetchUserDetail(uid)
+      .then((result) => {
+        if (result.success) setData(result.data);
+        else setError(result.error);
+      })
+      .finally(() => setLoading(false));
+  }, [uid]);
 
   useEffect(() => {
     if (!uid) {
@@ -53,6 +68,32 @@ export default function AdminUserDetailPage() {
       });
     return () => { cancelled = true; };
   }, [uid]);
+
+  const handleBalanceAdjust = useCallback(
+    async (delta: number) => {
+      if (!uid || balanceUpdating) return;
+      const amount = Math.abs(delta);
+      if (amount <= 0 || !Number.isFinite(delta)) {
+        setBalanceMessage({ type: "error", text: "Enter a valid positive amount." });
+        return;
+      }
+      setBalanceMessage(null);
+      setBalanceUpdating(true);
+      const result = await updateUserBalanceAdjustment(uid, delta);
+      setBalanceUpdating(false);
+      if (result.success) {
+        setBalanceAmount("");
+        setBalanceMessage({
+          type: "success",
+          text: `Balance ${delta > 0 ? "increased" : "decreased"} by ${formatCurrency(amount)}.`,
+        });
+        refetch();
+      } else {
+        setBalanceMessage({ type: "error", text: result.error ?? "Update failed." });
+      }
+    },
+    [uid, balanceUpdating, refetch]
+  );
 
   if (loading) {
     return (
@@ -77,12 +118,13 @@ export default function AdminUserDetailPage() {
     );
   }
 
-  const { profile, accountBalance, totalDeposits, totalWithdrawals, totalInvested, deposits, withdrawals, investments } = data;
+  const { profile, accountBalance, totalDeposits, totalWithdrawals, totalInvested, totalProfits, deposits, withdrawals, investments } = data;
   const stats = [
     { label: "Current balance", value: accountBalance, format: true },
     { label: "Total deposits (approved)", value: totalDeposits, format: true },
     { label: "Total withdrawals (approved)", value: totalWithdrawals, format: true },
     { label: "Total invested", value: totalInvested, format: true },
+    { label: "Total profits", value: totalProfits, format: true },
   ];
 
   const tabs = [
@@ -144,6 +186,71 @@ export default function AdminUserDetailPage() {
             </p>
           </div>
         ))}
+      </div>
+
+      <div className="mb-8 rounded-xl border border-[#e5e7eb] bg-white p-5 shadow-sm sm:p-6">
+        <h2 className="text-sm font-semibold text-[#111827]">Adjust account balance</h2>
+        <p className="mt-0.5 text-xs text-text-secondary">
+          Add or subtract an amount from this user&apos;s balance. Changes apply immediately.
+        </p>
+        <div className="mt-4 flex flex-wrap items-end gap-3">
+          <div className="min-w-0 flex-1 sm:max-w-48">
+            <label htmlFor="admin-balance-amount" className="sr-only">
+              Amount
+            </label>
+            <div className="relative">
+              <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary">
+                $
+              </span>
+              <input
+                id="admin-balance-amount"
+                type="number"
+                inputMode="decimal"
+                min="0"
+                step="0.01"
+                placeholder="0.00"
+                value={balanceAmount}
+                onChange={(e) => {
+                  setBalanceAmount(e.target.value);
+                  setBalanceMessage(null);
+                }}
+                disabled={balanceUpdating}
+                className="w-full rounded-lg border border-[#e5e7eb] py-2.5 pl-7 pr-3 text-sm text-[#111827] placeholder:text-text-secondary focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent disabled:opacity-60"
+              />
+            </div>
+          </div>
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={() => handleBalanceAdjust(parseFloat(balanceAmount) || 0)}
+              disabled={balanceUpdating || !balanceAmount.trim()}
+              className="inline-flex items-center gap-1.5 rounded-lg bg-[#059669] px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#047857] disabled:pointer-events-none disabled:opacity-50"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+                <path d="M12 5v14M5 12h14" />
+              </svg>
+              Add
+            </button>
+            <button
+              type="button"
+              onClick={() => handleBalanceAdjust(-(parseFloat(balanceAmount) || 0))}
+              disabled={balanceUpdating || !balanceAmount.trim()}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-[#e5e7eb] bg-white px-4 py-2.5 text-sm font-medium text-[#374151] transition-colors hover:bg-[#f9fafb] disabled:pointer-events-none disabled:opacity-50"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+                <path d="M5 12h14" />
+              </svg>
+              Subtract
+            </button>
+          </div>
+        </div>
+        {balanceMessage && (
+          <p
+            className={`mt-3 text-sm ${balanceMessage.type === "success" ? "text-[#059669]" : "text-[#b91c1c]"}`}
+          >
+            {balanceMessage.text}
+          </p>
+        )}
       </div>
 
       <div className="rounded-xl border border-[#e5e7eb] bg-white shadow-sm">
