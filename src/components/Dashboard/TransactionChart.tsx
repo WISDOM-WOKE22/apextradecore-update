@@ -73,7 +73,8 @@ function aggregateByMonth(all: UnifiedTransaction[]): ChartBucket[] {
   }
 
   for (const tx of all) {
-    const { key, year, month } = getMonthKey(tx.date, tx.dateSortKey, tx.kind, tx.id);
+    const kindForKey = tx.kind === "profit" ? "investment" : tx.kind;
+    const { key, year, month } = getMonthKey(tx.date, tx.dateSortKey, kindForKey, tx.id);
     if (!buckets.has(key)) {
       const shortYear = String(year).slice(-2);
       buckets.set(key, {

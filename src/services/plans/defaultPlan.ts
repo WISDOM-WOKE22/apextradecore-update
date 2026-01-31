@@ -20,6 +20,7 @@ export function getDefaultPlanPlaceholder(): UserPlan {
     dateSortKey: now,
     name: 0,
     isDefault: true,
+    totalProfit: 0,
     record: {
       amount: String(DEFAULT_PLAN_MIN_AMOUNT),
       date: dateStr,

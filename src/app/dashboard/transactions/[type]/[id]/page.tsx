@@ -150,6 +150,7 @@ export default function TransactionDetailPage() {
 
   useEffect(() => {
     if (!type || !id) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setLoading(false);
       setError("Invalid transaction");
       return;

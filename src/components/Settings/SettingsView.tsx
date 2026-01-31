@@ -49,6 +49,7 @@ export function SettingsView({
 
   useEffect(() => {
     if (user) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setFullName(user.fullName || "");
       setCountry(user.country || "");
       setPhoneNumber(user.phoneNumber || "");

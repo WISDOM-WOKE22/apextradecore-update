@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
-import { MembershipCard } from "./MembershipCard";
+import { MembershipCard, type MembershipCardProps } from "./MembershipCard";
 import { MEMBERSHIP_PLANS } from "./plans";
 
 const HEADLINE = "Membership Card Investment Plans";

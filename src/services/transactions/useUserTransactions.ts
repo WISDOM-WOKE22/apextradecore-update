@@ -3,8 +3,8 @@
 import { useState, useEffect, useCallback } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "@/lib/firebase";
-import { fetchUserTransactions } from "./fetchUserTransactions";
-import type { FetchUserTransactionsResult, UnifiedTransaction } from "./types";
+import { fetchUserTransactions, type FetchUserTransactionsResult } from "./fetchUserTransactions";
+import type { UnifiedTransaction } from "./types";
 
 export type TransactionFilter = "all" | "deposit" | "withdrawal" | "investment" | "profit";
 

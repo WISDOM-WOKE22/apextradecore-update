@@ -4,9 +4,9 @@ import { useEffect, useState, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "motion/react";
-import { fetchAdminTransactionDetail } from "@/services/admin/fetchAdminTransactionDetail";
+import { fetchAdminTransactionDetail, type AdminTransactionDetail } from "@/services/admin/fetchAdminTransactionDetail";
 import { updateDepositStatus, updateWithdrawalStatus } from "@/services/admin/updateTransactionStatus";
-import type { AdminTransactionDetail, AdminTransactionKind } from "@/services/admin/types";
+import type { AdminTransactionKind } from "@/services/admin/types";
 import type { DepositRecord, WithdrawalRecord } from "@/services/transactions/types";
 import type { PlanRecord } from "@/services/plans/types";
 
@@ -251,7 +251,10 @@ export default function AdminTransactionDetailPage() {
   }, [type, userId, id]);
 
   useEffect(() => {
-    loadDetail();
+    const tid = setTimeout(() => {
+      loadDetail();
+    }, 0);
+    return () => clearTimeout(tid);
   }, [loadDetail]);
 
   const handleApprove = async () => {
