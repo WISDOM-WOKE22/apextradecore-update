@@ -8,9 +8,10 @@ import { Button } from "@/components/ui/Button";
 import { Logo } from "./Logo";
 import { NavLinks } from "./NavLinks";
 import { navLinks } from "./NavLinks";
-import router from "next/router";
+import { useRouter } from "next/navigation";
 
 export function Header() {
+  const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const close = useCallback(() => setMobileOpen(false), []);
@@ -39,7 +40,7 @@ export function Header() {
             </div>
             <button
               // variant="accent"
-              className="hidden md:flex items-center justify-center rounded-lg px-6 py-3.5 text-base font-medium transition-colors duration-200 bg-[#1e62d4] text-white hover:bg-[#1552b8] focus-visible:ring-2 focus-visible:ring-[#1e62d4] focus-visible:ring-offset-2"
+              className="hidden md:flex items-center justify-center rounded-lg px-6 py-3.5 text-base font-medium transition-colors duration-200 bg-[#1e62d4] text-white hover:bg-[#1552b8] focus-visible:ring-2 focus-visible:ring-[#1e62d4] focus-visible:ring-offset-2 cursor-pointer"
               onClick={() => router.push("/dashboard")}
             >
               Dashboard
