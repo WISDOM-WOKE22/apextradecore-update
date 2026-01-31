@@ -4,9 +4,10 @@ import type { Metadata } from "next";
 import { UserAreaGuard } from "@/components/guard";
 
 export const metadata: Metadata = {
-  title: "Investments | ApexTradeCore  Investment",
+  title: "Investments",
   description:
-    "View available investment plans. Choose a plan, deposit the required amount, and start your investment. Make a deposit if your balance is insufficient.",
+    "View available plans, choose one, deposit the required amount, and start investing.",
+  robots: { index: false, follow: false },
 };
 
 export default async function InvestmentsLayout({

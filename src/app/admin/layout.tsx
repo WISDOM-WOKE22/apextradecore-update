@@ -1,11 +1,13 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import { AdminGuard } from "@/components/guard";
 import { AdminChrome } from "@/components/Admin";
 
-export const metadata = {
-  title: "Admin | ApexTradeCore",
-  description: "Admin dashboard and management.",
+export const metadata: Metadata = {
+  title: "Admin",
+  description: "Admin dashboard: users, wallets, plans, and transactions.",
+  robots: { index: false, follow: false },
 };
 
 export default async function AdminLayout({

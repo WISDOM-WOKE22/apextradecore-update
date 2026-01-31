@@ -1,11 +1,12 @@
+import type { Metadata } from "next";
 import { Header } from "@/components/Header";
 import { ForgotPasswordSection } from "@/components/ForgotPassword";
 import { Footer } from "@/components/Footer";
 
-export const metadata = {
-  title: "Forgot Password | ApexTradeCore  Investment",
+export const metadata: Metadata = {
+  title: "Forgot Password",
   description:
-    "Reset your password for your ApexTradeCore  Investment account. Enter your email to receive a password reset link.",
+    "Enter your email to receive a password reset link and regain access to your account.",
 };
 
 export default function ForgotPasswordPage() {

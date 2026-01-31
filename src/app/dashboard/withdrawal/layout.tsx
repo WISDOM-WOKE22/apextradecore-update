@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Withdrawal | ApexTradeCore  Investment",
-  description: "Withdraw funds to your account. Select currency, amount, and authorize your withdrawal.",
+  title: "Withdrawal",
+  description: "Withdraw funds. Select currency, amount, and authorize your withdrawal.",
+  robots: { index: false, follow: false },
 };
 
 export default function DashboardWithdrawalLayout({

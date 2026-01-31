@@ -4,8 +4,9 @@ import type { Metadata } from "next";
 import { UserAreaGuard } from "@/components/guard";
 
 export const metadata: Metadata = {
-  title: "Withdrawal | ApexTradeCore  Investment",
-  description: "Withdraw funds from your account.",
+  title: "Withdrawal",
+  description: "Withdraw funds. Select currency, amount, and authorize your withdrawal.",
+  robots: { index: false, follow: false },
 };
 
 export default async function WithdrawalLayout({

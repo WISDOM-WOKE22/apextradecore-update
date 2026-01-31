@@ -2,11 +2,10 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Settings",
-  description: "Manage your profile, password, and account settings.",
-  robots: { index: false, follow: false },
+  description: "Admin account and application settings.",
 };
 
-export default function DashboardSettingsLayout({
+export default function AdminSettingsLayout({
   children,
 }: { children: React.ReactNode }) {
   return children;

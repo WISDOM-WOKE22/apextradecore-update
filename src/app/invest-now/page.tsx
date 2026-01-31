@@ -1,12 +1,13 @@
+import type { Metadata } from "next";
 import { Header } from "@/components/Header";
 import { MembershipPlansSection } from "@/components/MembershipPlans";
 import { EnterpriseCTA } from "@/components/EnterpriseCTA";
 import { Footer } from "@/components/Footer";
 
-export const metadata = {
-  title: "Invest Now | ApexTradeCore  Investment",
+export const metadata: Metadata = {
+  title: "Invest Now",
   description:
-    "Choose your membership card investment plan. Deluxe, Standard, Premium, and Gold options with guaranteed returns.",
+    "Choose your membership plan: Deluxe, Standard, Premium, and Gold. Flexible terms and returns.",
 };
 
 export default function InvestNowPage() {

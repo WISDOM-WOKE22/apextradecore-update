@@ -4,9 +4,9 @@ import type { Metadata } from "next";
 import { UserAreaGuard } from "@/components/guard";
 
 export const metadata: Metadata = {
-  title: "My Investments | ApexTradeCore  Investment",
-  description:
-    "View and track your investments, returns, timeline, and bonuses.",
+  title: "My Investments",
+  description: "View and track your investments, returns, timeline, and bonuses.",
+  robots: { index: false, follow: false },
 };
 
 export default async function MyInvestmentsLayout({

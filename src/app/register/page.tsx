@@ -1,11 +1,11 @@
+import type { Metadata } from "next";
 import { Header } from "@/components/Header";
 import { SignupSection } from "@/components/Signup";
 import { Footer } from "@/components/Footer";
 
-export const metadata = {
-  title: "Sign Up | ApexTradeCore  Investment",
-  description:
-    "Create your account and join ApexTradeCore  Investment. Start your financial journey with exclusive investment opportunities.",
+export const metadata: Metadata = {
+  title: "Sign Up",
+  description: "Create an account to start investing. Choose a plan, deposit, and track returns.",
 };
 
 export default function RegisterPage() {

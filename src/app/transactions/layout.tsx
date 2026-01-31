@@ -4,8 +4,9 @@ import type { Metadata } from "next";
 import { UserAreaGuard } from "@/components/guard";
 
 export const metadata: Metadata = {
-  title: "Transactions | ApexTradeCore  Investment",
+  title: "Transactions",
   description: "View and filter your transaction history, deposits, withdrawals, and top-ups.",
+  robots: { index: false, follow: false },
 };
 
 export default async function TransactionsLayout({

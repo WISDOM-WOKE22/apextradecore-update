@@ -1,6 +1,13 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import { UserAreaGuard } from "@/components/guard";
+
+export const metadata: Metadata = {
+  title: "Dashboard",
+  description: "Manage your portfolio, view balances, and track investments.",
+  robots: { index: false, follow: false },
+};
 
 export default async function DashboardLayout({
   children,

@@ -4,8 +4,9 @@ import type { Metadata } from "next";
 import { UserAreaGuard } from "@/components/guard";
 
 export const metadata: Metadata = {
-  title: "Settings | ApexTradeCore  Investment",
+  title: "Settings",
   description: "Manage your profile, password, and account settings.",
+  robots: { index: false, follow: false },
 };
 
 export default async function SettingsLayout({

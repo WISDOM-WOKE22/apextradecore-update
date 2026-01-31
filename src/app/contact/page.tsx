@@ -1,11 +1,12 @@
+import type { Metadata } from "next";
 import { Header } from "@/components/Header";
 import { ContactHero } from "@/components/ContactPage";
 import { Footer } from "@/components/Footer";
 
-export const metadata = {
-  title: "Contact Us | ApexTradeCore  Investment",
+export const metadata: Metadata = {
+  title: "Contact Us",
   description:
-    "Get in touch with ApexTradeCore  Investment. Our team is ready to assist you with any inquiries or investment needs.",
+    "Contact support for account questions, deposits, withdrawals, or investment plans. We respond quickly.",
 };
 
 export default function ContactPage() {
