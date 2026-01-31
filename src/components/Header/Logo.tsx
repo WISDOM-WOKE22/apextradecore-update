@@ -15,15 +15,15 @@ export function Logo() {
           className="flex h-9 w-9 shrink-0 items-center justify-center rounded bg-[#cc0000] text-lg font-bold text-white"
           aria-hidden
         >
-          T
+          {process.env.NEXT_PUBLIC_PROJECT_NAME?.charAt(0)}
         </span>
         <div className="flex flex-col leading-tight">
           <span className="text-[17px] font-bold tracking-tight text-[#212121]">
-            TESLA
+            {process.env.NEXT_PUBLIC_PROJECT_NAME}
           </span>
-          <span className="text-[12px] font-normal text-[#666666]">
-            Share Hub Investment
-          </span>
+          {/* <span className="text-[12px] font-normal text-[#666666]">
+            {process.env.NEXT_PUBLIC_PROJECT_DESCRIPTION}
+          </span> */}
         </div>
       </Link>
     </motion.div>

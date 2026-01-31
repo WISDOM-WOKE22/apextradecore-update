@@ -2,10 +2,12 @@
 
 import { motion } from "motion/react";
 import { Button } from "@/components/ui/Button";
+import cardImage from "@/assets/card.webp"
+import Image from "next/image";
 
 const steps = [
   {
-    title: "Select Your Membership Card",
+    title: "Select Your A Plan",
     body: "Choose an investment plan that suits your financial goals.",
   },
   {
@@ -98,13 +100,21 @@ export function HowItWorks() {
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
           className="flex items-center justify-center"
         >
-          <div className="relative h-[260px] w-full max-w-[360px]">
+          <div className="relative h-[560px] w-full max-w-[860px]">
             {/* Card stack */}
-            <div className="absolute inset-0">
+            {/* <div className="absolute inset-0">
               <div className="absolute left-6 top-10 h-[160px] w-[280px] -rotate-6 rounded-3xl bg-linear-to-br from-[#0c1554] via-[#131b67] to-[#263da7] shadow-[0_24px_60px_rgba(5,10,40,0.6)]" />
               <div className="absolute left-3 top-24 h-[150px] w-[270px] rotate-0 rounded-3xl bg-linear-to-br from-[#3442d9] via-[#5865f2] to-[#9b8cff] opacity-90 shadow-[0_20px_50px_rgba(25,40,120,0.55)]" />
               <div className="absolute left-0 top-36 h-[140px] w-[260px] rotate-3 rounded-3xl bg-linear-to-br from-[#eef2ff] via-[#f9fbff] to-surface shadow-[0_18px_40px_rgba(15,23,42,0.18)]" />
-            </div>
+            </div> */}
+            <Image
+            src={cardImage.src}
+            alt="Professional investor"
+            fill
+            // sizes="(max-width: 768px) 620px, 680px"
+            className="object-contain object-bottom grayscale"
+            priority
+          />
           </div>
         </motion.div>
       </div>

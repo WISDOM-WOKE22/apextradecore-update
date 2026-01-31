@@ -3,11 +3,11 @@
 import { motion } from "motion/react";
 import { Button } from "@/components/ui/Button";
 
-const WELCOME = "Welcome to Tesla ShareHubs Investments";
+const WELCOME = `Welcome to ${process.env.NEXT_PUBLIC_PROJECT_NAME} Investments`;
 const HEADLINE =
   "Get a clear path to your financial freedom";
 const DESCRIPTION =
-  "At Tesla ShareHubs Investment, we provide exclusive investment opportunities with guaranteed returns. Whether you're a seasoned investor or new to the world of finance, we offer a range of flexible membership plans to suit your needs. With Tesla ShareHubs, your investment will work hard for you, bringing substantial returns in a short period of time.";
+  `At ${process.env.NEXT_PUBLIC_PROJECT_NAME} Investments, we provide exclusive investment opportunities with guaranteed returns. Whether you're a seasoned investor or new to the world of finance, we offer a range of flexible membership plans to suit your needs. With ${process.env.NEXT_PUBLIC_PROJECT_NAME}, your investment will work hard for you, bringing substantial returns in a short period of time.`;
 
 export function HeroContent() {
   return (
@@ -45,8 +45,8 @@ export function HeroContent() {
         transition={{ duration: 0.4, delay: 0.35 }}
         className="flex flex-col gap-3 sm:flex-row sm:gap-4"
       >
-        <Button as="a" href="/membership-card">
-          Get a Membership Card
+        <Button as="a" href="/register">
+          Sign Up
         </Button>
         <Button as="a" href="/invest-now">
           Invest Now

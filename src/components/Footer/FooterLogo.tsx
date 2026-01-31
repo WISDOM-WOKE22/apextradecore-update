@@ -16,15 +16,15 @@ export function FooterLogo() {
           className="flex h-10 w-10 shrink-0 items-center justify-center rounded bg-[#cc0000] text-xl font-bold text-white"
           aria-hidden
         >
-          T
+          {process.env.NEXT_PUBLIC_PROJECT_NAME?.charAt(0)}
         </span>
         <div className="flex flex-col leading-tight">
           <span className="text-lg font-bold tracking-tight text-white">
-            TESLA
+            {process.env.NEXT_PUBLIC_PROJECT_NAME}
           </span>
-          <span className="text-sm font-normal text-[#a0aec0]">
-            Share Hub Investment
-          </span>
+          {/* <span className="text-sm font-normal text-[#a0aec0]">
+            your path to financial freedom Investment
+          </span> */}
         </div>
       </Link>
       <p className="text-sm leading-relaxed text-[#a0aec0]">{TAGLINE}</p>

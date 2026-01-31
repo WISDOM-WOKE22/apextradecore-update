@@ -104,7 +104,7 @@ export function MembershipCard({
       <div className="mt-auto pt-6 sm:pt-8">
         <Button
           as="a"
-          href="/membership-card"
+          href="/register"
           className={
             variant === "premium"
               ? "w-full bg-white text-[#059669] hover:bg-white/95 hover:text-[#047857]"

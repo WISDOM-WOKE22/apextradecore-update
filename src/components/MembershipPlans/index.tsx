@@ -4,9 +4,9 @@ import { motion } from "motion/react";
 import { MembershipCard, type MembershipCardProps } from "./MembershipCard";
 import { MEMBERSHIP_PLANS } from "./plans";
 
-const HEADLINE = "Membership Card Investment Plans";
+const HEADLINE = "Membership Investment Plans";
 const SUBHEADING =
-  "Sodales mauris quam faucibus scelerisque risus malesuada nulla. Cursus enim quis elementum feugiat ut.";
+  "Choose an investment plan that suits your financial goals.";
 
 const VARIANTS: MembershipCardProps["variant"][] = [
   "light",

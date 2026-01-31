@@ -3,6 +3,8 @@
 import { motion } from "motion/react";
 import { TrustpilotWidget } from "./TrustpilotWidget";
 import { UserInsightCard } from "./UserInsightCard";
+import Image from "next/image";
+import demoImage from "@/assets/demo.webp"
 
 const HEADLINE = "Your finances, safe and secure";
 const BODY =
@@ -30,7 +32,15 @@ export function FinanceSecurity() {
               <TrustpilotWidget />
             </div>
             <div className="flex items-center justify-end lg:justify-center">
-              <UserInsightCard />
+            <UserInsightCard/>
+            {/* <Image
+              src={demoImage.src}
+              alt="Professional investor"
+              fill
+              // sizes="(max-width: 768px) 620px, 680px"
+              className="object-contain object-bottom grayscale z-10"
+              priority
+            /> */}
             </div>
           </div>
         </motion.div>

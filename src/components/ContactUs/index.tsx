@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { motion } from "motion/react";
 import { ContactItem } from "./ContactItem";
+import contactImage from "@/assets/contact.webp"
 
 const HEADLINE =
   "Have any questions? Don't hesitate to reach us.";
@@ -71,17 +72,17 @@ export function ContactUs() {
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
           className="relative flex justify-center lg:justify-end"
         >
-          <div className="relative h-[320px] w-full max-w-[420px] md:h-[400px]">
+          <div className="relative h-[320px] w-full max-w-[420px] md:h-[600px]">
             <div
-              className="absolute -left-12 -top-12 h-[140%] w-[140%] rounded-full bg-[#fce4ec] opacity-60 blur-[80px]"
+              className="absolute -left-12 -top-12 h-[150%] w-[140%] rounded-full bg-[#fce4ec] opacity-60 blur-[80px]"
               aria-hidden
             />
             <div className="relative h-full w-full overflow-hidden rounded-2xl">
               <Image
-                src={CONTACT_IMAGE}
+                src={contactImage.src}
                 alt="Customer service representative"
                 fill
-                sizes="(max-width: 768px) 100vw, 420px"
+                // sizes="(max-width: 768px) 100vw, 420px"
                 className="object-cover object-center grayscale"
                 priority={false}
               />

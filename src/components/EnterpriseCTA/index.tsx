@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/Button";
 
 const HEADLINE = "Are you an enterprise and need a custom plan?";
 const DESCRIPTION =
-  "At Tesla ShareHubs Investments, we understand that businesses have unique financial needs. That's why we offer tailored investment solutions designed to fit your specific goals, whether you're looking for scalable growth, enhanced cash flow, or strategic financial planning";
+  `At ${process.env.NEXT_PUBLIC_PROJECT_NAME} Investments, we understand that businesses have unique financial needs. That's why we offer tailored investment solutions designed to fit your specific goals, whether you're looking for scalable growth, enhanced cash flow, or strategic financial planning`;
 
 export function EnterpriseCTA() {
   return (
@@ -47,13 +47,7 @@ export function EnterpriseCTA() {
               transition={{ duration: 0.4, delay: 0.2, ease: "easeOut" }}
               className="mx-auto mt-6 max-w-[680px] text-lg leading-relaxed text-white/95 sm:text-xl sm:leading-relaxed"
             >
-              At{" "}
-              <span className="font-bold text-white">Tesla ShareHubs Investments</span>
-              , we understand that businesses have unique financial needs. That's why
-              we offer{" "}
-              <span className="font-bold text-white">tailored investment solutions</span>{" "}
-              designed to fit your specific goals, whether you're looking for scalable
-              growth, enhanced cash flow, or strategic financial planning
+              {DESCRIPTION}
             </motion.p>
 
             <motion.div

@@ -7,9 +7,9 @@ const HEADLINE = "Don't hesitate to reach out to us";
 const DESCRIPTION =
   "Our team is always available to assist you with any inquiries or investment needs. Contact us today and take the first step toward financial growth!";
 
-const EMAIL = "info@teslasharehubs.org";
-const PHONE = "+1 (512) 300-7038";
-const ADDRESS = "2138 Main Street Austin, TX 78701";
+const EMAIL = process.env.NEXT_PUBLIC_CONTACT_EMAIL;
+const PHONE = process.env.NEXT_PUBLIC_CONTACT_PHONE;
+const ADDRESS = process.env.NEXT_PUBLIC_CONTACT_ADDRESS;
 
 const EnvelopeIcon = () => (
   <svg
@@ -117,25 +117,25 @@ export function ContactInfo() {
       </motion.p>
 
       <div className="flex flex-col gap-6">
-        <ContactDetail icon={<EnvelopeIcon />} index={0}>
+       {EMAIL && <ContactDetail icon={<EnvelopeIcon />} index={0}>
           <a
             href={`mailto:${EMAIL}`}
             className="text-inherit no-underline hover:text-accent"
           >
             {EMAIL}
           </a>
-        </ContactDetail>
-        <ContactDetail icon={<PhoneIcon />} index={1}>
+        </ContactDetail>}
+        {PHONE && <ContactDetail icon={<PhoneIcon />} index={1}>
           <a
             href={`tel:${PHONE.replace(/\s/g, "")}`}
             className="text-inherit no-underline hover:text-accent"
           >
             {PHONE}
           </a>
-        </ContactDetail>
-        <ContactDetail icon={<LocationIcon />} index={2}>
-          {ADDRESS}
-        </ContactDetail>
+        </ContactDetail>}
+       {ADDRESS && <ContactDetail icon={<LocationIcon />} index={2}>
+            {ADDRESS}
+          </ContactDetail>}
       </div>
     </div>
   );
