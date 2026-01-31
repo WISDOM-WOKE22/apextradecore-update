@@ -28,8 +28,7 @@ export function AdminHeader({ onMenuClick }: AdminHeaderProps) {
     const result = await logout();
     if (result.success) {
       reset();
-      router.push("/login");
-      router.refresh();
+      router.replace("/login");
     }
   };
 

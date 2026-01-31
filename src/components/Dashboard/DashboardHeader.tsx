@@ -37,8 +37,7 @@ export function DashboardHeader({ onMenuClick }: DashboardHeaderProps) {
     const result = await logout();
     if (result.success) {
       reset();
-      router.push("/login");
-      router.refresh();
+      router.replace("/login");
     }
   };
 

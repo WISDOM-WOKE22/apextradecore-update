@@ -68,7 +68,7 @@ export const useAppStore = create<AppState>((set) => ({
 
   setError: (error) => set({ error }),
 
-  reset: () => set(initialState),
+  reset: () => set({ ...initialState, loading: false }),
 }));
 
 /** Format currency for display */
