@@ -191,121 +191,50 @@ export default function AdminWalletsPage() {
                 {wallets.map((w) => (
                   <tr key={w.id} className="transition-colors hover:bg-[#fafafa] dark:hover:bg-[#262626]">
                     <td className="whitespace-nowrap px-3 py-3 sm:px-4 sm:py-3.5 lg:px-6">
-                      {editingId === w.id ? (
-                        <input
-                          type="text"
-                          value={editName}
-                          onChange={(e) => setEditName(e.target.value)}
-                          className="w-full min-w-0 max-w-[160px] rounded-lg border border-[#e5e7eb] bg-white px-3 py-2 text-sm focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent dark:border-[#2a2a2a] dark:bg-[#262626] dark:text-[#f5f5f5]"
-                          placeholder="Wallet name"
-                        />
-                      ) : (
-                        <span className="font-medium text-[#111827] dark:text-[#f5f5f5]">{w.name || "—"}</span>
-                      )}
+                      <span className="font-medium text-[#111827] dark:text-[#f5f5f5]">{w.name || "—"}</span>
                     </td>
                     <td className="whitespace-nowrap px-3 py-3 sm:px-4 sm:py-3.5 lg:px-6">
-                      {editingId === w.id ? (
-                        <input
-                          type="text"
-                          value={editNetworkChain}
-                          onChange={(e) => setEditNetworkChain(e.target.value)}
-                          className="w-full min-w-0 max-w-[180px] rounded-lg border border-[#e5e7eb] bg-white px-3 py-2 text-sm focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
-                          placeholder="e.g. ERC-20, TRC-20"
-                        />
-                      ) : (
-                        <span className="text-sm text-text-secondary">
-                          {w.networkChain || "—"}
-                        </span>
-                      )}
+                      <span className="text-sm text-text-secondary dark:text-[#a3a3a3]">
+                        {w.networkChain || "—"}
+                      </span>
                     </td>
                     <td className="whitespace-nowrap px-3 py-3 sm:px-4 sm:py-3.5 lg:px-6">
-                      {editingId === w.id ? (
-                        <input
-                          type="text"
-                          value={editAddress}
-                          onChange={(e) => setEditAddress(e.target.value)}
-                          className="w-full min-w-0 max-w-[240px] rounded-lg border border-[#e5e7eb] bg-white px-3 py-2 font-mono text-sm focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
-                          placeholder="Address"
-                        />
-                      ) : (
-                        <span className="font-mono text-sm text-text-secondary">
-                          {truncate(w.address, 18)}
-                        </span>
-                      )}
+                      <span className="font-mono text-sm text-text-secondary dark:text-[#a3a3a3]">
+                        {truncate(w.address, 18)}
+                      </span>
                     </td>
                     <td className="whitespace-nowrap px-3 py-3 sm:px-4 sm:py-3.5 lg:px-6">
                       <StatusPill enabled={w.enabled} />
                     </td>
                     <td className="whitespace-nowrap px-3 py-3 text-right sm:px-4 sm:py-3.5 lg:px-6">
-                      {editingId === w.id ? (
-                        <div className="flex justify-end gap-2">
-                          <button
-                            type="button"
-                            onClick={cancelEdit}
-                            className="rounded-lg border border-[#e5e7eb] bg-white px-3 py-1.5 text-sm font-medium text-[#374151] hover:bg-[#f9fafb]"
-                          >
-                            Cancel
-                          </button>
-                          <button
-                            type="button"
-                            onClick={handleEditSubmit}
-                            disabled={editSubmitting}
-                            className="rounded-lg bg-accent px-3 py-1.5 text-sm font-medium text-white hover:opacity-95 disabled:opacity-60"
-                          >
-                            {editSubmitting ? "Saving…" : "Save"}
-                          </button>
-                        </div>
-                      ) : (
-                        <div className="flex flex-wrap items-center justify-end gap-2">
-                          <button
-                            type="button"
-                            onClick={() => startEdit(w)}
-                            className="rounded-lg px-3 py-1.5 text-sm font-medium text-accent hover:bg-[#eef2ff]"
-                          >
-                            Edit
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => handleToggle(w)}
-                            disabled={toggleSubmittingId === w.id}
-                            className="rounded-lg px-3 py-1.5 text-sm font-medium text-[#374151] hover:bg-[#f3f4f6] disabled:opacity-60"
-                          >
-                            {toggleSubmittingId === w.id
-                              ? "…"
-                              : w.enabled
-                                ? "Disable"
-                                : "Enable"}
-                          </button>
-                          {deleteConfirmId === w.id ? (
-                            <span className="flex items-center gap-2">
-                              <span className="text-xs text-[#6b7280]">Delete?</span>
-                              <button
-                                type="button"
-                                onClick={() => handleDelete(w.id)}
-                                disabled={deleteSubmitting}
-                                className="rounded-lg bg-[#dc2626] px-2.5 py-1 text-xs font-medium text-white hover:bg-[#b91c1c] disabled:opacity-60"
-                              >
-                                {deleteSubmitting ? "…" : "Yes"}
-                              </button>
-                              <button
-                                type="button"
-                                onClick={() => setDeleteConfirmId(null)}
-                                className="rounded-lg px-2.5 py-1 text-xs font-medium text-[#374151] hover:bg-[#f3f4f6]"
-                              >
-                                No
-                              </button>
-                            </span>
-                          ) : (
-                            <button
-                              type="button"
-                              onClick={() => setDeleteConfirmId(w.id)}
-                              className="rounded-lg px-3 py-1.5 text-sm font-medium text-[#dc2626] hover:bg-[#fef2f2]"
-                            >
-                              Delete
-                            </button>
-                          )}
-                        </div>
-                      )}
+                      <div className="flex flex-wrap items-center justify-end gap-2">
+                        <button
+                          type="button"
+                          onClick={() => startEdit(w)}
+                          className="rounded-lg px-3 py-1.5 text-sm font-medium text-accent hover:bg-[#eef2ff] dark:hover:bg-accent/10"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleToggle(w)}
+                          disabled={toggleSubmittingId === w.id}
+                          className="rounded-lg px-3 py-1.5 text-sm font-medium text-[#374151] hover:bg-[#f3f4f6] disabled:opacity-60 dark:text-[#e5e5e5] dark:hover:bg-[#404040]"
+                        >
+                          {toggleSubmittingId === w.id
+                            ? "…"
+                            : w.enabled
+                              ? "Disable"
+                              : "Enable"}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setDeleteConfirmId(w.id)}
+                          className="rounded-lg px-3 py-1.5 text-sm font-medium text-[#dc2626] hover:bg-[#fef2f2] dark:hover:bg-[#7f1d1d]/30"
+                        >
+                          Delete
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -324,28 +253,32 @@ export default function AdminWalletsPage() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm"
+              className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm dark:bg-black/60"
               onClick={() => !addSubmitting && setShowAdd(false)}
+              aria-hidden
             />
             <motion.div
               initial={{ opacity: 0, scale: 0.96 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.96 }}
               transition={{ duration: 0.2 }}
-              className="fixed left-1/2 top-1/2 z-50 w-full max-w-md -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-[#e5e7eb] bg-white p-6 shadow-xl"
+              className="fixed left-1/2 top-1/2 z-50 w-full max-w-md -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-[#e5e7eb] bg-white p-6 shadow-xl dark:border-[#2a2a2a] dark:bg-[#1a1a1a]"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="add-wallet-title"
             >
-              <h2 className="text-lg font-bold text-[#111827]">Add wallet</h2>
-              <p className="mt-1 text-sm text-text-secondary">
+              <h2 id="add-wallet-title" className="text-lg font-bold text-[#111827] dark:text-[#f5f5f5]">Add wallet</h2>
+              <p className="mt-1 text-sm text-text-secondary dark:text-[#a3a3a3]">
                 Add a deposit wallet. Set the network/chain so users know exactly which network to use.
               </p>
               {addError && (
-                <div className="mt-4 rounded-lg border border-[#fecaca] bg-[#fef2f2] px-4 py-3 text-sm text-[#b91c1c]">
+                <div className="mt-4 rounded-lg border border-[#fecaca] bg-[#fef2f2] px-4 py-3 text-sm text-[#b91c1c] dark:border-[#7f1d1d] dark:bg-[#450a0a] dark:text-[#fca5a5]">
                   {addError}
                 </div>
               )}
               <form onSubmit={handleAddSubmit} className="mt-6 space-y-4">
                 <div>
-                  <label htmlFor="add-name" className="mb-1.5 block text-sm font-medium text-[#374151]">
+                  <label htmlFor="add-name" className="mb-1.5 block text-sm font-medium text-[#374151] dark:text-[#e5e5e5]">
                     Name
                   </label>
                   <input
@@ -355,11 +288,11 @@ export default function AdminWalletsPage() {
                     onChange={(e) => setAddName(e.target.value)}
                     placeholder="e.g. USDT, Bitcoin (BTC)"
                     required
-                    className="w-full rounded-lg border border-[#e5e7eb] bg-white px-4 py-2.5 text-sm focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
+                    className="w-full rounded-lg border border-[#e5e7eb] bg-white px-4 py-2.5 text-sm focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 dark:border-[#2a2a2a] dark:bg-[#262626] dark:text-[#f5f5f5]"
                   />
                 </div>
                 <div>
-                  <label htmlFor="add-network" className="mb-1.5 block text-sm font-medium text-[#374151]">
+                  <label htmlFor="add-network" className="mb-1.5 block text-sm font-medium text-[#374151] dark:text-[#e5e5e5]">
                     Network / chain
                   </label>
                   <input
@@ -368,14 +301,14 @@ export default function AdminWalletsPage() {
                     value={addNetworkChain}
                     onChange={(e) => setAddNetworkChain(e.target.value)}
                     placeholder="e.g. Ethereum (ERC-20), Bitcoin, TRC-20"
-                    className="w-full rounded-lg border border-[#e5e7eb] bg-white px-4 py-2.5 text-sm focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
+                    className="w-full rounded-lg border border-[#e5e7eb] bg-white px-4 py-2.5 text-sm focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 dark:border-[#2a2a2a] dark:bg-[#262626] dark:text-[#f5f5f5]"
                   />
-                  <p className="mt-1 text-xs text-text-secondary">
+                  <p className="mt-1 text-xs text-text-secondary dark:text-[#a3a3a3]">
                     Shown to users so they send funds on the correct network.
                   </p>
                 </div>
                 <div>
-                  <label htmlFor="add-address" className="mb-1.5 block text-sm font-medium text-[#374151]">
+                  <label htmlFor="add-address" className="mb-1.5 block text-sm font-medium text-[#374151] dark:text-[#e5e5e5]">
                     Address
                   </label>
                   <input
@@ -385,7 +318,7 @@ export default function AdminWalletsPage() {
                     onChange={(e) => setAddAddress(e.target.value)}
                     placeholder="Wallet address or contract"
                     required
-                    className="w-full rounded-lg border border-[#e5e7eb] bg-white px-4 py-2.5 font-mono text-sm focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
+                    className="w-full rounded-lg border border-[#e5e7eb] bg-white px-4 py-2.5 font-mono text-sm focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 dark:border-[#2a2a2a] dark:bg-[#262626] dark:text-[#f5f5f5]"
                   />
                 </div>
                 <div className="flex gap-3 pt-2">
@@ -393,7 +326,7 @@ export default function AdminWalletsPage() {
                     type="button"
                     onClick={() => !addSubmitting && setShowAdd(false)}
                     disabled={addSubmitting}
-                    className="flex-1 rounded-lg border border-[#e5e7eb] bg-white py-2.5 text-sm font-medium text-[#374151] hover:bg-[#f9fafb] disabled:opacity-60"
+                    className="flex-1 rounded-lg border border-[#e5e7eb] bg-white py-2.5 text-sm font-medium text-[#374151] hover:bg-[#f9fafb] disabled:opacity-60 dark:border-[#2a2a2a] dark:bg-[#262626] dark:text-[#e5e5e5] dark:hover:bg-[#404040]"
                   >
                     Cancel
                   </button>
@@ -406,6 +339,160 @@ export default function AdminWalletsPage() {
                   </button>
                 </div>
               </form>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
+      {/* Edit wallet modal */}
+      <AnimatePresence>
+        {editingId && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm dark:bg-black/60"
+              onClick={() => !editSubmitting && cancelEdit()}
+              aria-hidden
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.96 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.96 }}
+              transition={{ duration: 0.2 }}
+              className="fixed left-1/2 top-1/2 z-50 w-full max-w-md -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-[#e5e7eb] bg-white p-6 shadow-xl dark:border-[#2a2a2a] dark:bg-[#1a1a1a]"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="edit-wallet-title"
+            >
+              <h2 id="edit-wallet-title" className="text-lg font-bold text-[#111827] dark:text-[#f5f5f5]">
+                Edit wallet
+              </h2>
+              <p className="mt-1 text-sm text-text-secondary dark:text-[#a3a3a3]">
+                Update the wallet name, network/chain, or address.
+              </p>
+              <form onSubmit={handleEditSubmit} className="mt-6 space-y-4">
+                <div>
+                  <label htmlFor="edit-name" className="mb-1.5 block text-sm font-medium text-[#374151] dark:text-[#e5e5e5]">
+                    Name
+                  </label>
+                  <input
+                    id="edit-name"
+                    type="text"
+                    value={editName}
+                    onChange={(e) => setEditName(e.target.value)}
+                    placeholder="e.g. USDT, Bitcoin (BTC)"
+                    required
+                    className="w-full rounded-lg border border-[#e5e7eb] bg-white px-4 py-2.5 text-sm focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 dark:border-[#2a2a2a] dark:bg-[#262626] dark:text-[#f5f5f5]"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="edit-network" className="mb-1.5 block text-sm font-medium text-[#374151] dark:text-[#e5e5e5]">
+                    Network / chain
+                  </label>
+                  <input
+                    id="edit-network"
+                    type="text"
+                    value={editNetworkChain}
+                    onChange={(e) => setEditNetworkChain(e.target.value)}
+                    placeholder="e.g. Ethereum (ERC-20), Bitcoin, TRC-20"
+                    className="w-full rounded-lg border border-[#e5e7eb] bg-white px-4 py-2.5 text-sm focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 dark:border-[#2a2a2a] dark:bg-[#262626] dark:text-[#f5f5f5]"
+                  />
+                  <p className="mt-1 text-xs text-text-secondary dark:text-[#a3a3a3]">
+                    Shown to users so they send funds on the correct network.
+                  </p>
+                </div>
+                <div>
+                  <label htmlFor="edit-address" className="mb-1.5 block text-sm font-medium text-[#374151] dark:text-[#e5e5e5]">
+                    Address
+                  </label>
+                  <input
+                    id="edit-address"
+                    type="text"
+                    value={editAddress}
+                    onChange={(e) => setEditAddress(e.target.value)}
+                    placeholder="Wallet address or contract"
+                    required
+                    className="w-full rounded-lg border border-[#e5e7eb] bg-white px-4 py-2.5 font-mono text-sm focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 dark:border-[#2a2a2a] dark:bg-[#262626] dark:text-[#f5f5f5]"
+                  />
+                </div>
+                <div className="flex gap-3 pt-2">
+                  <button
+                    type="button"
+                    onClick={cancelEdit}
+                    disabled={editSubmitting}
+                    className="flex-1 rounded-lg border border-[#e5e7eb] bg-white py-2.5 text-sm font-medium text-[#374151] hover:bg-[#f9fafb] disabled:opacity-60 dark:border-[#2a2a2a] dark:bg-[#262626] dark:text-[#e5e5e5] dark:hover:bg-[#404040]"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={editSubmitting}
+                    className="flex-1 rounded-lg bg-accent py-2.5 text-sm font-medium text-white hover:opacity-95 disabled:opacity-60"
+                  >
+                    {editSubmitting ? "Saving…" : "Save"}
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
+      {/* Delete wallet confirmation modal */}
+      <AnimatePresence>
+        {deleteConfirmId && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm dark:bg-black/60"
+              onClick={() => !deleteSubmitting && setDeleteConfirmId(null)}
+              aria-hidden
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.96 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.96 }}
+              transition={{ duration: 0.2 }}
+              className="fixed left-1/2 top-1/2 z-50 w-full max-w-md -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-[#e5e7eb] bg-white p-6 shadow-xl dark:border-[#2a2a2a] dark:bg-[#1a1a1a]"
+              role="alertdialog"
+              aria-modal="true"
+              aria-labelledby="delete-wallet-title"
+              aria-describedby="delete-wallet-description"
+            >
+              <h2 id="delete-wallet-title" className="text-lg font-bold text-[#111827] dark:text-[#f5f5f5]">
+                Delete wallet
+              </h2>
+              <p id="delete-wallet-description" className="mt-2 text-sm text-text-secondary dark:text-[#a3a3a3]">
+                Are you sure you want to delete{" "}
+                <span className="font-medium text-[#111827] dark:text-[#f5f5f5]">
+                  {wallets.find((w) => w.id === deleteConfirmId)?.name || "this wallet"}
+                </span>
+                ? This cannot be undone.
+              </p>
+              <div className="mt-6 flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => setDeleteConfirmId(null)}
+                  disabled={deleteSubmitting}
+                  className="flex-1 rounded-lg border border-[#e5e7eb] bg-white py-2.5 text-sm font-medium text-[#374151] hover:bg-[#f9fafb] disabled:opacity-60 dark:border-[#2a2a2a] dark:bg-[#262626] dark:text-[#e5e5e5] dark:hover:bg-[#404040]"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={() => deleteConfirmId && handleDelete(deleteConfirmId)}
+                  disabled={deleteSubmitting}
+                  className="flex-1 rounded-lg bg-[#dc2626] py-2.5 text-sm font-medium text-white hover:bg-[#b91c1c] disabled:opacity-60"
+                >
+                  {deleteSubmitting ? "Deleting…" : "Delete"}
+                </button>
+              </div>
             </motion.div>
           </>
         )}
