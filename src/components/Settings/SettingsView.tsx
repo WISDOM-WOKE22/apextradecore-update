@@ -10,11 +10,11 @@ import { useChangePassword } from "@/services/auth/changePassword";
 import { updateUserProfile } from "@/services/user/updateUserProfile";
 
 const baseInput =
-  "w-full rounded-lg border px-4 py-3 text-base text-[#111827] placeholder:text-[#9ca3af] focus:outline-none focus:ring-2 transition-colors";
+  "w-full rounded-lg border px-4 py-3 text-base text-[#111827] placeholder:text-[#9ca3af] focus:outline-none focus:ring-2 transition-colors dark:text-[#f5f5f5] dark:placeholder:text-[#737373]";
 const inputStyles = (error: boolean) =>
   error
-    ? `${baseInput} border-[#ef4444] bg-[#fef2f2] focus:border-[#ef4444] focus:ring-[#ef4444]/20`
-    : `${baseInput} border-[#e5e7eb] bg-[#f9fafb] focus:border-accent focus:bg-white focus:ring-accent/20`;
+    ? `${baseInput} border-[#ef4444] bg-[#fef2f2] focus:border-[#ef4444] focus:ring-[#ef4444]/20 dark:border-[#f87171] dark:bg-[#450a0a] dark:focus:bg-[#450a0a]`
+    : `${baseInput} border-[#e5e7eb] bg-[#f9fafb] focus:border-accent focus:bg-white focus:ring-accent/20 dark:border-[#2a2a2a] dark:bg-[#262626] dark:focus:border-accent dark:focus:bg-[#1a1a1a]`;
 
 export interface SettingsViewProps {
   title?: string;
@@ -123,8 +123,8 @@ export function SettingsView({
 
   if (!user) {
     return (
-      <div className="mx-auto w-full rounded-xl border border-[#e5e7eb] bg-white p-8 text-center shadow-sm">
-        <p className="text-text-secondary">Loading your account…</p>
+      <div className="mx-auto w-full rounded-xl border border-[#e5e7eb] bg-white p-8 text-center shadow-sm dark:border-[#2a2a2a] dark:bg-[#1a1a1a]">
+        <p className="text-text-secondary dark:text-[#a3a3a3]">Loading your account…</p>
       </div>
     );
   }
@@ -137,8 +137,8 @@ export function SettingsView({
         transition={{ duration: 0.3 }}
         className="mb-8"
       >
-        <h1 className="text-2xl font-bold text-[#111827] sm:text-3xl">{title}</h1>
-        <p className="mt-1 text-sm text-text-secondary">{subtitle}</p>
+        <h1 className="text-2xl font-bold text-[#111827] dark:text-[#f5f5f5] sm:text-3xl">{title}</h1>
+        <p className="mt-1 text-sm text-text-secondary dark:text-[#a3a3a3]">{subtitle}</p>
       </motion.div>
 
       {/* Profile */}
@@ -146,23 +146,23 @@ export function SettingsView({
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, delay: 0.05 }}
-        className="mb-6 rounded-xl border border-[#e5e7eb] bg-white p-5 shadow-sm sm:p-6"
+        className="mb-6 rounded-xl border border-[#e5e7eb] bg-white p-5 shadow-sm dark:border-[#2a2a2a] dark:bg-[#1a1a1a] sm:p-6"
       >
         <div className="mb-4 flex items-center gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#eef2ff] text-accent">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#eef2ff] text-accent dark:bg-accent/20">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
               <circle cx="12" cy="7" r="4" />
             </svg>
           </div>
           <div>
-            <h2 className="text-lg font-semibold text-[#111827]">Profile</h2>
-            <p className="text-sm text-text-secondary">Update your display name and contact info</p>
+            <h2 className="text-lg font-semibold text-[#111827] dark:text-[#f5f5f5]">Profile</h2>
+            <p className="text-sm text-text-secondary dark:text-[#a3a3a3]">Update your display name and contact info</p>
           </div>
         </div>
         <form onSubmit={handleSaveProfile} className="space-y-4">
           <div>
-            <label htmlFor="fullName" className="mb-2 block text-sm font-medium text-[#374151]">
+            <label htmlFor="fullName" className="mb-2 block text-sm font-medium text-[#374151] dark:text-[#e5e5e5]">
               Full name
             </label>
             <input
@@ -178,7 +178,7 @@ export function SettingsView({
             />
           </div>
           <div>
-            <label htmlFor="country" className="mb-2 block text-sm font-medium text-[#374151]">
+            <label htmlFor="country" className="mb-2 block text-sm font-medium text-[#374151] dark:text-[#e5e5e5]">
               Country
             </label>
             <input
@@ -191,7 +191,7 @@ export function SettingsView({
             />
           </div>
           <div>
-            <label htmlFor="phoneNumber" className="mb-2 block text-sm font-medium text-[#374151]">
+            <label htmlFor="phoneNumber" className="mb-2 block text-sm font-medium text-[#374151] dark:text-[#e5e5e5]">
               Phone number
             </label>
             <input
@@ -204,7 +204,7 @@ export function SettingsView({
             />
           </div>
           {profileError && (
-            <p className="text-sm text-[#ef4444]" role="alert">{profileError}</p>
+            <p className="text-sm text-[#ef4444] dark:text-[#fca5a5]" role="alert">{profileError}</p>
           )}
           <Button
             type="submit"
@@ -221,23 +221,23 @@ export function SettingsView({
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, delay: 0.1 }}
-        className="mb-6 rounded-xl border border-[#e5e7eb] bg-white p-5 shadow-sm sm:p-6"
+        className="mb-6 rounded-xl border border-[#e5e7eb] bg-white p-5 shadow-sm dark:border-[#2a2a2a] dark:bg-[#1a1a1a] sm:p-6"
       >
         <div className="mb-4 flex items-center gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#eef2ff] text-accent">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#eef2ff] text-accent dark:bg-accent/20">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
               <path d="M7 11V7a5 5 0 0 1 10 0v4" />
             </svg>
           </div>
           <div>
-            <h2 className="text-lg font-semibold text-[#111827]">Password</h2>
-            <p className="text-sm text-text-secondary">Change your password</p>
+            <h2 className="text-lg font-semibold text-[#111827] dark:text-[#f5f5f5]">Password</h2>
+            <p className="text-sm text-text-secondary dark:text-[#a3a3a3]">Change your password</p>
           </div>
         </div>
         <form onSubmit={handleChangePassword} className="space-y-4">
           <div>
-            <label htmlFor="currentPassword" className="mb-2 block text-sm font-medium text-[#374151]">
+            <label htmlFor="currentPassword" className="mb-2 block text-sm font-medium text-[#374151] dark:text-[#e5e5e5]">
               Current password
             </label>
             <div className="relative">
@@ -255,7 +255,7 @@ export function SettingsView({
               <button
                 type="button"
                 onClick={() => setShowPasswords(!showPasswords)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-text-secondary hover:text-[#111827]"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-text-secondary hover:text-[#111827] dark:text-[#a3a3a3] dark:hover:text-[#f5f5f5]"
                 aria-label={showPasswords ? "Hide passwords" : "Show passwords"}
               >
                 {showPasswords ? (
@@ -272,11 +272,11 @@ export function SettingsView({
               </button>
             </div>
             {passwordErrors.currentPassword && (
-              <p className="mt-1.5 text-sm text-[#ef4444]" role="alert">{passwordErrors.currentPassword}</p>
+              <p className="mt-1.5 text-sm text-[#ef4444] dark:text-[#fca5a5]" role="alert">{passwordErrors.currentPassword}</p>
             )}
           </div>
           <div>
-            <label htmlFor="newPassword" className="mb-2 block text-sm font-medium text-[#374151]">
+            <label htmlFor="newPassword" className="mb-2 block text-sm font-medium text-[#374151] dark:text-[#e5e5e5]">
               New password
             </label>
             <input
@@ -291,11 +291,11 @@ export function SettingsView({
               className={inputStyles(!!passwordErrors.newPassword)}
             />
             {passwordErrors.newPassword && (
-              <p className="mt-1.5 text-sm text-[#ef4444]" role="alert">{passwordErrors.newPassword}</p>
+              <p className="mt-1.5 text-sm text-[#ef4444] dark:text-[#fca5a5]" role="alert">{passwordErrors.newPassword}</p>
             )}
           </div>
           <div>
-            <label htmlFor="confirmPassword" className="mb-2 block text-sm font-medium text-[#374151]">
+            <label htmlFor="confirmPassword" className="mb-2 block text-sm font-medium text-[#374151] dark:text-[#e5e5e5]">
               Confirm new password
             </label>
             <input
@@ -310,11 +310,11 @@ export function SettingsView({
               className={inputStyles(!!passwordErrors.confirmPassword)}
             />
             {passwordErrors.confirmPassword && (
-              <p className="mt-1.5 text-sm text-[#ef4444]" role="alert">{passwordErrors.confirmPassword}</p>
+              <p className="mt-1.5 text-sm text-[#ef4444] dark:text-[#fca5a5]" role="alert">{passwordErrors.confirmPassword}</p>
             )}
           </div>
           {(passwordAuthError || passwordSuccess) && (
-            <p className={`text-sm ${passwordSuccess ? "text-[#059669]" : "text-[#ef4444]"}`} role="alert">
+            <p className={`text-sm ${passwordSuccess ? "text-[#059669] dark:text-[#34d399]" : "text-[#ef4444] dark:text-[#fca5a5]"}`} role="alert">
               {passwordSuccess ? "✓ Password updated successfully." : passwordAuthError}
             </p>
           )}
@@ -333,21 +333,21 @@ export function SettingsView({
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, delay: 0.15 }}
-        className="mb-6 rounded-xl border border-[#e5e7eb] bg-[#f9fafb] p-5 sm:p-6"
+        className="mb-6 rounded-xl border border-[#e5e7eb] bg-[#f9fafb] p-5 dark:border-[#2a2a2a] dark:bg-[#262626] sm:p-6"
       >
         <div className="mb-3 flex items-center gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#e5e7eb] text-[#6b7280]">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#e5e7eb] text-[#6b7280] dark:bg-[#404040] dark:text-[#a3a3a3]">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
               <polyline points="22,6 12,13 2,6" />
             </svg>
           </div>
           <div>
-            <h2 className="text-lg font-semibold text-[#111827]">Account</h2>
-            <p className="text-sm text-text-secondary">Your sign-in email (cannot be changed here)</p>
+            <h2 className="text-lg font-semibold text-[#111827] dark:text-[#f5f5f5]">Account</h2>
+            <p className="text-sm text-text-secondary dark:text-[#a3a3a3]">Your sign-in email (cannot be changed here)</p>
           </div>
         </div>
-        <p className="text-sm font-medium text-[#374151]">{user.email}</p>
+        <p className="text-sm font-medium text-[#374151] dark:text-[#e5e5e5]">{user.email}</p>
       </motion.section>
 
       {/* Sign out */}
@@ -355,10 +355,10 @@ export function SettingsView({
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, delay: 0.2 }}
-        className="rounded-xl border border-[#fecaca] bg-[#fef2f2] p-5 sm:p-6"
+        className="rounded-xl border border-[#fecaca] bg-[#fef2f2] p-5 dark:border-[#7f1d1d] dark:bg-[#450a0a] sm:p-6"
       >
         <div className="mb-4 flex items-center gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#fee2e2] text-[#dc2626]">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#fee2e2] text-[#dc2626] dark:bg-[#7f1d1d] dark:text-[#fca5a5]">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
               <polyline points="16 17 21 12 16 7" />
@@ -366,15 +366,15 @@ export function SettingsView({
             </svg>
           </div>
           <div>
-            <h2 className="text-lg font-semibold text-[#111827]">Sign out</h2>
-            <p className="text-sm text-text-secondary">End your session on this device</p>
+            <h2 className="text-lg font-semibold text-[#111827] dark:text-[#f5f5f5]">Sign out</h2>
+            <p className="text-sm text-text-secondary dark:text-[#a3a3a3]">End your session on this device</p>
           </div>
         </div>
         <Button
           type="button"
           onClick={handleLogout}
           disabled={logoutLoading}
-          className="border border-[#f87171] bg-[#ef4444] text-white hover:bg-[#dc2626] disabled:opacity-70"
+          className="border border-[#f87171] bg-[#ef4444] text-white hover:bg-[#dc2626] disabled:opacity-70 dark:border-[#b91c1c] dark:bg-[#dc2626] dark:hover:bg-[#b91c1c]"
         >
           {logoutLoading ? "Signing out…" : "Log out"}
         </Button>

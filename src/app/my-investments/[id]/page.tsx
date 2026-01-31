@@ -67,7 +67,7 @@ export default function InvestmentDetailPage() {
 
   if (isDefault) {
     return (
-      <div className="flex min-h-screen bg-[#f9fafb]">
+      <div className="flex min-h-screen bg-[#f9fafb] dark:bg-[#0f0f0f]">
         <DashboardSidebar
           mobileOpen={mobileMenuOpen}
           onClose={() => setMobileMenuOpen(false)}
@@ -78,15 +78,15 @@ export default function InvestmentDetailPage() {
             <motion.div
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
-              className="mx-auto max-w-[560px] rounded-xl border border-[#e5e7eb] bg-white p-8 text-center shadow-sm"
+              className="mx-auto max-w-[560px] rounded-xl border border-[#e5e7eb] bg-white p-8 text-center shadow-sm dark:border-[#2a2a2a] dark:bg-[#1a1a1a]"
             >
-              <h1 className="text-xl font-bold text-[#111827]">Default plan</h1>
-              <p className="mt-2 text-sm text-text-secondary">
+              <h1 className="text-xl font-bold text-[#111827] dark:text-[#f5f5f5]">Default plan</h1>
+              <p className="mt-2 text-sm text-text-secondary dark:text-[#a3a3a3]">
                 You haven&apos;t started an investment yet. Start with our default Starter plan to begin earning.
               </p>
               <Link
                 href="/investments"
-                className="mt-6 inline-block text-sm font-semibold text-accent no-underline hover:text-[#1552b8]"
+                className="mt-6 inline-block text-sm font-semibold text-accent no-underline hover:text-[#1552b8] dark:hover:text-accent/90"
               >
                 Start investment →
               </Link>
@@ -99,7 +99,7 @@ export default function InvestmentDetailPage() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen bg-[#f9fafb]">
+      <div className="flex min-h-screen bg-[#f9fafb] dark:bg-[#0f0f0f]">
         <DashboardSidebar
           mobileOpen={mobileMenuOpen}
           onClose={() => setMobileMenuOpen(false)}
@@ -107,7 +107,7 @@ export default function InvestmentDetailPage() {
         <div className="flex flex-1 flex-col lg:ml-[280px]">
           <DashboardHeader onMenuClick={() => setMobileMenuOpen(true)} />
           <main className="flex-1 p-4 sm:p-6 lg:p-8">
-            <div className="mx-auto h-64 animate-pulse rounded-xl border border-[#e5e7eb] bg-white" />
+            <div className="mx-auto h-64 animate-pulse rounded-xl border border-[#e5e7eb] bg-white dark:border-[#2a2a2a] dark:bg-[#1a1a1a]" />
           </main>
         </div>
       </div>
@@ -116,7 +116,7 @@ export default function InvestmentDetailPage() {
 
   if (error || notFound) {
     return (
-      <div className="flex min-h-screen bg-[#f9fafb]">
+      <div className="flex min-h-screen bg-[#f9fafb] dark:bg-[#0f0f0f]">
         <DashboardSidebar
           mobileOpen={mobileMenuOpen}
           onClose={() => setMobileMenuOpen(false)}
@@ -127,15 +127,15 @@ export default function InvestmentDetailPage() {
             <motion.div
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
-              className="mx-auto max-w-[560px] rounded-xl border border-[#e5e7eb] bg-white p-8 text-center shadow-sm"
+              className="mx-auto max-w-[560px] rounded-xl border border-[#e5e7eb] bg-white p-8 text-center shadow-sm dark:border-[#2a2a2a] dark:bg-[#1a1a1a]"
             >
-              <h1 className="text-xl font-bold text-[#111827]">Investment not found</h1>
-              <p className="mt-2 text-sm text-text-secondary">
+              <h1 className="text-xl font-bold text-[#111827] dark:text-[#f5f5f5]">Investment not found</h1>
+              <p className="mt-2 text-sm text-text-secondary dark:text-[#a3a3a3]">
                 {error || "This investment may have been removed or the link is incorrect."}
               </p>
               <Link
                 href="/my-investments"
-                className="mt-6 inline-block text-sm font-semibold text-accent no-underline hover:text-[#1552b8]"
+                className="mt-6 inline-block text-sm font-semibold text-accent no-underline hover:text-[#1552b8] dark:hover:text-accent/90"
               >
                 ← Back to my investments
               </Link>
@@ -147,7 +147,7 @@ export default function InvestmentDetailPage() {
   }
 
   return (
-    <div className="flex min-h-screen bg-[#f9fafb]">
+    <div className="flex min-h-screen bg-[#f9fafb] dark:bg-[#0f0f0f]">
       <DashboardSidebar
         mobileOpen={mobileMenuOpen}
         onClose={() => setMobileMenuOpen(false)}

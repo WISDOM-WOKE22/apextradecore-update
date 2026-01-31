@@ -52,8 +52,8 @@ export default function AdminTransactionsPage() {
     >
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-[#111827] sm:text-3xl">All Transactions</h1>
-          <p className="mt-1 text-sm text-text-secondary">
+          <h1 className="text-2xl font-bold text-[#111827] dark:text-[#f5f5f5] sm:text-3xl">All Transactions</h1>
+          <p className="mt-1 text-sm text-text-secondary dark:text-[#a3a3a3]">
             View and manage all user transactions (deposits, withdrawals, investments).
           </p>
         </div>
@@ -61,26 +61,26 @@ export default function AdminTransactionsPage() {
           type="button"
           onClick={() => refetch()}
           disabled={loading}
-          className="self-start rounded-lg border border-[#e5e7eb] bg-white px-4 py-2.5 text-sm font-medium text-[#374151] transition-colors hover:bg-[#f9fafb] disabled:opacity-60"
+          className="self-start rounded-lg border border-[#e5e7eb] bg-white px-4 py-2.5 text-sm font-medium text-[#374151] transition-colors hover:bg-[#f9fafb] disabled:opacity-60 dark:border-[#2a2a2a] dark:bg-[#1a1a1a] dark:text-[#f5f5f5] dark:hover:bg-[#262626]"
         >
           {loading ? "Refreshing…" : "Refresh"}
         </button>
       </div>
 
       {error && (
-        <div className="mb-4 rounded-lg border border-[#fecaca] bg-[#fef2f2] px-4 py-3 text-sm text-[#b91c1c]">
+        <div className="mb-4 rounded-lg border border-[#fecaca] bg-[#fef2f2] px-4 py-3 text-sm text-[#b91c1c] dark:border-[#7f1d1d] dark:bg-[#450a0a] dark:text-[#fca5a5]">
           {error}
         </div>
       )}
 
-      <div className="overflow-hidden rounded-xl border border-[#e5e7eb] bg-white shadow-sm">
+      <div className="overflow-hidden rounded-xl border border-[#e5e7eb] bg-white shadow-sm dark:border-[#2a2a2a] dark:bg-[#1a1a1a]">
         {loading ? (
           <div className="flex flex-col items-center justify-center gap-3 py-16">
             <div className="h-8 w-8 animate-spin rounded-full border-2 border-accent border-t-transparent" />
-            <p className="text-sm text-text-secondary">Loading transactions…</p>
+            <p className="text-sm text-text-secondary dark:text-[#a3a3a3]">Loading transactions…</p>
           </div>
         ) : transactions.length === 0 ? (
-          <div className="py-12 text-center text-sm text-text-secondary">
+          <div className="py-12 text-center text-sm text-text-secondary dark:text-[#a3a3a3]">
             No transactions found. Only non-admin users are included.
           </div>
         ) : (
@@ -88,7 +88,7 @@ export default function AdminTransactionsPage() {
             <div className="table-scroll-wrap -mx-2 sm:mx-0">
               <table className="w-full min-w-[720px]">
                 <thead>
-                  <tr className="border-b border-[#e5e7eb] bg-[#f9fafb]">
+                  <tr className="border-b border-[#e5e7eb] bg-[#f9fafb] dark:border-[#2a2a2a] dark:bg-[#262626]">
                     <th className="whitespace-nowrap px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-text-secondary sm:px-4 sm:py-3.5 lg:px-6">
                       Type
                     </th>
@@ -109,22 +109,22 @@ export default function AdminTransactionsPage() {
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#f3f4f6]">
+                <tbody className="divide-y divide-[#f3f4f6] dark:divide-[#2a2a2a]">
                   {paginatedTransactions.map((tx) => (
-                  <tr key={`${tx.kind}-${tx.userId}-${tx.id}`} className="transition-colors hover:bg-[#f9fafb]">
+                  <tr key={`${tx.kind}-${tx.userId}-${tx.id}`} className="transition-colors hover:bg-[#f9fafb] dark:hover:bg-[#262626]">
                     <td className="whitespace-nowrap px-3 py-3 sm:px-4 sm:py-3.5 lg:px-6">
-                      <span className="font-medium text-[#111827]">{kindLabel(tx.kind)}</span>
+                      <span className="font-medium text-[#111827] dark:text-[#f5f5f5]">{kindLabel(tx.kind)}</span>
                     </td>
                     <td className="min-w-0 px-3 py-3 sm:px-4 sm:py-3.5 lg:px-6">
                       <div className="min-w-0">
-                        <p className="truncate font-medium text-[#111827]">{tx.userFullName || "—"}</p>
-                        <p className="truncate text-xs text-text-secondary">{tx.userEmail || "—"}</p>
+                        <p className="truncate font-medium text-[#111827] dark:text-[#f5f5f5]">{tx.userFullName || "—"}</p>
+                        <p className="truncate text-xs text-text-secondary dark:text-[#a3a3a3]">{tx.userEmail || "—"}</p>
                       </div>
                     </td>
-                    <td className="whitespace-nowrap px-3 py-3 font-medium text-[#111827] sm:px-4 sm:py-3.5 lg:px-6">
+                    <td className="whitespace-nowrap px-3 py-3 font-medium text-[#111827] dark:text-[#f5f5f5] sm:px-4 sm:py-3.5 lg:px-6">
                       ${tx.amountStr}
                     </td>
-                    <td className="whitespace-nowrap px-3 py-3 text-sm text-text-secondary sm:px-4 sm:py-3.5 lg:px-6">
+                    <td className="whitespace-nowrap px-3 py-3 text-sm text-text-secondary dark:text-[#a3a3a3] sm:px-4 sm:py-3.5 lg:px-6">
                       {tx.date}
                     </td>
                     <td className="whitespace-nowrap px-3 py-3 sm:px-4 sm:py-3.5 lg:px-6">
@@ -148,18 +148,18 @@ export default function AdminTransactionsPage() {
             </div>
 
             {totalPages > 1 && (
-              <div className="flex flex-col items-center justify-between gap-4 border-t border-[#e5e7eb] px-4 py-3 sm:flex-row sm:px-6">
-                <p className="text-sm text-text-secondary">
-                  Showing <span className="font-medium text-[#111827]">{startItem}</span>
-                  –<span className="font-medium text-[#111827]">{endItem}</span> of{" "}
-                  <span className="font-medium text-[#111827]">{transactions.length}</span>
+              <div className="flex flex-col items-center justify-between gap-4 border-t border-[#e5e7eb] px-4 py-3 dark:border-[#2a2a2a] sm:flex-row sm:px-6">
+                <p className="text-sm text-text-secondary dark:text-[#a3a3a3]">
+                  Showing <span className="font-medium text-[#111827] dark:text-[#f5f5f5]">{startItem}</span>
+                  –<span className="font-medium text-[#111827] dark:text-[#f5f5f5]">{endItem}</span> of{" "}
+                  <span className="font-medium text-[#111827] dark:text-[#f5f5f5]">{transactions.length}</span>
                 </p>
                 <div className="flex items-center gap-2">
                   <button
                     type="button"
                     onClick={() => setPage((p) => Math.max(1, p - 1))}
                     disabled={currentPage <= 1}
-                    className="rounded-lg border border-[#e5e7eb] bg-white px-3 py-2 text-sm font-medium text-[#374151] transition-colors hover:bg-[#f9fafb] disabled:pointer-events-none disabled:opacity-50"
+                    className="rounded-lg border border-[#e5e7eb] bg-white px-3 py-2 text-sm font-medium text-[#374151] transition-colors hover:bg-[#f9fafb] disabled:pointer-events-none disabled:opacity-50 dark:border-[#2a2a2a] dark:bg-[#262626] dark:text-[#f5f5f5] dark:hover:bg-[#404040]"
                   >
                     Previous
                   </button>

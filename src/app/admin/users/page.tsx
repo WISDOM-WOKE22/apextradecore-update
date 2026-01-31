@@ -46,8 +46,8 @@ export default function AdminUsersPage() {
     >
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-[#111827] sm:text-3xl">Users</h1>
-          <p className="mt-1 text-sm text-text-secondary">
+          <h1 className="text-2xl font-bold text-[#111827] dark:text-[#f5f5f5] sm:text-3xl">Users</h1>
+          <p className="mt-1 text-sm text-text-secondary dark:text-[#a3a3a3]">
             Manage all registered users. Admins are excluded from this list.
           </p>
         </div>
@@ -55,14 +55,14 @@ export default function AdminUsersPage() {
           type="button"
           onClick={() => refetch()}
           disabled={loading}
-          className="self-start rounded-lg border border-[#e5e7eb] bg-white px-4 py-2.5 text-sm font-medium text-[#374151] transition-colors hover:bg-[#f9fafb] disabled:opacity-60"
+          className="self-start rounded-lg border border-[#e5e7eb] bg-white px-4 py-2.5 text-sm font-medium text-[#374151] transition-colors hover:bg-[#f9fafb] disabled:opacity-60 dark:border-[#2a2a2a] dark:bg-[#1a1a1a] dark:text-[#f5f5f5] dark:hover:bg-[#262626]"
         >
           {loading ? "Refreshing…" : "Refresh"}
         </button>
       </div>
 
       {error && (
-        <div className="mb-4 rounded-lg border border-[#fecaca] bg-[#fef2f2] px-4 py-3 text-sm text-[#b91c1c]">
+        <div className="mb-4 rounded-lg border border-[#fecaca] bg-[#fef2f2] px-4 py-3 text-sm text-[#b91c1c] dark:border-[#7f1d1d] dark:bg-[#450a0a] dark:text-[#fca5a5]">
           {error}
         </div>
       )}
@@ -73,7 +73,7 @@ export default function AdminUsersPage() {
             Search users by name or email
           </label>
           <div className="relative">
-            <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary">
+            <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary dark:text-[#a3a3a3]">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
                 <circle cx="11" cy="11" r="8" />
                 <path d="m21 21-4.35-4.35" />
@@ -88,24 +88,24 @@ export default function AdminUsersPage() {
                 setSearchQuery(e.target.value);
                 setCurrentPage(1);
               }}
-              className="w-full rounded-lg border border-[#e5e7eb] bg-white py-2.5 pl-10 pr-4 text-sm text-[#111827] placeholder:text-text-secondary focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent sm:max-w-sm"
+              className="w-full rounded-lg border border-[#e5e7eb] bg-white py-2.5 pl-10 pr-4 text-sm text-[#111827] placeholder:text-text-secondary focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent dark:border-[#2a2a2a] dark:bg-[#262626] dark:text-[#f5f5f5] dark:placeholder:text-[#737373] sm:max-w-sm"
             />
           </div>
         </div>
       )}
 
-      <div className="overflow-hidden rounded-xl border border-[#e5e7eb] bg-white shadow-sm">
+      <div className="overflow-hidden rounded-xl border border-[#e5e7eb] bg-white shadow-sm dark:border-[#2a2a2a] dark:bg-[#1a1a1a]">
         {loading ? (
           <div className="flex flex-col items-center justify-center gap-3 py-16">
             <div className="h-8 w-8 animate-spin rounded-full border-2 border-accent border-t-transparent" />
-            <p className="text-sm text-text-secondary">Loading users…</p>
+            <p className="text-sm text-text-secondary dark:text-[#a3a3a3]">Loading users…</p>
           </div>
         ) : users.length === 0 ? (
-          <div className="py-12 text-center text-sm text-text-secondary">
+          <div className="py-12 text-center text-sm text-text-secondary dark:text-[#a3a3a3]">
             No users found. Only non-admin users are shown.
           </div>
         ) : filteredUsers.length === 0 ? (
-          <div className="py-12 text-center text-sm text-text-secondary">
+          <div className="py-12 text-center text-sm text-text-secondary dark:text-[#a3a3a3]">
             No users match &quot;{searchQuery}&quot;. Try a different search.
           </div>
         ) : (
@@ -113,7 +113,7 @@ export default function AdminUsersPage() {
             <div className="table-scroll-wrap -mx-2 sm:mx-0">
               <table className="w-full min-w-[640px]">
                 <thead>
-                  <tr className="border-b border-[#e5e7eb] bg-[#f9fafb]">
+                  <tr className="border-b border-[#e5e7eb] bg-[#f9fafb] dark:border-[#2a2a2a] dark:bg-[#262626]">
                     <th className="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-text-secondary sm:px-4 sm:py-3.5 lg:px-6">
                       Name
                     </th>
@@ -123,18 +123,18 @@ export default function AdminUsersPage() {
                     <th className="px-3 py-3 text-right text-xs font-semibold uppercase tracking-wider text-text-secondary sm:px-4 sm:py-3.5 lg:px-6">Action</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#f3f4f6]">
+                <tbody className="divide-y divide-[#f3f4f6] dark:divide-[#2a2a2a]">
                   {paginatedUsers.map((user) => (
                   <tr
                     key={user.uid}
-                    className="transition-colors hover:bg-[#f9fafb]"
+                    className="transition-colors hover:bg-[#f9fafb] dark:hover:bg-[#262626]"
                   >
                     <td className="whitespace-nowrap px-3 py-3 text-sm sm:px-4 sm:py-3.5 lg:px-6">
-                      <span className="font-medium text-[#111827]">{user.fullName || "—"}</span>
+                      <span className="font-medium text-[#111827] dark:text-[#f5f5f5]">{user.fullName || "—"}</span>
                     </td>
-                    <td className="whitespace-nowrap px-3 py-3 text-sm text-text-secondary sm:px-4 sm:py-3.5 lg:px-6">{user.email || "—"}</td>
-                    <td className="whitespace-nowrap px-3 py-3 text-sm text-text-secondary sm:px-4 sm:py-3.5 lg:px-6">{user.country || "—"}</td>
-                    <td className="whitespace-nowrap px-3 py-3 text-sm text-text-secondary sm:px-4 sm:py-3.5 lg:px-6">{user.date || "—"}</td>
+                    <td className="whitespace-nowrap px-3 py-3 text-sm text-text-secondary dark:text-[#a3a3a3] sm:px-4 sm:py-3.5 lg:px-6">{user.email || "—"}</td>
+                    <td className="whitespace-nowrap px-3 py-3 text-sm text-text-secondary dark:text-[#a3a3a3] sm:px-4 sm:py-3.5 lg:px-6">{user.country || "—"}</td>
+                    <td className="whitespace-nowrap px-3 py-3 text-sm text-text-secondary dark:text-[#a3a3a3] sm:px-4 sm:py-3.5 lg:px-6">{user.date || "—"}</td>
                     <td className="whitespace-nowrap px-3 py-3 text-right sm:px-4 sm:py-3.5 lg:px-6">
                       <Link
                         href={`/admin/users/${encodeURIComponent(user.uid)}`}
@@ -152,8 +152,8 @@ export default function AdminUsersPage() {
               </table>
             </div>
             {totalPages > 1 && (
-              <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[#e5e7eb] bg-[#f9fafb] px-3 py-3 sm:px-4 lg:px-6">
-                <p className="text-sm text-text-secondary">
+              <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[#e5e7eb] bg-[#f9fafb] px-3 py-3 dark:border-[#2a2a2a] dark:bg-[#262626] sm:px-4 lg:px-6">
+                <p className="text-sm text-text-secondary dark:text-[#a3a3a3]">
                   Showing {(pageIndex - 1) * PAGE_SIZE + 1}–{Math.min(pageIndex * PAGE_SIZE, filteredUsers.length)} of {filteredUsers.length}
                 </p>
                 <div className="flex items-center gap-1">
@@ -161,7 +161,7 @@ export default function AdminUsersPage() {
                     type="button"
                     onClick={() => goToPage(pageIndex - 1)}
                     disabled={pageIndex <= 1}
-                    className="rounded-lg border border-[#e5e7eb] bg-white px-3 py-1.5 text-sm font-medium text-[#374151] transition-colors hover:bg-[#f3f4f6] disabled:pointer-events-none disabled:opacity-50"
+                    className="rounded-lg border border-[#e5e7eb] bg-white px-3 py-1.5 text-sm font-medium text-[#374151] transition-colors hover:bg-[#f3f4f6] disabled:pointer-events-none disabled:opacity-50 dark:border-[#2a2a2a] dark:bg-[#1a1a1a] dark:text-[#f5f5f5] dark:hover:bg-[#404040]"
                   >
                     Previous
                   </button>
@@ -180,7 +180,7 @@ export default function AdminUsersPage() {
                     }, [])
                     .map((p) =>
                       p === -1 ? (
-                        <span key="ellipsis" className="px-1 text-text-secondary">…</span>
+                        <span key="ellipsis" className="px-1 text-text-secondary dark:text-[#a3a3a3]">…</span>
                       ) : (
                         <button
                           key={p}
@@ -189,7 +189,7 @@ export default function AdminUsersPage() {
                           className={`min-w-9 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
                             p === pageIndex
                               ? "bg-accent text-white"
-                              : "border border-[#e5e7eb] bg-white text-[#374151] hover:bg-[#f3f4f6]"
+                              : "border border-[#e5e7eb] bg-white text-[#374151] hover:bg-[#f3f4f6] dark:border-[#2a2a2a] dark:bg-[#262626] dark:text-[#f5f5f5] dark:hover:bg-[#404040]"
                           }`}
                         >
                           {p}
@@ -200,7 +200,7 @@ export default function AdminUsersPage() {
                     type="button"
                     onClick={() => goToPage(pageIndex + 1)}
                     disabled={pageIndex >= totalPages}
-                    className="rounded-lg border border-[#e5e7eb] bg-white px-3 py-1.5 text-sm font-medium text-[#374151] transition-colors hover:bg-[#f3f4f6] disabled:pointer-events-none disabled:opacity-50"
+                    className="rounded-lg border border-[#e5e7eb] bg-white px-3 py-1.5 text-sm font-medium text-[#374151] transition-colors hover:bg-[#f3f4f6] disabled:pointer-events-none disabled:opacity-50 dark:border-[#2a2a2a] dark:bg-[#262626] dark:text-[#f5f5f5] dark:hover:bg-[#404040]"
                   >
                     Next
                   </button>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
+import { useTheme } from "next-themes";
 import { motion } from "motion/react";
 import {
   AreaChart,
@@ -128,7 +129,13 @@ function aggregateByMonth(all: UnifiedTransaction[]): ChartBucket[] {
   return result;
 }
 
+const CHART_LIGHT = { grid: "#f3f4f6", tick: "#6b7280", tooltipBorder: "#e5e7eb", tooltipBg: "#ffffff" };
+const CHART_DARK = { grid: "#262626", tick: "#a3a3a3", tooltipBorder: "#2a2a2a", tooltipBg: "#1a1a1a" };
+
 export function TransactionChart({ data, loading, error }: TransactionChartProps) {
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === "dark";
+  const chartColors = isDark ? CHART_DARK : CHART_LIGHT;
   const chartData = useMemo(() => aggregateByMonth(data?.all ?? []), [data?.all]);
 
   return (
@@ -136,25 +143,25 @@ export function TransactionChart({ data, loading, error }: TransactionChartProps
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-      className="rounded-xl border border-[#e5e7eb] bg-white p-5 shadow-sm sm:p-6"
+      className="rounded-xl border border-[#e5e7eb] bg-white p-5 shadow-sm dark:border-[#2a2a2a] dark:bg-[#1a1a1a] sm:p-6"
     >
       <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-lg font-bold text-[#111827]">Transaction Overview</h2>
-        <span className="rounded-full bg-[#eef2ff] px-3 py-1 text-xs font-medium text-accent">
+        <h2 className="text-lg font-bold text-[#111827] dark:text-[#f5f5f5]">Transaction Overview</h2>
+        <span className="rounded-full bg-[#eef2ff] px-3 py-1 text-xs font-medium text-accent dark:bg-accent/20">
           Last {CHART_MONTHS} months
         </span>
       </div>
 
       {error && (
-        <p className="py-4 text-sm text-[#b91c1c]">{error}</p>
+        <p className="py-4 text-sm text-[#b91c1c] dark:text-[#fca5a5]">{error}</p>
       )}
 
       {loading ? (
-        <div className="flex h-[280px] w-full items-center justify-center rounded-lg bg-[#f9fafb]">
+        <div className="flex h-[280px] w-full items-center justify-center rounded-lg bg-[#f9fafb] dark:bg-[#262626]">
           <div className="h-8 w-8 animate-spin rounded-full border-2 border-accent border-t-transparent" />
         </div>
       ) : chartData.length === 0 ? (
-        <div className="flex h-[280px] w-full items-center justify-center rounded-lg bg-[#f9fafb] text-sm text-text-secondary">
+        <div className="flex h-[280px] w-full items-center justify-center rounded-lg bg-[#f9fafb] text-sm text-text-secondary dark:bg-[#262626] dark:text-[#a3a3a3]">
           No transaction data yet. Deposits and withdrawals will appear here.
         </div>
       ) : (
@@ -182,15 +189,15 @@ export function TransactionChart({ data, loading, error }: TransactionChartProps
                   <stop offset="100%" stopColor="#f87171" stopOpacity={0.06} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" vertical={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke={chartColors.grid} vertical={false} />
               <XAxis
                 dataKey="monthLabel"
-                tick={{ fontSize: 12, fill: "#6b7280" }}
+                tick={{ fontSize: 12, fill: chartColors.tick }}
                 axisLine={false}
                 tickLine={false}
               />
               <YAxis
-                tick={{ fontSize: 12, fill: "#6b7280" }}
+                tick={{ fontSize: 12, fill: chartColors.tick }}
                 axisLine={false}
                 tickLine={false}
                 tickFormatter={(v) => `$${v >= 1000 ? `${(v / 1000).toFixed(1)}k` : v}`}
@@ -199,8 +206,9 @@ export function TransactionChart({ data, loading, error }: TransactionChartProps
               <Tooltip
                 contentStyle={{
                   borderRadius: "12px",
-                  border: "1px solid #e5e7eb",
-                  boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+                  border: `1px solid ${chartColors.tooltipBorder}`,
+                  backgroundColor: chartColors.tooltipBg,
+                  boxShadow: isDark ? "0 4px 12px rgba(0,0,0,0.4)" : "0 4px 12px rgba(0,0,0,0.08)",
                 }}
                 formatter={(value, name) => [
                   `$${Number(value ?? 0).toLocaleString("en-US", { minimumFractionDigits: 2 })}`,

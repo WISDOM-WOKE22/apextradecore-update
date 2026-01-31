@@ -119,10 +119,10 @@ function WithdrawalFlowInner() {
   };
 
   const baseInput =
-    "w-full rounded-lg border px-4 py-3 text-base text-[#111827] placeholder:text-[#9ca3af] focus:outline-none focus:ring-2 transition-colors";
+    "w-full rounded-lg border px-4 py-3 text-base text-[#111827] placeholder:text-[#9ca3af] focus:outline-none focus:ring-2 transition-colors dark:text-[#f5f5f5] dark:placeholder:text-[#737373]";
   const inputStyles = passwordError
-    ? `${baseInput} border-[#ef4444] bg-[#fef2f2] focus:border-[#ef4444] focus:ring-[#ef4444]/20`
-    : `${baseInput} border-[#e5e7eb] bg-[#f9fafb] focus:border-accent focus:bg-white focus:ring-accent/20`;
+    ? `${baseInput} border-[#ef4444] bg-[#fef2f2] focus:border-[#ef4444] focus:ring-[#ef4444]/20 dark:border-[#f87171] dark:bg-[#450a0a]`
+    : `${baseInput} border-[#e5e7eb] bg-[#f9fafb] focus:border-accent focus:bg-white focus:ring-accent/20 dark:border-[#2a2a2a] dark:bg-[#262626] dark:focus:border-accent dark:focus:bg-[#1a1a1a]`;
 
   return (
     <div className="mx-auto">
@@ -131,8 +131,8 @@ function WithdrawalFlowInner() {
         animate={{ opacity: 1, y: 0 }}
         className="mb-8"
       >
-        <h1 className="text-2xl font-bold text-[#111827] sm:text-3xl">Withdraw funds</h1>
-        <p className="mt-1 text-sm text-text-secondary">
+        <h1 className="text-2xl font-bold text-[#111827] dark:text-[#f5f5f5] sm:text-3xl">Withdraw funds</h1>
+        <p className="mt-1 text-sm text-text-secondary dark:text-[#a3a3a3]">
           Choose your currency, amount, and authorize the withdrawal to your account.
         </p>
       </motion.div>
@@ -148,7 +148,7 @@ function WithdrawalFlowInner() {
           <div
             key={s.num}
             className={`flex shrink-0 items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium ${
-              step >= s.num ? "bg-accent text-white" : "bg-[#f3f4f6] text-text-secondary"
+              step >= s.num ? "bg-accent text-white" : "bg-[#f3f4f6] text-text-secondary dark:bg-[#262626] dark:text-[#a3a3a3]"
             }`}
           >
             <span className="flex h-6 w-6 items-center justify-center rounded-full bg-white/20 text-xs">
@@ -168,9 +168,9 @@ function WithdrawalFlowInner() {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -12 }}
             transition={{ duration: 0.3 }}
-            className="rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm"
+            className="rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm dark:border-[#2a2a2a] dark:bg-[#1a1a1a]"
           >
-            <h2 className="mb-4 text-lg font-semibold text-[#111827]">Select cryptocurrency</h2>
+            <h2 className="mb-4 text-lg font-semibold text-[#111827] dark:text-[#f5f5f5]">Select cryptocurrency</h2>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
               {CURRENCIES.map((c) => (
                 <motion.button
@@ -181,12 +181,12 @@ function WithdrawalFlowInner() {
                   whileTap={{ scale: 0.98 }}
                   className={`rounded-xl border-2 p-4 text-left transition-colors ${
                     currency === c.id
-                      ? "border-accent bg-[#eef2ff]"
-                      : "border-[#e5e7eb] bg-[#f9fafb] hover:border-accent/50 hover:bg-[#f9fafb]"
+                      ? "border-accent bg-[#eef2ff] dark:bg-accent/20"
+                      : "border-[#e5e7eb] bg-[#f9fafb] hover:border-accent/50 hover:bg-[#f9fafb] dark:border-[#2a2a2a] dark:bg-[#262626] dark:hover:border-accent/50 dark:hover:bg-[#262626]"
                   }`}
                 >
-                  <span className="block text-sm font-semibold text-[#111827]">{c.name}</span>
-                  <span className="text-xs text-text-secondary">{c.symbol}</span>
+                  <span className="block text-sm font-semibold text-[#111827] dark:text-[#f5f5f5]">{c.name}</span>
+                  <span className="text-xs text-text-secondary dark:text-[#a3a3a3]">{c.symbol}</span>
                 </motion.button>
               ))}
             </div>
@@ -201,20 +201,20 @@ function WithdrawalFlowInner() {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -12 }}
             transition={{ duration: 0.3 }}
-            className="rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm"
+            className="rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm dark:border-[#2a2a2a] dark:bg-[#1a1a1a]"
           >
             <button
               type="button"
               onClick={() => goToStep(1)}
-              className="mb-4 flex items-center gap-2 text-sm font-medium text-text-secondary hover:text-[#111827]"
+              className="mb-4 flex items-center gap-2 text-sm font-medium text-text-secondary hover:text-[#111827] dark:text-[#a3a3a3] dark:hover:text-[#f5f5f5]"
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <polyline points="15 18 9 12 15 6" />
               </svg>
               Back
             </button>
-            <h2 className="mb-4 text-lg font-semibold text-[#111827]">Enter amount</h2>
-            <p className="mb-4 text-sm text-text-secondary">
+            <h2 className="mb-4 text-lg font-semibold text-[#111827] dark:text-[#f5f5f5]">Enter amount</h2>
+            <p className="mb-4 text-sm text-text-secondary dark:text-[#a3a3a3]">
               Currency: {CURRENCIES.find((c) => c.id === currency)?.name ?? currency}
             </p>
             <form
@@ -226,7 +226,7 @@ function WithdrawalFlowInner() {
               className="space-y-4"
             >
               <div>
-                <label htmlFor="amount" className="mb-2 block text-sm font-medium text-[#374151]">
+                <label htmlFor="amount" className="mb-2 block text-sm font-medium text-[#374151] dark:text-[#e5e5e5]">
                   Amount
                 </label>
                 <input
@@ -237,7 +237,7 @@ function WithdrawalFlowInner() {
                   value={amountInput}
                   onChange={(e) => setAmountInput(e.target.value)}
                   placeholder="0.00"
-                  className="w-full rounded-lg border border-[#e5e7eb] bg-[#f9fafb] px-4 py-3 text-lg focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
+                  className="w-full rounded-lg border border-[#e5e7eb] bg-[#f9fafb] px-4 py-3 text-lg text-[#111827] focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 dark:border-[#2a2a2a] dark:bg-[#262626] dark:text-[#f5f5f5]"
                 />
               </div>
               <Button
@@ -259,26 +259,26 @@ function WithdrawalFlowInner() {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -12 }}
             transition={{ duration: 0.3 }}
-            className="rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm"
+            className="rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm dark:border-[#2a2a2a] dark:bg-[#1a1a1a]"
           >
             <button
               type="button"
               onClick={() => goToStep(2)}
-              className="mb-4 flex items-center gap-2 text-sm font-medium text-text-secondary hover:text-[#111827]"
+              className="mb-4 flex items-center gap-2 text-sm font-medium text-text-secondary hover:text-[#111827] dark:text-[#a3a3a3] dark:hover:text-[#f5f5f5]"
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <polyline points="15 18 9 12 15 6" />
               </svg>
               Back
             </button>
-            <h2 className="mb-2 text-lg font-semibold text-[#111827]">Authorize withdrawal</h2>
-            <p className="mb-4 text-sm text-text-secondary">
-              Confirm withdrawal of <strong>{amount} {currency}</strong> to your account. Enter your password to authorize. This request will be sent to admin for approval.
+            <h2 className="mb-2 text-lg font-semibold text-[#111827] dark:text-[#f5f5f5]">Authorize withdrawal</h2>
+            <p className="mb-4 text-sm text-text-secondary dark:text-[#a3a3a3]">
+              Confirm withdrawal of <strong className="text-[#111827] dark:text-[#f5f5f5]">{amount} {currency}</strong> to your account. Enter your password to authorize. This request will be sent to admin for approval.
             </p>
 
             <form onSubmit={handleAuthorizeSubmit} className="space-y-4">
               <div className="relative">
-                <label htmlFor="password" className="mb-2 block text-sm font-medium text-[#374151]">
+                <label htmlFor="password" className="mb-2 block text-sm font-medium text-[#374151] dark:text-[#e5e5e5]">
                   Password
                 </label>
                 <input
@@ -297,7 +297,7 @@ function WithdrawalFlowInner() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-[38px] text-text-secondary hover:text-[#111827]"
+                  className="absolute right-3 top-[38px] text-text-secondary hover:text-[#111827] dark:text-[#a3a3a3] dark:hover:text-[#f5f5f5]"
                   aria-label={showPassword ? "Hide password" : "Show password"}
                 >
                   {showPassword ? (
@@ -313,7 +313,7 @@ function WithdrawalFlowInner() {
                   )}
                 </button>
                 {passwordError && (
-                  <p className="mt-1.5 text-sm text-[#ef4444]" role="alert">
+                  <p className="mt-1.5 text-sm text-[#ef4444] dark:text-[#fca5a5]" role="alert">
                     {passwordError}
                   </p>
                 )}
@@ -346,17 +346,17 @@ function WithdrawalFlowInner() {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
               transition={{ type: "tween", duration: 0.25 }}
-              className="fixed left-1/2 top-1/2 z-50 w-full max-w-md -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-white p-8 shadow-xl"
+              className="fixed left-1/2 top-1/2 z-50 w-full max-w-md -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-white p-8 shadow-xl dark:bg-[#1a1a1a]"
             >
               <div className="text-center">
-                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[#d1fae5]">
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#059669" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[#d1fae5] text-[#059669] dark:bg-[#064e3b] dark:text-[#34d399]">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
                     <polyline points="22 4 12 14.01 9 11.01" />
                   </svg>
                 </div>
-                <h3 className="mb-2 text-xl font-bold text-[#111827]">Withdrawal submitted</h3>
-                <p className="mb-6 text-sm text-text-secondary">
+                <h3 className="mb-2 text-xl font-bold text-[#111827] dark:text-[#f5f5f5]">Withdrawal submitted</h3>
+                <p className="mb-6 text-sm text-text-secondary dark:text-[#a3a3a3]">
                   Your withdrawal request has been submitted successfully and is pending admin approval. You&apos;ll be notified once it&apos;s processed.
                 </p>
                 <Button type="button" onClick={closeSuccess} className="w-full bg-accent text-white">
@@ -373,7 +373,7 @@ function WithdrawalFlowInner() {
 
 export function WithdrawalFlow() {
   return (
-    <Suspense fallback={<div className="mx-auto animate-pulse rounded-xl bg-[#f3f4f6] p-8" />}>
+    <Suspense fallback={<div className="mx-auto animate-pulse rounded-xl bg-[#f3f4f6] p-8 dark:bg-[#262626]" />}>
       <WithdrawalFlowInner />
     </Suspense>
   );

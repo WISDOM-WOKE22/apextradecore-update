@@ -52,45 +52,45 @@ export function LatestTransactions({ data, loading, error }: LatestTransactionsP
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-      className="rounded-xl border border-[#e5e7eb] bg-white p-5 shadow-sm sm:p-6"
+      className="rounded-xl border border-[#e5e7eb] bg-white p-5 shadow-sm dark:border-[#2a2a2a] dark:bg-[#1a1a1a] sm:p-6"
     >
       <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-lg font-bold text-[#111827]">Latest Transactions</h2>
+        <h2 className="text-lg font-bold text-[#111827] dark:text-[#f5f5f5]">Latest Transactions</h2>
         <Link
           href="/dashboard/transactions"
-          className="text-sm font-semibold text-accent no-underline transition-colors hover:text-[#1552b8]"
+          className="text-sm font-semibold text-accent no-underline transition-colors hover:text-[#1552b8] dark:hover:text-accent/90"
         >
           View all
         </Link>
       </div>
 
       {error && (
-        <p className="py-4 text-sm text-[#b91c1c]">{error}</p>
+        <p className="py-4 text-sm text-[#b91c1c] dark:text-[#fca5a5]">{error}</p>
       )}
 
       {loading ? (
-        <ul className="space-y-0 divide-y divide-[#f3f4f6]">
+        <ul className="space-y-0 divide-y divide-[#f3f4f6] dark:divide-[#2a2a2a]">
           {[1, 2, 3, 4, 5].map((i) => (
             <li key={i} className="flex items-center justify-between py-4 first:pt-0">
               <div className="flex items-center gap-3">
-                <div className="h-9 w-9 shrink-0 animate-pulse rounded-lg bg-[#f3f4f6]" />
+                <div className="h-9 w-9 shrink-0 animate-pulse rounded-lg bg-[#f3f4f6] dark:bg-[#262626]" />
                 <div className="space-y-1">
-                  <div className="h-4 w-20 animate-pulse rounded bg-[#f3f4f6]" />
-                  <div className="h-3 w-16 animate-pulse rounded bg-[#f3f4f6]" />
+                  <div className="h-4 w-20 animate-pulse rounded bg-[#f3f4f6] dark:bg-[#262626]" />
+                  <div className="h-3 w-16 animate-pulse rounded bg-[#f3f4f6] dark:bg-[#262626]" />
                 </div>
               </div>
-              <div className="h-4 w-16 animate-pulse rounded bg-[#f3f4f6]" />
+              <div className="h-4 w-16 animate-pulse rounded bg-[#f3f4f6] dark:bg-[#262626]" />
             </li>
           ))}
         </ul>
       ) : (
-        <ul className="space-y-0 divide-y divide-[#f3f4f6]">
+        <ul className="space-y-0 divide-y divide-[#f3f4f6] dark:divide-[#2a2a2a]">
           <AnimatePresence mode="popLayout">
             {latest.length === 0 ? (
               <motion.li
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="py-8 text-center text-sm text-text-secondary"
+                className="py-8 text-center text-sm text-text-secondary dark:text-[#a3a3a3]"
               >
                 No transactions yet. Deposits, withdrawals, and investments will appear here.
               </motion.li>
@@ -139,10 +139,10 @@ export function LatestTransactions({ data, loading, error }: LatestTransactionsP
                         )}
                       </div>
                       <div>
-                        <p className="text-sm font-medium text-[#111827]">
+                        <p className="text-sm font-medium text-[#111827] dark:text-[#f5f5f5]">
                           {txLabel(tx.kind)}
                         </p>
-                        <p className="text-xs text-text-secondary">
+                        <p className="text-xs text-text-secondary dark:text-[#a3a3a3]">
                           {formatRelativeDate(tx.dateSortKey)} · {tx.asset}
                           {tx.kind !== "investment" && tx.status !== "completed" && tx.status !== "approved" && (
                             <span className="ml-1 capitalize"> · {tx.status}</span>
@@ -153,7 +153,7 @@ export function LatestTransactions({ data, loading, error }: LatestTransactionsP
                     <Link
                       href={txHref(tx)}
                       className={`text-sm font-semibold transition-colors hover:opacity-80 ${
-                        isCredit ? "text-[#059669]" : "text-[#111827]"
+                        isCredit ? "text-[#059669] dark:text-[#34d399]" : "text-[#111827] dark:text-[#f5f5f5]"
                       }`}
                     >
                       {formatAmount(tx.amount, tx.kind)}

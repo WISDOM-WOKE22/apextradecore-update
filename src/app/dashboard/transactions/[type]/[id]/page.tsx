@@ -25,13 +25,13 @@ function formatTransactionDate(record: DepositRecord | WithdrawalRecord): string
 
 function DetailSkeleton() {
   return (
-    <div className="mx-auto max-w-2xl animate-pulse space-y-4 rounded-xl border border-[#e5e7eb] bg-white p-6">
-      <div className="h-6 w-1/3 rounded bg-[#f3f4f6]" />
+    <div className="mx-auto max-w-2xl animate-pulse space-y-4 rounded-xl border border-[#e5e7eb] bg-white p-6 dark:border-[#2a2a2a] dark:bg-[#1a1a1a]">
+      <div className="h-6 w-1/3 rounded bg-[#f3f4f6] dark:bg-[#262626]" />
       <div className="space-y-3">
         {[1, 2, 3, 4, 5, 6].map((i) => (
           <div key={i} className="flex justify-between gap-4">
-            <div className="h-4 w-24 rounded bg-[#f3f4f6]" />
-            <div className="h-4 flex-1 rounded bg-[#f3f4f6]" />
+            <div className="h-4 w-24 rounded bg-[#f3f4f6] dark:bg-[#262626]" />
+            <div className="h-4 flex-1 rounded bg-[#f3f4f6] dark:bg-[#262626]" />
           </div>
         ))}
       </div>
@@ -42,12 +42,12 @@ function DetailSkeleton() {
 function StatusBadge({ status }: { status: string }) {
   const normalized = (status ?? "").toLowerCase();
   const styles: Record<string, string> = {
-    completed: "bg-[#d1fae5] text-[#059669]",
-    approved: "bg-[#d1fae5] text-[#059669]",
-    pending: "bg-[#fef3c7] text-[#b45309]",
-    failed: "bg-[#fee2e2] text-[#dc2626]",
+    completed: "bg-[#d1fae5] text-[#059669] dark:bg-[#064e3b] dark:text-[#34d399]",
+    approved: "bg-[#d1fae5] text-[#059669] dark:bg-[#064e3b] dark:text-[#34d399]",
+    pending: "bg-[#fef3c7] text-[#b45309] dark:bg-[#78350f] dark:text-[#fcd34d]",
+    failed: "bg-[#fee2e2] text-[#dc2626] dark:bg-[#7f1d1d] dark:text-[#fca5a5]",
   };
-  const style = styles[normalized] ?? "bg-[#f3f4f6] text-[#6b7280]";
+  const style = styles[normalized] ?? "bg-[#f3f4f6] text-[#6b7280] dark:bg-[#404040] dark:text-[#a3a3a3]";
   const label = normalized === "approved" ? "Approved" : (status ?? "Pending");
   return (
     <span className={`inline-flex rounded-full px-3 py-1 text-sm font-medium capitalize ${style}`}>
@@ -64,10 +64,10 @@ function DetailContent({ data }: { data: TransactionDetail }) {
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-        className="mx-auto max-w-full space-y-6 rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm"
+        className="mx-auto max-w-full space-y-6 rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm dark:border-[#2a2a2a] dark:bg-[#1a1a1a]"
       >
-        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#e5e7eb] pb-4">
-          <h1 className="text-xl font-bold text-[#111827]">Deposit details</h1>
+        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#e5e7eb] pb-4 dark:border-[#2a2a2a]">
+          <h1 className="text-xl font-bold text-[#111827] dark:text-[#f5f5f5]">Deposit details</h1>
           <StatusBadge status={r.status} />
         </div>
         <dl className="grid gap-4 sm:grid-cols-[auto_1fr]">
@@ -102,10 +102,10 @@ function DetailContent({ data }: { data: TransactionDetail }) {
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-      className="mx-auto max-w-2xl space-y-6 rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm"
+      className="mx-auto max-w-2xl space-y-6 rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm dark:border-[#2a2a2a] dark:bg-[#1a1a1a]"
     >
-      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#e5e7eb] pb-4">
-        <h1 className="text-xl font-bold text-[#111827]">Withdrawal details</h1>
+      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#e5e7eb] pb-4 dark:border-[#2a2a2a]">
+        <h1 className="text-xl font-bold text-[#111827] dark:text-[#f5f5f5]">Withdrawal details</h1>
         <StatusBadge status={r.status} />
       </div>
       <dl className="grid gap-4 sm:grid-cols-[auto_1fr]">
@@ -131,8 +131,8 @@ function DetailRow({
 }) {
   return (
     <>
-      <dt className="text-sm font-medium text-text-secondary">{label}</dt>
-      <dd className={`text-sm font-medium text-[#111827] ${mono ? "font-mono" : ""}`}>
+      <dt className="text-sm font-medium text-text-secondary dark:text-[#a3a3a3]">{label}</dt>
+      <dd className={`text-sm font-medium text-[#111827] dark:text-[#f5f5f5] ${mono ? "font-mono" : ""}`}>
         {value}
       </dd>
     </>
@@ -197,7 +197,7 @@ export default function TransactionDetailPage() {
       >
         <Link
           href="/dashboard/transactions"
-          className="inline-flex items-center gap-2 text-sm font-medium text-text-secondary hover:text-[#111827]"
+          className="inline-flex items-center gap-2 text-sm font-medium text-text-secondary hover:text-[#111827] dark:text-[#a3a3a3] dark:hover:text-[#f5f5f5]"
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <polyline points="15 18 9 12 15 6" />
@@ -213,9 +213,9 @@ export default function TransactionDetailPage() {
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
-            className="mx-auto max-w-2xl rounded-xl border border-[#fecaca] bg-[#fef2f2] p-6 text-center"
+            className="mx-auto max-w-2xl rounded-xl border border-[#fecaca] bg-[#fef2f2] p-6 text-center dark:border-[#7f1d1d] dark:bg-[#450a0a]"
           >
-            <p className="text-sm text-[#b91c1c]">{error}</p>
+            <p className="text-sm text-[#b91c1c] dark:text-[#fca5a5]">{error}</p>
             <Link
               href="/dashboard/transactions"
               className="mt-4 inline-block text-sm font-medium text-accent hover:underline"

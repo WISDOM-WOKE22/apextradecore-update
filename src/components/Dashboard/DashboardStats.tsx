@@ -72,18 +72,18 @@ export function DashboardStats() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: i * 0.06, ease: [0.22, 1, 0.36, 1] }}
           whileHover={{ y: -2 }}
-          className="rounded-xl border border-[#e5e7eb] bg-white p-5 shadow-sm transition-shadow hover:shadow-md"
+          className="rounded-xl border border-[#e5e7eb] bg-white p-5 shadow-sm transition-shadow hover:shadow-md dark:border-[#2a2a2a] dark:bg-[#1a1a1a]"
         >
           <div className="mb-3 flex items-center justify-between">
             <span className="text-sm font-medium text-text-secondary">{label}</span>
-            <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#eef2ff] text-accent">
+            <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#eef2ff] text-accent dark:bg-accent/20">
               {icon}
             </span>
           </div>
-          <p className="text-2xl font-bold tracking-tight text-[#111827] sm:text-3xl">
+          <p className="text-2xl font-bold tracking-tight text-[#111827] dark:text-[#f5f5f5] sm:text-3xl">
             {loading ? "—" : formatCurrency(values[key])}
           </p>
-          <p className="mt-1 text-sm font-medium text-text-secondary">
+          <p className="mt-1 text-sm font-medium text-text-secondary dark:text-[#a3a3a3]">
             From your account
           </p>
         </motion.div>

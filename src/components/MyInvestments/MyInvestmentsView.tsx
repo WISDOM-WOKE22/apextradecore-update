@@ -30,16 +30,16 @@ export function MyInvestmentsView() {
         transition={{ duration: 0.4 }}
         className="mb-8"
       >
-        <h1 className="text-2xl font-bold text-[#111827] sm:text-3xl">
+        <h1 className="text-2xl font-bold text-[#111827] dark:text-[#f5f5f5] sm:text-3xl">
           My investments
         </h1>
-        <p className="mt-1 text-sm text-text-secondary">
+        <p className="mt-1 text-sm text-text-secondary dark:text-[#a3a3a3]">
           Track your active and completed investments, returns, and timeline.
         </p>
       </motion.div>
 
       {error && (
-        <p className="mb-4 text-sm text-[#b91c1c]">{error}</p>
+        <p className="mb-4 text-sm text-[#b91c1c] dark:text-[#fca5a5]">{error}</p>
       )}
 
       {loading ? (
@@ -47,7 +47,7 @@ export function MyInvestmentsView() {
           {[1, 2].map((i) => (
             <div
               key={i}
-              className="h-28 animate-pulse rounded-xl border border-[#e5e7eb] bg-white"
+              className="h-28 animate-pulse rounded-xl border border-[#e5e7eb] bg-white dark:border-[#2a2a2a] dark:bg-[#1a1a1a]"
             />
           ))}
         </div>
@@ -55,22 +55,22 @@ export function MyInvestmentsView() {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="rounded-xl border border-[#e5e7eb] bg-white p-10 shadow-sm sm:p-12"
+          className="rounded-xl border border-[#e5e7eb] bg-white p-10 shadow-sm dark:border-[#2a2a2a] dark:bg-[#1a1a1a] sm:p-12"
         >
           <div className="text-center">
-            <p className="text-text-secondary">
+            <p className="text-text-secondary dark:text-[#a3a3a3]">
               You have no investment plans yet. Start with our default plan and begin earning.
             </p>
-            <div className="mt-6 rounded-lg border border-[#e5e7eb] bg-[#f9fafb] p-5 text-left sm:inline-block sm:text-left">
-              <p className="text-sm font-medium text-[#111827]">
+            <div className="mt-6 rounded-lg border border-[#e5e7eb] bg-[#f9fafb] p-5 text-left dark:border-[#2a2a2a] dark:bg-[#262626] sm:inline-block sm:text-left">
+              <p className="text-sm font-medium text-[#111827] dark:text-[#f5f5f5]">
                 Default plan: {defaultPlan.planName}
               </p>
-              <p className="mt-1 text-sm text-text-secondary">
+              <p className="mt-1 text-sm text-text-secondary dark:text-[#a3a3a3]">
                 Minimum ${DEFAULT_PLAN_MIN_AMOUNT} — 400% return in 3 business days.
               </p>
               <Link
                 href="/investments"
-                className="mt-4 inline-block text-sm font-semibold text-accent no-underline hover:text-[#1552b8]"
+                className="mt-4 inline-block text-sm font-semibold text-accent no-underline hover:text-[#1552b8] dark:hover:text-accent/90"
               >
                 Start investment with {defaultPlan.planName} →
               </Link>
@@ -89,42 +89,42 @@ export function MyInvestmentsView() {
             >
               <Link
                 href={`/my-investments/${encodeURIComponent(plan.id)}`}
-                className="block rounded-xl border border-[#e5e7eb] bg-white p-5 shadow-sm transition-shadow hover:shadow-md sm:p-6"
+                className="block rounded-xl border border-[#e5e7eb] bg-white p-5 shadow-sm transition-shadow hover:shadow-md dark:border-[#2a2a2a] dark:bg-[#1a1a1a] sm:p-6"
               >
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                   <div className="flex-1">
                     <div className="mb-2 flex flex-wrap items-center gap-2">
-                      <h2 className="text-lg font-bold text-[#111827]">
+                      <h2 className="text-lg font-bold text-[#111827] dark:text-[#f5f5f5]">
                         {plan.planName}
                       </h2>
-                      <span className="rounded-full bg-[#dbeafe] px-2.5 py-0.5 text-xs font-medium text-[#1d4ed8]">
+                      <span className="rounded-full bg-[#dbeafe] px-2.5 py-0.5 text-xs font-medium text-[#1d4ed8] dark:bg-[#1e3a8a] dark:text-[#93c5fd]">
                         Active
                       </span>
                     </div>
-                    <div className="mt-3 flex flex-wrap gap-x-6 gap-y-1 text-sm text-text-secondary">
+                    <div className="mt-3 flex flex-wrap gap-x-6 gap-y-1 text-sm text-text-secondary dark:text-[#a3a3a3]">
                       <span>
                         Amount:{" "}
-                        <span className="font-medium text-[#111827]">
+                        <span className="font-medium text-[#111827] dark:text-[#f5f5f5]">
                           ${plan.amountNum.toLocaleString()}
                         </span>
                       </span>
                       {(plan.totalProfit ?? 0) > 0 && (
                         <span>
                           Profit:{" "}
-                          <span className="font-medium text-[#059669]">
+                          <span className="font-medium text-[#059669] dark:text-[#34d399]">
                             ${(plan.totalProfit ?? 0).toLocaleString("en-US", { minimumFractionDigits: 2 })}
                           </span>
                         </span>
                       )}
                       <span>
                         Started:{" "}
-                        <span className="font-medium text-[#111827]">
+                        <span className="font-medium text-[#111827] dark:text-[#f5f5f5]">
                           {formatPlanDate(plan.date, plan.dateSortKey)}
                         </span>
                       </span>
                     </div>
                   </div>
-                  <span className="inline-flex items-center gap-1 text-sm font-semibold text-accent sm:shrink-0">
+                  <span className="inline-flex items-center gap-1 text-sm font-semibold text-accent sm:shrink-0 dark:text-accent">
                     View details
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <polyline points="9 18 15 12 9 6" />

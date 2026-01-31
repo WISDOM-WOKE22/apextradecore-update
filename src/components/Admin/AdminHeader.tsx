@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
+import { useTheme } from "next-themes";
+import { Moon, Sun } from "lucide-react";
 import { useLogoutService } from "@/services/auth/logout";
 import { useAppStore, getInitials } from "@/store/useAppStore";
 
@@ -11,6 +13,7 @@ interface AdminHeaderProps {
 
 export function AdminHeader({ onMenuClick }: AdminHeaderProps) {
   const router = useRouter();
+  const { resolvedTheme, setTheme } = useTheme();
   const { logout, loading: logoutLoading } = useLogoutService();
   const user = useAppStore((s) => s.user);
   const reset = useAppStore((s) => s.reset);
@@ -76,7 +79,24 @@ export function AdminHeader({ onMenuClick }: AdminHeaderProps) {
           </button>
           {showUserMenu && (
             <div className="absolute right-0 top-full z-50 mt-1 w-48 rounded-lg border border-[#e5e7eb] bg-white py-1 shadow-lg dark:border-[#2a2a2a] dark:bg-[#1a1a1a]">
-              <div className="border-b border-[#e5e7eb] dark:border-[#2a2a2a] px-3 py-2 text-xs text-text-secondary">
+              <button
+                type="button"
+                onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
+                className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm font-medium text-[#111827] hover:bg-[#f9fafb] dark:text-[#f5f5f5] dark:hover:bg-[#262626]"
+              >
+                {resolvedTheme === "dark" ? (
+                  <>
+                    <Sun className="h-4 w-4 shrink-0" />
+                    Light mode
+                  </>
+                ) : (
+                  <>
+                    <Moon className="h-4 w-4 shrink-0" />
+                    Dark mode
+                  </>
+                )}
+              </button>
+              <div className="border-b border-[#e5e7eb] dark:border-[#2a2a2a] px-3 py-2 text-xs text-text-secondary dark:text-[#a3a3a3]">
                 {user?.email}
               </div>
               <button

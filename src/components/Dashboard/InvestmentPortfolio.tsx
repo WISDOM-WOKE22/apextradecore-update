@@ -29,17 +29,17 @@ export function InvestmentPortfolio() {
       transition={{ duration: 0.5, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
     >
       <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-lg font-bold text-[#111827]">Investment Portfolio</h2>
+        <h2 className="text-lg font-bold text-[#111827] dark:text-[#f5f5f5]">Investment Portfolio</h2>
         <Link
           href="/my-investments"
-          className="text-sm font-semibold text-accent no-underline hover:text-[#1552b8]"
+          className="text-sm font-semibold text-accent no-underline hover:text-[#1552b8] dark:hover:text-accent/90"
         >
           View all
         </Link>
       </div>
 
       {error && (
-        <p className="mb-4 text-sm text-[#b91c1c]">{error}</p>
+        <p className="mb-4 text-sm text-[#b91c1c] dark:text-[#fca5a5]">{error}</p>
       )}
 
       {loading ? (
@@ -47,7 +47,7 @@ export function InvestmentPortfolio() {
           {[1, 2, 3, 4].map((i) => (
             <div
               key={i}
-              className="h-40 animate-pulse rounded-xl border border-[#e5e7eb] bg-white p-5"
+              className="h-40 animate-pulse rounded-xl border border-[#e5e7eb] bg-white p-5 dark:border-[#2a2a2a] dark:bg-[#1a1a1a]"
             />
           ))}
         </div>
@@ -58,19 +58,19 @@ export function InvestmentPortfolio() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.3, ease: "easeOut" }}
             whileHover={{ y: -2 }}
-            className="group rounded-xl border border-[#e5e7eb] bg-white p-5 shadow-sm transition-shadow hover:shadow-md"
+            className="group rounded-xl border border-[#e5e7eb] bg-white p-5 shadow-sm transition-shadow hover:shadow-md dark:border-[#2a2a2a] dark:bg-[#1a1a1a]"
           >
-            <div className="mb-4 h-1.5 w-full overflow-hidden rounded-full bg-[#f3f4f6]">
+            <div className="mb-4 h-1.5 w-full overflow-hidden rounded-full bg-[#f3f4f6] dark:bg-[#262626]">
               <div className="h-full w-0 rounded-full bg-linear-to-r from-[#0ea5e9] to-[#06b6d4]" />
             </div>
-            <h3 className="text-sm font-semibold text-[#111827]">{defaultPlan.planName}</h3>
-            <div className="mt-2 space-y-1 text-xs text-text-secondary">
-              <p>Invested: <span className="font-medium text-[#111827]">$0</span></p>
+            <h3 className="text-sm font-semibold text-[#111827] dark:text-[#f5f5f5]">{defaultPlan.planName}</h3>
+            <div className="mt-2 space-y-1 text-xs text-text-secondary dark:text-[#a3a3a3]">
+              <p>Invested: <span className="font-medium text-[#111827] dark:text-[#f5f5f5]">$0</span></p>
               <p>Start with as little as ${defaultPlan.amountNum} — 400% return.</p>
             </div>
             <Link
               href="/investments"
-              className="mt-4 inline-block text-sm font-semibold text-accent no-underline hover:text-[#1552b8]"
+              className="mt-4 inline-block text-sm font-semibold text-accent no-underline hover:text-[#1552b8] dark:hover:text-accent/90"
             >
               Invest now →
             </Link>
@@ -79,14 +79,14 @@ export function InvestmentPortfolio() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.35, ease: "easeOut" }}
-            className="rounded-xl border border-dashed border-[#e5e7eb] bg-[#f9fafb] p-5"
+            className="rounded-xl border border-dashed border-[#e5e7eb] bg-[#f9fafb] p-5 dark:border-[#2a2a2a] dark:bg-[#262626]"
           >
-            <p className="text-sm text-text-secondary">
+            <p className="text-sm text-text-secondary dark:text-[#a3a3a3]">
               Add more plans from the Investments page.
             </p>
             <Link
               href="/investments"
-              className="mt-3 inline-block text-sm font-semibold text-accent no-underline hover:text-[#1552b8]"
+              className="mt-3 inline-block text-sm font-semibold text-accent no-underline hover:text-[#1552b8] dark:hover:text-accent/90"
             >
               View plans →
             </Link>
@@ -105,9 +105,9 @@ export function InvestmentPortfolio() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: 0.3 + i * 0.05, ease: "easeOut" }}
                 whileHover={{ y: -2 }}
-                className="group rounded-xl border border-[#e5e7eb] bg-white p-5 shadow-sm transition-shadow hover:shadow-md"
+                className="group rounded-xl border border-[#e5e7eb] bg-white p-5 shadow-sm transition-shadow hover:shadow-md dark:border-[#2a2a2a] dark:bg-[#1a1a1a]"
               >
-                <div className="mb-4 h-1.5 w-full overflow-hidden rounded-full bg-[#f3f4f6]">
+                <div className="mb-4 h-1.5 w-full overflow-hidden rounded-full bg-[#f3f4f6] dark:bg-[#262626]">
                   <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: "100%" }}
@@ -115,14 +115,14 @@ export function InvestmentPortfolio() {
                     className={`h-full rounded-full bg-linear-to-r ${color}`}
                   />
                 </div>
-                <h3 className="text-sm font-semibold text-[#111827]">{plan.planName}</h3>
-                <div className="mt-2 space-y-1 text-xs text-text-secondary">
-                  <p>Invested: <span className="font-medium text-[#111827]">${invested.toLocaleString()}</span></p>
-                  <p>Expected returns: <span className="font-medium text-[#111827]">${expectedReturns.toLocaleString()}</span></p>
+                <h3 className="text-sm font-semibold text-[#111827] dark:text-[#f5f5f5]">{plan.planName}</h3>
+                <div className="mt-2 space-y-1 text-xs text-text-secondary dark:text-[#a3a3a3]">
+                  <p>Invested: <span className="font-medium text-[#111827] dark:text-[#f5f5f5]">${invested.toLocaleString()}</span></p>
+                  <p>Expected returns: <span className="font-medium text-[#111827] dark:text-[#f5f5f5]">${expectedReturns.toLocaleString()}</span></p>
                 </div>
                 <Link
                   href={`/my-investments/${encodeURIComponent(plan.id)}`}
-                  className="mt-4 inline-block text-sm font-semibold text-accent no-underline hover:text-[#1552b8]"
+                  className="mt-4 inline-block text-sm font-semibold text-accent no-underline hover:text-[#1552b8] dark:hover:text-accent/90"
                 >
                   View details →
                 </Link>
@@ -133,14 +133,14 @@ export function InvestmentPortfolio() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.3 + plans.length * 0.05, ease: "easeOut" }}
-            className="rounded-xl border border-dashed border-[#e5e7eb] bg-[#f9fafb] p-5"
+            className="rounded-xl border border-dashed border-[#e5e7eb] bg-[#f9fafb] p-5 dark:border-[#2a2a2a] dark:bg-[#262626]"
           >
-            <p className="text-sm text-text-secondary">
+            <p className="text-sm text-text-secondary dark:text-[#a3a3a3]">
               Start another investment.
             </p>
             <Link
               href="/investments"
-              className="mt-3 inline-block text-sm font-semibold text-accent no-underline hover:text-[#1552b8]"
+              className="mt-3 inline-block text-sm font-semibold text-accent no-underline hover:text-[#1552b8] dark:hover:text-accent/90"
             >
               Invest now →
             </Link>

@@ -53,7 +53,7 @@ export function PlanDetailView({ plan, userId }: PlanDetailViewProps) {
       >
         <Link
           href="/my-investments"
-          className="inline-flex items-center gap-2 text-sm font-medium text-text-secondary hover:text-[#111827]"
+          className="inline-flex items-center gap-2 text-sm font-medium text-text-secondary hover:text-[#111827] dark:text-[#a3a3a3] dark:hover:text-[#f5f5f5]"
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <polyline points="15 18 9 12 15 6" />
@@ -69,14 +69,14 @@ export function PlanDetailView({ plan, userId }: PlanDetailViewProps) {
         className="mb-8"
       >
         <div className="flex flex-wrap items-center gap-2">
-          <h1 className="text-2xl font-bold text-[#111827] sm:text-3xl">
+          <h1 className="text-2xl font-bold text-[#111827] dark:text-[#f5f5f5] sm:text-3xl">
             {plan.planName}
           </h1>
-          <span className="rounded-full bg-[#dbeafe] px-2.5 py-0.5 text-xs font-medium text-[#1d4ed8]">
+          <span className="rounded-full bg-[#dbeafe] px-2.5 py-0.5 text-xs font-medium text-[#1d4ed8] dark:bg-[#1e3a8a] dark:text-[#93c5fd]">
             Active
           </span>
         </div>
-        <p className="mt-1 text-sm text-text-secondary">
+        <p className="mt-1 text-sm text-text-secondary dark:text-[#a3a3a3]">
           Started: {formatPlanDate(plan.dateSortKey, plan.date)}
         </p>
       </motion.header>
@@ -88,13 +88,13 @@ export function PlanDetailView({ plan, userId }: PlanDetailViewProps) {
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, delay: 0.08 + i * 0.04 }}
-            className="rounded-xl border border-[#e5e7eb] bg-white p-4 shadow-sm"
+            className="rounded-xl border border-[#e5e7eb] bg-white p-4 shadow-sm dark:border-[#2a2a2a] dark:bg-[#1a1a1a]"
           >
-            <p className="text-xs font-medium text-text-secondary">{stat.label}</p>
-            <p className="mt-1 text-lg font-bold text-[#111827] sm:text-xl">
+            <p className="text-xs font-medium text-text-secondary dark:text-[#a3a3a3]">{stat.label}</p>
+            <p className="mt-1 text-lg font-bold text-[#111827] dark:text-[#f5f5f5] sm:text-xl">
               {stat.value}
             </p>
-            <p className="mt-0.5 text-xs text-text-secondary">{stat.sub}</p>
+            <p className="mt-0.5 text-xs text-text-secondary dark:text-[#737373]">{stat.sub}</p>
           </motion.div>
         ))}
       </div>
@@ -103,9 +103,9 @@ export function PlanDetailView({ plan, userId }: PlanDetailViewProps) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.2 }}
-        className="mb-10 rounded-xl border border-[#e5e7eb] bg-[#f9fafb] p-5"
+        className="mb-10 rounded-xl border border-[#e5e7eb] bg-[#f9fafb] p-5 dark:border-[#2a2a2a] dark:bg-[#262626]"
       >
-        <p className="text-sm text-text-secondary">
+        <p className="text-sm text-text-secondary dark:text-[#a3a3a3]">
           Returns are credited within 3 business days. Track this investment from your My Investments list.
         </p>
       </motion.div>
@@ -115,16 +115,16 @@ export function PlanDetailView({ plan, userId }: PlanDetailViewProps) {
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35, delay: 0.15 }}
-        className="rounded-xl border border-[#e5e7eb] bg-white shadow-sm"
+        className="rounded-xl border border-[#e5e7eb] bg-white shadow-sm dark:border-[#2a2a2a] dark:bg-[#1a1a1a]"
       >
-        <div className="flex flex-col gap-4 border-b border-[#e5e7eb] px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
-          <h2 className="text-lg font-bold text-[#111827]">Plan transactions</h2>
-          <div className="flex rounded-lg border border-[#e5e7eb] bg-[#f9fafb] p-1">
+        <div className="flex flex-col gap-4 border-b border-[#e5e7eb] px-4 py-4 dark:border-[#2a2a2a] sm:flex-row sm:items-center sm:justify-between sm:px-6">
+          <h2 className="text-lg font-bold text-[#111827] dark:text-[#f5f5f5]">Plan transactions</h2>
+          <div className="flex rounded-lg border border-[#e5e7eb] bg-[#f9fafb] p-1 dark:border-[#2a2a2a] dark:bg-[#262626]">
             <button
               type="button"
               onClick={() => setViewMode("table")}
               className={`rounded-md px-3 py-2 text-sm font-medium transition-colors ${
-                viewMode === "table" ? "bg-white text-[#111827] shadow-sm" : "text-text-secondary hover:text-[#111827]"
+                viewMode === "table" ? "bg-white text-[#111827] shadow-sm dark:bg-[#404040] dark:text-[#f5f5f5]" : "text-text-secondary hover:text-[#111827] dark:text-[#a3a3a3] dark:hover:text-[#f5f5f5]"
               }`}
             >
               Table
@@ -133,7 +133,7 @@ export function PlanDetailView({ plan, userId }: PlanDetailViewProps) {
               type="button"
               onClick={() => setViewMode("timeline")}
               className={`rounded-md px-3 py-2 text-sm font-medium transition-colors ${
-                viewMode === "timeline" ? "bg-white text-[#111827] shadow-sm" : "text-text-secondary hover:text-[#111827]"
+                viewMode === "timeline" ? "bg-white text-[#111827] shadow-sm dark:bg-[#404040] dark:text-[#f5f5f5]" : "text-text-secondary hover:text-[#111827] dark:text-[#a3a3a3] dark:hover:text-[#f5f5f5]"
               }`}
             >
               Timeline
@@ -142,7 +142,7 @@ export function PlanDetailView({ plan, userId }: PlanDetailViewProps) {
         </div>
 
         {txError && (
-          <div className="border-b border-[#fecaca] bg-[#fef2f2] px-4 py-3 text-sm text-[#b91c1c] sm:px-6">
+          <div className="border-b border-[#fecaca] bg-[#fef2f2] px-4 py-3 text-sm text-[#b91c1c] dark:border-[#7f1d1d] dark:bg-[#450a0a] dark:text-[#fca5a5] sm:px-6">
             {txError}
           </div>
         )}
@@ -150,23 +150,23 @@ export function PlanDetailView({ plan, userId }: PlanDetailViewProps) {
         {txLoading ? (
           <div className="flex flex-col items-center justify-center gap-3 py-12">
             <div className="h-8 w-8 animate-spin rounded-full border-2 border-accent border-t-transparent" />
-            <p className="text-sm text-text-secondary">Loading transactions…</p>
+            <p className="text-sm text-text-secondary dark:text-[#a3a3a3]">Loading transactions…</p>
           </div>
         ) : transactions.length === 0 ? (
-          <div className="py-12 text-center text-sm text-text-secondary">
+          <div className="py-12 text-center text-sm text-text-secondary dark:text-[#a3a3a3]">
             No transactions yet. Investment and profit credits will appear here.
           </div>
         ) : viewMode === "table" ? (
           <div className="table-scroll-wrap -mx-2 sm:mx-0">
             <table className="w-full min-w-[400px]">
               <thead>
-                <tr className="border-b border-[#e5e7eb] bg-[#f9fafb] text-left text-xs font-semibold uppercase tracking-wider text-text-secondary">
+                <tr className="border-b border-[#e5e7eb] bg-[#f9fafb] text-left text-xs font-semibold uppercase tracking-wider text-text-secondary dark:border-[#2a2a2a] dark:bg-[#262626] dark:text-[#a3a3a3]">
                   <th className="whitespace-nowrap px-3 py-3 sm:px-4 sm:py-3.5 lg:px-6">Date</th>
                   <th className="whitespace-nowrap px-3 py-3 sm:px-4 sm:py-3.5 lg:px-6">Type</th>
                   <th className="whitespace-nowrap px-3 py-3 text-right sm:px-4 sm:py-3.5 lg:px-6">Amount</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#f3f4f6]">
+              <tbody className="divide-y divide-[#f3f4f6] dark:divide-[#2a2a2a]">
                 <AnimatePresence>
                   {transactions.map((tx, i) => (
                     <motion.tr
@@ -174,9 +174,9 @@ export function PlanDetailView({ plan, userId }: PlanDetailViewProps) {
                       initial={{ opacity: 0, x: -8 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ duration: 0.25, delay: 0.02 * i }}
-                      className="transition-colors hover:bg-[#fafafa]"
+                      className="transition-colors hover:bg-[#fafafa] dark:hover:bg-[#262626]"
                     >
-                      <td className="whitespace-nowrap px-3 py-3 text-sm text-[#111827] sm:px-4 sm:py-3.5 lg:px-6">
+                      <td className="whitespace-nowrap px-3 py-3 text-sm text-[#111827] dark:text-[#f5f5f5] sm:px-4 sm:py-3.5 lg:px-6">
                         {tx.date}
                       </td>
                       <td className="whitespace-nowrap px-3 py-3 sm:px-4 sm:py-3.5 lg:px-6">
@@ -191,7 +191,7 @@ export function PlanDetailView({ plan, userId }: PlanDetailViewProps) {
                         </span>
                       </td>
                       <td className="whitespace-nowrap px-3 py-3 text-right font-medium sm:px-4 sm:py-3.5 lg:px-6">
-                        <span className={tx.type === "profit" ? "text-[#059669]" : "text-[#111827]"}>
+                        <span className={tx.type === "profit" ? "text-[#059669] dark:text-[#34d399]" : "text-[#111827] dark:text-[#f5f5f5]"}>
                           {tx.type === "profit" ? "+" : ""}$
                           {tx.amountNum.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </span>
@@ -206,7 +206,7 @@ export function PlanDetailView({ plan, userId }: PlanDetailViewProps) {
           <div className="px-4 py-6 sm:px-6">
             <div className="relative">
               {/* Timeline line */}
-              <div className="absolute left-4 top-2 bottom-2 w-0.5 bg-[#e5e7eb] sm:left-5" />
+              <div className="absolute left-4 top-2 bottom-2 w-0.5 bg-[#e5e7eb] dark:bg-[#404040] sm:left-5" />
               <ul className="space-y-0">
                 {transactions.map((tx, i) => (
                   <motion.li
@@ -233,23 +233,23 @@ export function PlanDetailView({ plan, userId }: PlanDetailViewProps) {
                         </svg>
                       )}
                     </div>
-                    <div className="min-w-0 flex-1 rounded-lg border border-[#e5e7eb] bg-[#fafafa] px-4 py-3">
+                    <div className="min-w-0 flex-1 rounded-lg border border-[#e5e7eb] bg-[#fafafa] px-4 py-3 dark:border-[#2a2a2a] dark:bg-[#262626]">
                       <div className="flex flex-wrap items-center justify-between gap-2">
                         <span
                           className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium ${
                             tx.type === "investment"
-                              ? "bg-[#dbeafe] text-[#1d4ed8]"
-                              : "bg-[#d1fae5] text-[#059669]"
+                              ? "bg-[#dbeafe] text-[#1d4ed8] dark:bg-[#1e3a8a] dark:text-[#93c5fd]"
+                              : "bg-[#d1fae5] text-[#059669] dark:bg-[#064e3b] dark:text-[#34d399]"
                           }`}
                         >
                           {tx.label}
                         </span>
-                        <span className={`text-sm font-semibold ${tx.type === "profit" ? "text-[#059669]" : "text-[#111827]"}`}>
+                        <span className={`text-sm font-semibold ${tx.type === "profit" ? "text-[#059669] dark:text-[#34d399]" : "text-[#111827] dark:text-[#f5f5f5]"}`}>
                           {tx.type === "profit" ? "+" : ""}$
                           {tx.amountNum.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </span>
                       </div>
-                      <p className="mt-1.5 text-xs text-text-secondary">{tx.date}</p>
+                      <p className="mt-1.5 text-xs text-text-secondary dark:text-[#a3a3a3]">{tx.date}</p>
                     </div>
                   </motion.li>
                 ))}

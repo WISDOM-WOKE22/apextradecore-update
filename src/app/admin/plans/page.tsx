@@ -340,15 +340,15 @@ export default function AdminPlansPage() {
     >
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-[#111827] sm:text-3xl">Plans</h1>
-          <p className="mt-1 text-sm text-text-secondary">
+          <h1 className="text-2xl font-bold text-[#111827] dark:text-[#f5f5f5] sm:text-3xl">Plans</h1>
+          <p className="mt-1 text-sm text-text-secondary dark:text-[#a3a3a3]">
             Manage user investments and investment plan templates. Create, disable, or delete plans.
           </p>
         </div>
       </div>
 
       {/* Tabs */}
-      <div className="mb-6 flex gap-1 rounded-xl border border-[#e5e7eb] bg-[#f9fafb] p-1.5">
+      <div className="mb-6 flex gap-1 rounded-xl border border-[#e5e7eb] bg-[#f9fafb] p-1.5 dark:border-[#2a2a2a] dark:bg-[#262626]">
         {tabs.map((tab) => (
           <button
             key={tab.key}
@@ -356,8 +356,8 @@ export default function AdminPlansPage() {
             onClick={() => setActiveTab(tab.key)}
             className={`flex-1 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors sm:flex-none ${
               activeTab === tab.key
-                ? "bg-white text-accent shadow-sm"
-                : "text-text-secondary hover:bg-white/60 hover:text-[#111827]"
+                ? "bg-white text-accent shadow-sm dark:bg-[#1a1a1a] dark:text-accent"
+                : "text-text-secondary hover:bg-white/60 hover:text-[#111827] dark:text-[#a3a3a3] dark:hover:bg-[#404040] dark:hover:text-[#f5f5f5]"
             }`}
           >
             {tab.label}
@@ -376,22 +376,22 @@ export default function AdminPlansPage() {
             className="space-y-6"
           >
             {usersError && (
-              <div className="rounded-lg border border-[#fecaca] bg-[#fef2f2] px-4 py-3 text-sm text-[#b91c1c]">
+              <div className="rounded-lg border border-[#fecaca] bg-[#fef2f2] px-4 py-3 text-sm text-[#b91c1c] dark:border-[#7f1d1d] dark:bg-[#450a0a] dark:text-[#fca5a5]">
                 {usersError}
               </div>
             )}
 
-            <section className="rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm">
-              <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-text-secondary">
+            <section className="rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm dark:border-[#2a2a2a] dark:bg-[#1a1a1a]">
+              <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-text-secondary dark:text-[#a3a3a3]">
                 Select user
               </h2>
               {usersLoading ? (
                 <div className="flex items-center gap-3 py-4">
                   <div className="h-5 w-5 animate-spin rounded-full border-2 border-accent border-t-transparent" />
-                  <span className="text-sm text-text-secondary">Loading users…</span>
+                  <span className="text-sm text-text-secondary dark:text-[#a3a3a3]">Loading users…</span>
                 </div>
               ) : users.length === 0 ? (
-                <p className="py-4 text-sm text-text-secondary">No users found. Only non-admin users are listed.</p>
+                <p className="py-4 text-sm text-text-secondary dark:text-[#a3a3a3]">No users found. Only non-admin users are listed.</p>
               ) : (
                 <div className="flex flex-wrap items-center gap-3">
                   <select
@@ -403,7 +403,7 @@ export default function AdminPlansPage() {
                       setAddSuccess(false);
                       setDeleteConfirmId(null);
                     }}
-                    className="min-w-[220px] rounded-lg border border-[#e5e7eb] bg-white px-4 py-2.5 text-sm font-medium text-[#111827] focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
+                    className="min-w-[220px] rounded-lg border border-[#e5e7eb] bg-white px-4 py-2.5 text-sm font-medium text-[#111827] focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 dark:border-[#2a2a2a] dark:bg-[#262626] dark:text-[#f5f5f5]"
                   >
                     <option value="">Choose a user…</option>
                     {users.map((u) => (
@@ -413,7 +413,7 @@ export default function AdminPlansPage() {
                     ))}
                   </select>
                   {selectedUser && (
-                    <div className="flex items-center gap-2 rounded-lg bg-[#eef2ff] px-3 py-2 text-sm">
+                    <div className="flex items-center gap-2 rounded-lg bg-[#eef2ff] px-3 py-2 text-sm dark:bg-accent/20">
                       <span className="font-medium text-accent">{selectedUser.fullName || selectedUser.email || "User"}</span>
                       <button
                         type="button"
@@ -421,7 +421,7 @@ export default function AdminPlansPage() {
                           setSelectedUser(null);
                           setPlans([]);
                         }}
-                        className="rounded p-1 text-text-secondary hover:bg-white/60 hover:text-[#111827]"
+                        className="rounded p-1 text-text-secondary hover:bg-white/60 hover:text-[#111827] dark:text-[#a3a3a3] dark:hover:bg-[#404040] dark:hover:text-[#f5f5f5]"
                         aria-label="Clear selection"
                       >
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -436,45 +436,45 @@ export default function AdminPlansPage() {
             </section>
 
             {!selectedUser ? (
-              <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-[#e5e7eb] bg-[#fafafa] py-16 text-center">
-                <div className="mb-3 rounded-full bg-[#f3f4f6] p-4">
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2" className="mx-auto">
+              <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-[#e5e7eb] bg-[#fafafa] py-16 text-center dark:border-[#2a2a2a] dark:bg-[#1a1a1a]">
+                <div className="mb-3 rounded-full bg-[#f3f4f6] p-4 dark:bg-[#262626]">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="mx-auto text-[#9ca3af] dark:text-[#a3a3a3]">
                     <line x1="12" y1="20" x2="12" y2="10" />
                     <line x1="18" y1="20" x2="18" y2="4" />
                     <line x1="6" y1="20" x2="6" y2="16" />
                   </svg>
                 </div>
-                <p className="text-sm font-medium text-[#374151]">Select a user to manage their plans</p>
-                <p className="mt-1 text-sm text-text-secondary">Choose a user above to view investments and add plans or profits.</p>
+                <p className="text-sm font-medium text-[#374151] dark:text-[#e5e5e5]">Select a user to manage their plans</p>
+                <p className="mt-1 text-sm text-text-secondary dark:text-[#a3a3a3]">Choose a user above to view investments and add plans or profits.</p>
               </div>
             ) : (
               <div className="space-y-6">
-                <section className="rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm">
-                  <h2 className="mb-4 text-lg font-bold text-[#111827]">Add plan for {selectedUser.fullName || selectedUser.email || "user"}</h2>
+                <section className="rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm dark:border-[#2a2a2a] dark:bg-[#1a1a1a]">
+                  <h2 className="mb-4 text-lg font-bold text-[#111827] dark:text-[#f5f5f5]">Add plan for {selectedUser.fullName || selectedUser.email || "user"}</h2>
                   {addSuccess && (
-                    <div className="mb-4 rounded-lg border border-[#a7f3d0] bg-[#d1fae5] px-4 py-3 text-sm font-medium text-[#065f46]">
+                    <div className="mb-4 rounded-lg border border-[#a7f3d0] bg-[#d1fae5] px-4 py-3 text-sm font-medium text-[#065f46] dark:border-[#064e3b] dark:bg-[#064e3b] dark:text-[#34d399]">
                       Plan created successfully.
                     </div>
                   )}
                   {addError && (
-                    <div className="mb-4 rounded-lg border border-[#fecaca] bg-[#fef2f2] px-4 py-3 text-sm text-[#b91c1c]">
+                    <div className="mb-4 rounded-lg border border-[#fecaca] bg-[#fef2f2] px-4 py-3 text-sm text-[#b91c1c] dark:border-[#7f1d1d] dark:bg-[#450a0a] dark:text-[#fca5a5]">
                       {addError}
                     </div>
                   )}
                   <form onSubmit={handleAddPlan} className="grid gap-4 sm:grid-cols-2 sm:items-end">
                     <div>
-                      <label htmlFor="plan-name" className="mb-1.5 block text-sm font-medium text-[#374151]">Plan name</label>
+                      <label htmlFor="plan-name" className="mb-1.5 block text-sm font-medium text-[#374151] dark:text-[#e5e5e5]">Plan name</label>
                       <input
                         id="plan-name"
                         type="text"
                         value={planName}
                         onChange={(e) => { setPlanName(e.target.value); if (addError) setAddError(null); }}
                         placeholder="e.g. Starter, Premium"
-                        className="w-full rounded-lg border border-[#e5e7eb] bg-white px-4 py-2.5 text-sm focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
+                        className="w-full rounded-lg border border-[#e5e7eb] bg-white px-4 py-2.5 text-sm text-[#111827] focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 dark:border-[#2a2a2a] dark:bg-[#262626] dark:text-[#f5f5f5]"
                       />
                     </div>
                     <div>
-                      <label htmlFor="plan-amount" className="mb-1.5 block text-sm font-medium text-[#374151]">Amount ($)</label>
+                      <label htmlFor="plan-amount" className="mb-1.5 block text-sm font-medium text-[#374151] dark:text-[#e5e5e5]">Amount ($)</label>
                       <input
                         id="plan-amount"
                         type="number"
@@ -483,7 +483,7 @@ export default function AdminPlansPage() {
                         value={amount}
                         onChange={(e) => { setAmount(e.target.value); if (addError) setAddError(null); }}
                         placeholder="0.00"
-                        className="w-full rounded-lg border border-[#e5e7eb] bg-white px-4 py-2.5 text-sm focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
+                        className="w-full rounded-lg border border-[#e5e7eb] bg-white px-4 py-2.5 text-sm text-[#111827] focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 dark:border-[#2a2a2a] dark:bg-[#262626] dark:text-[#f5f5f5]"
                       />
                     </div>
                     <div className="sm:flex sm:items-end">
@@ -498,28 +498,28 @@ export default function AdminPlansPage() {
                   </form>
                 </section>
 
-                <section className="overflow-hidden rounded-xl border border-[#e5e7eb] bg-white shadow-sm">
-                  <div className="border-b border-[#e5e7eb] bg-[#f9fafb] px-4 py-3 sm:px-6">
-                    <h2 className="text-lg font-bold text-[#111827]">Current plans</h2>
-                    <p className="mt-0.5 text-sm text-text-secondary">{selectedUser.fullName || selectedUser.email}&apos;s investment plans</p>
+                <section className="overflow-hidden rounded-xl border border-[#e5e7eb] bg-white shadow-sm dark:border-[#2a2a2a] dark:bg-[#1a1a1a]">
+                  <div className="border-b border-[#e5e7eb] bg-[#f9fafb] px-4 py-3 dark:border-[#2a2a2a] dark:bg-[#262626] sm:px-6">
+                    <h2 className="text-lg font-bold text-[#111827] dark:text-[#f5f5f5]">Current plans</h2>
+                    <p className="mt-0.5 text-sm text-text-secondary dark:text-[#a3a3a3]">{selectedUser.fullName || selectedUser.email}&apos;s investment plans</p>
                   </div>
                   {plansLoading ? (
                     <div className="flex flex-col items-center justify-center gap-3 py-16">
                       <div className="h-8 w-8 animate-spin rounded-full border-2 border-accent border-t-transparent" />
-                      <p className="text-sm text-text-secondary">Loading plans…</p>
+                      <p className="text-sm text-text-secondary dark:text-[#a3a3a3]">Loading plans…</p>
                     </div>
                   ) : plansError ? (
-                    <div className="px-4 py-8 text-center text-sm text-[#b91c1c] sm:px-6">{plansError}</div>
+                    <div className="px-4 py-8 text-center text-sm text-[#b91c1c] dark:text-[#fca5a5] sm:px-6">{plansError}</div>
                   ) : plans.length === 0 ? (
                     <div className="py-12 text-center">
-                      <p className="text-sm text-text-secondary">No plans yet for this user.</p>
-                      <p className="mt-1 text-sm text-text-secondary">Add a plan using the form above.</p>
+                      <p className="text-sm text-text-secondary dark:text-[#a3a3a3]">No plans yet for this user.</p>
+                      <p className="mt-1 text-sm text-text-secondary dark:text-[#a3a3a3]">Add a plan using the form above.</p>
                     </div>
                   ) : (
                     <div className="table-scroll-wrap -mx-2 sm:mx-0">
                       <table className="w-full min-w-[440px]">
                         <thead>
-                          <tr className="border-b border-[#e5e7eb] text-left text-xs font-semibold uppercase tracking-wider text-text-secondary">
+                          <tr className="border-b border-[#e5e7eb] text-left text-xs font-semibold uppercase tracking-wider text-text-secondary dark:border-[#2a2a2a] dark:bg-[#262626] dark:text-[#a3a3a3]">
                             <th className="whitespace-nowrap px-3 py-3 sm:px-4 sm:py-3.5 lg:px-6">Plan</th>
                             <th className="whitespace-nowrap px-3 py-3 sm:px-4 sm:py-3.5 lg:px-6">Amount</th>
                             <th className="whitespace-nowrap px-3 py-3 sm:px-4 sm:py-3.5 lg:px-6">Profit</th>
@@ -527,21 +527,21 @@ export default function AdminPlansPage() {
                             <th className="whitespace-nowrap px-3 py-3 text-right sm:px-4 sm:py-3.5 lg:px-6">Actions</th>
                           </tr>
                         </thead>
-                        <tbody className="divide-y divide-[#f3f4f6]">
+                        <tbody className="divide-y divide-[#f3f4f6] dark:divide-[#2a2a2a]">
                           {plans.map((plan) => (
-                            <tr key={plan.id} className="transition-colors hover:bg-[#fafafa]">
-                              <td className="whitespace-nowrap px-3 py-3 font-medium text-[#111827] sm:px-4 sm:py-3.5 lg:px-6">{plan.planName}</td>
-                              <td className="whitespace-nowrap px-3 py-3 text-sm text-[#111827] sm:px-4 sm:py-3.5 lg:px-6">${plan.amount}</td>
+                            <tr key={plan.id} className="transition-colors hover:bg-[#fafafa] dark:hover:bg-[#262626]">
+                              <td className="whitespace-nowrap px-3 py-3 font-medium text-[#111827] dark:text-[#f5f5f5] sm:px-4 sm:py-3.5 lg:px-6">{plan.planName}</td>
+                              <td className="whitespace-nowrap px-3 py-3 text-sm text-[#111827] dark:text-[#f5f5f5] sm:px-4 sm:py-3.5 lg:px-6">${plan.amount}</td>
                               <td className="whitespace-nowrap px-3 py-3 text-sm sm:px-4 sm:py-3.5 lg:px-6">
-                                <span className="font-medium text-[#059669]">
+                                <span className="font-medium text-[#059669] dark:text-[#34d399]">
                                   ${(plan.totalProfit ?? 0).toLocaleString("en-US", { minimumFractionDigits: 2 })}
                                 </span>
                               </td>
-                              <td className="whitespace-nowrap px-3 py-3 text-sm text-text-secondary sm:px-4 sm:py-3.5 lg:px-6">{formatDate(plan.date, plan.dateSortKey)}</td>
+                              <td className="whitespace-nowrap px-3 py-3 text-sm text-text-secondary dark:text-[#a3a3a3] sm:px-4 sm:py-3.5 lg:px-6">{formatDate(plan.date, plan.dateSortKey)}</td>
                               <td className="whitespace-nowrap px-3 py-3 text-right sm:px-4 sm:py-3.5 lg:px-6">
                                 {deleteConfirmId === plan.id ? (
                                   <span className="flex items-center justify-end gap-2">
-                                    <span className="text-xs text-[#6b7280]">Delete?</span>
+                                    <span className="text-xs text-[#6b7280] dark:text-[#a3a3a3]">Delete?</span>
                                     <button
                                       type="button"
                                       onClick={() => handleDeletePlan(plan.id)}
@@ -553,7 +553,7 @@ export default function AdminPlansPage() {
                                     <button
                                       type="button"
                                       onClick={() => setDeleteConfirmId(null)}
-                                      className="rounded border border-[#e5e7eb] bg-white px-2.5 py-1 text-xs font-medium text-[#374151] hover:bg-[#f9fafb]"
+                                      className="rounded border border-[#e5e7eb] bg-white px-2.5 py-1 text-xs font-medium text-[#374151] hover:bg-[#f9fafb] dark:border-[#2a2a2a] dark:bg-[#262626] dark:text-[#f5f5f5] dark:hover:bg-[#404040]"
                                     >
                                       No
                                     </button>
@@ -563,14 +563,14 @@ export default function AdminPlansPage() {
                                     <button
                                       type="button"
                                       onClick={() => openProfitModal(plan)}
-                                      className="rounded px-3 py-1.5 text-sm font-medium text-[#059669] hover:bg-[#ecfdf5]"
+                                      className="rounded px-3 py-1.5 text-sm font-medium text-[#059669] hover:bg-[#ecfdf5] dark:text-[#34d399] dark:hover:bg-[#064e3b]"
                                     >
                                       Add profit
                                     </button>
                                     <button
                                       type="button"
                                       onClick={() => setDeleteConfirmId(plan.id)}
-                                      className="rounded px-3 py-1.5 text-sm font-medium text-[#dc2626] hover:bg-[#fef2f2]"
+                                      className="rounded px-3 py-1.5 text-sm font-medium text-[#dc2626] hover:bg-[#fef2f2] dark:hover:bg-[#450a0a]"
                                     >
                                       Delete
                                     </button>
@@ -588,7 +588,7 @@ export default function AdminPlansPage() {
                 <div className="flex justify-center">
                   <Link
                     href={`/admin/users/${encodeURIComponent(selectedUser.uid)}`}
-                    className="inline-flex items-center gap-2 rounded-lg border border-[#e5e7eb] bg-white px-4 py-2.5 text-sm font-medium text-[#374151] hover:bg-[#f9fafb]"
+                    className="inline-flex items-center gap-2 rounded-lg border border-[#e5e7eb] bg-white px-4 py-2.5 text-sm font-medium text-[#374151] hover:bg-[#f9fafb] dark:border-[#2a2a2a] dark:bg-[#262626] dark:text-[#f5f5f5] dark:hover:bg-[#404040]"
                   >
                     View full user profile
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -609,40 +609,40 @@ export default function AdminPlansPage() {
             className="space-y-6"
           >
             {templatesError && (
-              <div className="rounded-lg border border-[#fecaca] bg-[#fef2f2] px-4 py-3 text-sm text-[#b91c1c]">
+              <div className="rounded-lg border border-[#fecaca] bg-[#fef2f2] px-4 py-3 text-sm text-[#b91c1c] dark:border-[#7f1d1d] dark:bg-[#450a0a] dark:text-[#fca5a5]">
                 {templatesError}
               </div>
             )}
 
-            <section className="rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm">
-              <h2 className="mb-1 text-lg font-bold text-[#111827]">Create plan template</h2>
-              <p className="mb-4 text-sm text-text-secondary">
+            <section className="rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm dark:border-[#2a2a2a] dark:bg-[#1a1a1a]">
+              <h2 className="mb-1 text-lg font-bold text-[#111827] dark:text-[#f5f5f5]">Create plan template</h2>
+              <p className="mb-4 text-sm text-text-secondary dark:text-[#a3a3a3]">
                 Add an investment plan type. Users will see these on the investments page. Disabled plans are hidden from users.
               </p>
               {templateSuccess && (
-                <div className="mb-4 rounded-lg border border-[#a7f3d0] bg-[#d1fae5] px-4 py-3 text-sm font-medium text-[#065f46]">
+                <div className="mb-4 rounded-lg border border-[#a7f3d0] bg-[#d1fae5] px-4 py-3 text-sm font-medium text-[#065f46] dark:border-[#064e3b] dark:bg-[#064e3b] dark:text-[#34d399]">
                   Plan template created.
                 </div>
               )}
               {templateError && (
-                <div className="mb-4 rounded-lg border border-[#fecaca] bg-[#fef2f2] px-4 py-3 text-sm text-[#b91c1c]">
+                <div className="mb-4 rounded-lg border border-[#fecaca] bg-[#fef2f2] px-4 py-3 text-sm text-[#b91c1c] dark:border-[#7f1d1d] dark:bg-[#450a0a] dark:text-[#fca5a5]">
                   {templateError}
                 </div>
               )}
               <form onSubmit={handleCreateTemplate} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 sm:items-end">
                 <div>
-                  <label htmlFor="template-name" className="mb-1.5 block text-sm font-medium text-[#374151]">Plan name</label>
+                  <label htmlFor="template-name" className="mb-1.5 block text-sm font-medium text-[#374151] dark:text-[#e5e5e5]">Plan name</label>
                   <input
                     id="template-name"
                     type="text"
                     value={templateName}
                     onChange={(e) => { setTemplateName(e.target.value); if (templateError) setTemplateError(null); }}
                     placeholder="e.g. Starter, Premium"
-                    className="w-full rounded-lg border border-[#e5e7eb] bg-white px-4 py-2.5 text-sm focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
+                    className="w-full rounded-lg border border-[#e5e7eb] bg-white px-4 py-2.5 text-sm text-[#111827] focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 dark:border-[#2a2a2a] dark:bg-[#262626] dark:text-[#f5f5f5]"
                   />
                 </div>
                 <div>
-                  <label htmlFor="template-min" className="mb-1.5 block text-sm font-medium text-[#374151]">Minimum amount ($)</label>
+                  <label htmlFor="template-min" className="mb-1.5 block text-sm font-medium text-[#374151] dark:text-[#e5e5e5]">Minimum amount ($)</label>
                   <input
                     id="template-min"
                     type="number"
@@ -651,11 +651,11 @@ export default function AdminPlansPage() {
                     value={templateMinAmount}
                     onChange={(e) => { setTemplateMinAmount(e.target.value); if (templateError) setTemplateError(null); }}
                     placeholder="0"
-                    className="w-full rounded-lg border border-[#e5e7eb] bg-white px-4 py-2.5 text-sm focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
+                    className="w-full rounded-lg border border-[#e5e7eb] bg-white px-4 py-2.5 text-sm text-[#111827] focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 dark:border-[#2a2a2a] dark:bg-[#262626] dark:text-[#f5f5f5]"
                   />
                 </div>
                 <div>
-                  <label htmlFor="template-return" className="mb-1.5 block text-sm font-medium text-[#374151]">Expected return ($)</label>
+                  <label htmlFor="template-return" className="mb-1.5 block text-sm font-medium text-[#374151] dark:text-[#e5e5e5]">Expected return ($)</label>
                   <input
                     id="template-return"
                     type="number"
@@ -664,12 +664,12 @@ export default function AdminPlansPage() {
                     value={templateExpectedReturn}
                     onChange={(e) => { setTemplateExpectedReturn(e.target.value); if (templateError) setTemplateError(null); }}
                     placeholder="e.g. 2000"
-                    className="w-full rounded-lg border border-[#e5e7eb] bg-white px-4 py-2.5 text-sm focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
+                    className="w-full rounded-lg border border-[#e5e7eb] bg-white px-4 py-2.5 text-sm text-[#111827] focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 dark:border-[#2a2a2a] dark:bg-[#262626] dark:text-[#f5f5f5]"
                   />
-                  <p className="mt-1 text-xs text-text-secondary">Amount in dollars. % calculated from min.</p>
+                  <p className="mt-1 text-xs text-text-secondary dark:text-[#a3a3a3]">Amount in dollars. % calculated from min.</p>
                 </div>
                 <div>
-                  <label htmlFor="template-days" className="mb-1.5 block text-sm font-medium text-[#374151]">Return in (days)</label>
+                  <label htmlFor="template-days" className="mb-1.5 block text-sm font-medium text-[#374151] dark:text-[#e5e5e5]">Return in (days)</label>
                   <input
                     id="template-days"
                     type="number"
@@ -678,7 +678,7 @@ export default function AdminPlansPage() {
                     value={templateReturnDays}
                     onChange={(e) => { setTemplateReturnDays(e.target.value); if (templateError) setTemplateError(null); }}
                     placeholder="e.g. 3"
-                    className="w-full rounded-lg border border-[#e5e7eb] bg-white px-4 py-2.5 text-sm focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
+                    className="w-full rounded-lg border border-[#e5e7eb] bg-white px-4 py-2.5 text-sm text-[#111827] focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 dark:border-[#2a2a2a] dark:bg-[#262626] dark:text-[#f5f5f5]"
                   />
                 </div>
                 <div className="sm:flex sm:items-end lg:col-span-4">
@@ -693,26 +693,26 @@ export default function AdminPlansPage() {
               </form>
             </section>
 
-            <section className="overflow-hidden rounded-xl border border-[#e5e7eb] bg-white shadow-sm">
-              <div className="border-b border-[#e5e7eb] bg-[#f9fafb] px-4 py-3 sm:px-6">
-                <h2 className="text-lg font-bold text-[#111827]">Plan templates</h2>
-                <p className="mt-0.5 text-sm text-text-secondary">Drag rows to reorder. Edit or disable plans as needed.</p>
+            <section className="overflow-hidden rounded-xl border border-[#e5e7eb] bg-white shadow-sm dark:border-[#2a2a2a] dark:bg-[#1a1a1a]">
+              <div className="border-b border-[#e5e7eb] bg-[#f9fafb] px-4 py-3 dark:border-[#2a2a2a] dark:bg-[#262626] sm:px-6">
+                <h2 className="text-lg font-bold text-[#111827] dark:text-[#f5f5f5]">Plan templates</h2>
+                <p className="mt-0.5 text-sm text-text-secondary dark:text-[#a3a3a3]">Drag rows to reorder. Edit or disable plans as needed.</p>
               </div>
               {templatesLoading || reorderSubmitting ? (
                 <div className="flex flex-col items-center justify-center gap-3 py-16">
                   <div className="h-8 w-8 animate-spin rounded-full border-2 border-accent border-t-transparent" />
-                  <p className="text-sm text-text-secondary">{reorderSubmitting ? "Updating order…" : "Loading templates…"}</p>
+                  <p className="text-sm text-text-secondary dark:text-[#a3a3a3]">{reorderSubmitting ? "Updating order…" : "Loading templates…"}</p>
                 </div>
               ) : templates.length === 0 ? (
                 <div className="py-12 text-center">
-                  <p className="text-sm text-text-secondary">No plan templates yet.</p>
-                  <p className="mt-1 text-sm text-text-secondary">Create one above. Users will see hardcoded plans until you add templates.</p>
+                  <p className="text-sm text-text-secondary dark:text-[#a3a3a3]">No plan templates yet.</p>
+                  <p className="mt-1 text-sm text-text-secondary dark:text-[#a3a3a3]">Create one above. Users will see hardcoded plans until you add templates.</p>
                 </div>
               ) : (
                 <div className="table-scroll-wrap -mx-2 sm:mx-0">
                   <table className="w-full min-w-[520px]">
                     <thead>
-                      <tr className="border-b border-[#e5e7eb] text-left text-xs font-semibold uppercase tracking-wider text-text-secondary">
+                      <tr className="border-b border-[#e5e7eb] text-left text-xs font-semibold uppercase tracking-wider text-text-secondary dark:border-[#2a2a2a] dark:bg-[#262626] dark:text-[#a3a3a3]">
                         <th className="w-10 shrink-0 px-2 py-3 sm:px-3" aria-label="Drag to reorder" />
                         <th className="whitespace-nowrap px-3 py-3 sm:px-4 sm:py-3.5 lg:px-6">Name</th>
                         <th className="whitespace-nowrap px-3 py-3 sm:px-4 sm:py-3.5 lg:px-6">Min amount</th>
@@ -722,7 +722,7 @@ export default function AdminPlansPage() {
                         <th className="whitespace-nowrap px-3 py-3 text-right sm:px-4 sm:py-3.5 lg:px-6">Actions</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-[#f3f4f6]">
+                    <tbody className="divide-y divide-[#f3f4f6] dark:divide-[#2a2a2a]">
                       {templates.map((t, index) => (
                         <tr
                           key={t.id}
@@ -732,10 +732,10 @@ export default function AdminPlansPage() {
                           onDragOver={(e) => handleDragOver(e, index)}
                           onDragLeave={handleDragLeave}
                           onDrop={(e) => handleDrop(e, index)}
-                          className={`cursor-grab active:cursor-grabbing transition-colors hover:bg-[#fafafa] ${t.disabled ? "opacity-60" : ""} ${draggedTemplateId === t.id ? "opacity-50" : ""} ${dropTargetIndex === index ? "bg-[#eef2ff] ring-1 ring-inset ring-accent/30" : ""}`}
+                          className={`cursor-grab active:cursor-grabbing transition-colors hover:bg-[#fafafa] dark:hover:bg-[#262626] ${t.disabled ? "opacity-60" : ""} ${draggedTemplateId === t.id ? "opacity-50" : ""} ${dropTargetIndex === index ? "bg-[#eef2ff] ring-1 ring-inset ring-accent/30 dark:bg-accent/20" : ""}`}
                         >
                           <td
-                            className="w-10 shrink-0 px-2 py-3 text-text-secondary sm:px-3"
+                            className="w-10 shrink-0 px-2 py-3 text-text-secondary dark:text-[#a3a3a3] sm:px-3"
                             onClick={(e) => e.stopPropagation()}
                           >
                             <span className="inline-flex cursor-grab active:cursor-grabbing touch-none" aria-hidden>
@@ -745,27 +745,27 @@ export default function AdminPlansPage() {
                               </svg>
                             </span>
                           </td>
-                          <td className="whitespace-nowrap px-3 py-3 font-medium text-[#111827] sm:px-4 sm:py-3.5 lg:px-6">{t.name}</td>
-                          <td className="whitespace-nowrap px-3 py-3 text-sm text-[#111827] sm:px-4 sm:py-3.5 lg:px-6">${t.minAmount.toLocaleString("en-US", { minimumFractionDigits: 2 })}</td>
-                          <td className="whitespace-nowrap px-3 py-3 text-sm text-[#111827] sm:px-4 sm:py-3.5 lg:px-6">
+                          <td className="whitespace-nowrap px-3 py-3 font-medium text-[#111827] dark:text-[#f5f5f5] sm:px-4 sm:py-3.5 lg:px-6">{t.name}</td>
+                          <td className="whitespace-nowrap px-3 py-3 text-sm text-[#111827] dark:text-[#f5f5f5] sm:px-4 sm:py-3.5 lg:px-6">${t.minAmount.toLocaleString("en-US", { minimumFractionDigits: 2 })}</td>
+                          <td className="whitespace-nowrap px-3 py-3 text-sm text-[#111827] dark:text-[#f5f5f5] sm:px-4 sm:py-3.5 lg:px-6">
                             {t.expectedReturn > 0 && t.minAmount > 0
                               ? `$${t.expectedReturn.toLocaleString("en-US", { minimumFractionDigits: 2 })} (${Math.round((t.expectedReturn / t.minAmount) * 100)}%)`
                               : t.expectedReturn > 0
                                 ? `$${t.expectedReturn.toLocaleString("en-US", { minimumFractionDigits: 2 })}`
                                 : "—"}
                           </td>
-                          <td className="whitespace-nowrap px-3 py-3 text-sm text-[#111827] sm:px-4 sm:py-3.5 lg:px-6">
+                          <td className="whitespace-nowrap px-3 py-3 text-sm text-[#111827] dark:text-[#f5f5f5] sm:px-4 sm:py-3.5 lg:px-6">
                             {t.returnDays > 0 ? `${t.returnDays} day${t.returnDays === 1 ? "" : "s"}` : "—"}
                           </td>
                           <td className="whitespace-nowrap px-3 py-3 sm:px-4 sm:py-3.5 lg:px-6">
-                            <span className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium ${t.disabled ? "bg-[#fef3c7] text-[#b45309]" : "bg-[#d1fae5] text-[#059669]"}`}>
+                            <span className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium ${t.disabled ? "bg-[#fef3c7] text-[#b45309] dark:bg-[#78350f] dark:text-[#fcd34d]" : "bg-[#d1fae5] text-[#059669] dark:bg-[#064e3b] dark:text-[#34d399]"}`}>
                               {t.disabled ? "Disabled" : "Active"}
                             </span>
                           </td>
                           <td className="whitespace-nowrap px-3 py-3 text-right sm:px-4 sm:py-3.5 lg:px-6">
                             {deleteTemplateId === t.id ? (
                               <span className="flex items-center justify-end gap-2">
-                                <span className="text-xs text-[#6b7280]">Delete template?</span>
+                                <span className="text-xs text-[#6b7280] dark:text-[#a3a3a3]">Delete template?</span>
                                 <button
                                   type="button"
                                   onClick={() => handleDeleteTemplate(t.id)}
@@ -777,7 +777,7 @@ export default function AdminPlansPage() {
                                 <button
                                   type="button"
                                   onClick={() => setDeleteTemplateId(null)}
-                                  className="rounded border border-[#e5e7eb] bg-white px-2.5 py-1 text-xs font-medium text-[#374151] hover:bg-[#f9fafb]"
+                                  className="rounded border border-[#e5e7eb] bg-white px-2.5 py-1 text-xs font-medium text-[#374151] hover:bg-[#f9fafb] dark:border-[#2a2a2a] dark:bg-[#262626] dark:text-[#f5f5f5] dark:hover:bg-[#404040]"
                                 >
                                   No
                                 </button>
@@ -787,7 +787,7 @@ export default function AdminPlansPage() {
                                 <button
                                   type="button"
                                   onClick={() => openEditModal(t)}
-                                  className="rounded px-3 py-1.5 text-sm font-medium text-accent hover:bg-[#eef2ff]"
+                                  className="rounded px-3 py-1.5 text-sm font-medium text-accent hover:bg-[#eef2ff] dark:hover:bg-accent/20"
                                 >
                                   Edit
                                 </button>
@@ -795,14 +795,14 @@ export default function AdminPlansPage() {
                                   type="button"
                                   onClick={() => handleToggleDisabled(t)}
                                   disabled={disableUpdatingId === t.id}
-                                  className={`rounded px-3 py-1.5 text-sm font-medium ${t.disabled ? "text-[#059669] hover:bg-[#ecfdf5]" : "text-[#b45309] hover:bg-[#fffbeb]"}`}
+                                  className={`rounded px-3 py-1.5 text-sm font-medium ${t.disabled ? "text-[#059669] hover:bg-[#ecfdf5] dark:text-[#34d399] dark:hover:bg-[#064e3b]" : "text-[#b45309] hover:bg-[#fffbeb] dark:text-[#fcd34d] dark:hover:bg-[#78350f]"}`}
                                 >
                                   {disableUpdatingId === t.id ? "…" : t.disabled ? "Enable" : "Disable"}
                                 </button>
                                 <button
                                   type="button"
                                   onClick={() => setDeleteTemplateId(t.id)}
-                                  className="rounded px-3 py-1.5 text-sm font-medium text-[#dc2626] hover:bg-[#fef2f2]"
+                                  className="rounded px-3 py-1.5 text-sm font-medium text-[#dc2626] hover:bg-[#fef2f2] dark:hover:bg-[#450a0a]"
                                 >
                                   Delete
                                 </button>
@@ -835,25 +835,25 @@ export default function AdminPlansPage() {
               initial={{ opacity: 0, scale: 0.96 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.96 }}
-              className="fixed left-1/2 top-1/2 z-50 w-full max-w-md -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-[#e5e7eb] bg-white p-6 shadow-xl"
+              className="fixed left-1/2 top-1/2 z-50 w-full max-w-md -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-[#e5e7eb] bg-white p-6 shadow-xl dark:border-[#2a2a2a] dark:bg-[#1a1a1a]"
             >
-              <h2 className="text-lg font-bold text-[#111827]">Add profit</h2>
-              <p className="mt-1 text-sm text-text-secondary">
+              <h2 className="text-lg font-bold text-[#111827] dark:text-[#f5f5f5]">Add profit</h2>
+              <p className="mt-1 text-sm text-text-secondary dark:text-[#a3a3a3]">
                 This amount will be added to the plan and appear in the client&apos;s transactions.
               </p>
               {profitSuccess && (
-                <div className="mt-4 rounded-lg border border-[#a7f3d0] bg-[#d1fae5] px-4 py-3 text-sm font-medium text-[#065f46]">
+                <div className="mt-4 rounded-lg border border-[#a7f3d0] bg-[#d1fae5] px-4 py-3 text-sm font-medium text-[#065f46] dark:border-[#064e3b] dark:bg-[#064e3b] dark:text-[#34d399]">
                   Profit added successfully.
                 </div>
               )}
               {profitError && (
-                <div className="mt-4 rounded-lg border border-[#fecaca] bg-[#fef2f2] px-4 py-3 text-sm text-[#b91c1c]">
+                <div className="mt-4 rounded-lg border border-[#fecaca] bg-[#fef2f2] px-4 py-3 text-sm text-[#b91c1c] dark:border-[#7f1d1d] dark:bg-[#450a0a] dark:text-[#fca5a5]">
                   {profitError}
                 </div>
               )}
               <form onSubmit={handleAddProfit} className="mt-6 space-y-4">
                 <div>
-                  <label htmlFor="profit-amount" className="mb-1.5 block text-sm font-medium text-[#374151]">Amount ($)</label>
+                  <label htmlFor="profit-amount" className="mb-1.5 block text-sm font-medium text-[#374151] dark:text-[#e5e5e5]">Amount ($)</label>
                   <input
                     id="profit-amount"
                     type="number"
@@ -863,7 +863,7 @@ export default function AdminPlansPage() {
                     onChange={(e) => { setProfitAmount(e.target.value); if (profitError) setProfitError(null); }}
                     placeholder="0.00"
                     required
-                    className="w-full rounded-lg border border-[#e5e7eb] bg-white px-4 py-2.5 text-sm focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
+                    className="w-full rounded-lg border border-[#e5e7eb] bg-white px-4 py-2.5 text-sm text-[#111827] focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 dark:border-[#2a2a2a] dark:bg-[#262626] dark:text-[#f5f5f5]"
                   />
                 </div>
                 <div className="flex gap-3 pt-2">
@@ -871,14 +871,14 @@ export default function AdminPlansPage() {
                     type="button"
                     onClick={() => !profitSubmitting && setProfitPlanId(null)}
                     disabled={profitSubmitting}
-                    className="flex-1 rounded-lg border border-[#e5e7eb] bg-white py-2.5 text-sm font-medium text-[#374151] hover:bg-[#f9fafb] disabled:opacity-60"
+                    className="flex-1 rounded-lg border border-[#e5e7eb] bg-white py-2.5 text-sm font-medium text-[#374151] hover:bg-[#f9fafb] disabled:opacity-60 dark:border-[#2a2a2a] dark:bg-[#262626] dark:text-[#f5f5f5] dark:hover:bg-[#404040]"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={profitSubmitting}
-                    className="flex-1 rounded-lg bg-[#059669] py-2.5 text-sm font-medium text-white hover:opacity-95 disabled:opacity-60"
+                    className="flex-1 rounded-lg bg-[#059669] py-2.5 text-sm font-medium text-white hover:opacity-95 disabled:opacity-60 dark:bg-[#047857] dark:hover:bg-[#065f46]"
                   >
                     {profitSubmitting ? "Adding…" : "Add profit"}
                   </button>
@@ -904,32 +904,32 @@ export default function AdminPlansPage() {
               initial={{ opacity: 0, scale: 0.96 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.96 }}
-              className="fixed left-1/2 top-1/2 z-50 w-full max-w-md -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-[#e5e7eb] bg-white p-6 shadow-xl"
+              className="fixed left-1/2 top-1/2 z-50 w-full max-w-md -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-[#e5e7eb] bg-white p-6 shadow-xl dark:border-[#2a2a2a] dark:bg-[#1a1a1a]"
               onClick={(e) => e.stopPropagation()}
             >
-              <h2 className="text-lg font-bold text-[#111827]">Edit plan template</h2>
-              <p className="mt-1 text-sm text-text-secondary">
+              <h2 className="text-lg font-bold text-[#111827] dark:text-[#f5f5f5]">Edit plan template</h2>
+              <p className="mt-1 text-sm text-text-secondary dark:text-[#a3a3a3]">
                 Update name, minimum amount, expected return, or return days.
               </p>
               {editError && (
-                <div className="mt-4 rounded-lg border border-[#fecaca] bg-[#fef2f2] px-4 py-3 text-sm text-[#b91c1c]">
+                <div className="mt-4 rounded-lg border border-[#fecaca] bg-[#fef2f2] px-4 py-3 text-sm text-[#b91c1c] dark:border-[#7f1d1d] dark:bg-[#450a0a] dark:text-[#fca5a5]">
                   {editError}
                 </div>
               )}
               <form onSubmit={handleSaveEdit} className="mt-6 space-y-4">
                 <div>
-                  <label htmlFor="edit-name" className="mb-1.5 block text-sm font-medium text-[#374151]">Plan name</label>
+                  <label htmlFor="edit-name" className="mb-1.5 block text-sm font-medium text-[#374151] dark:text-[#e5e5e5]">Plan name</label>
                   <input
                     id="edit-name"
                     type="text"
                     value={editName}
                     onChange={(e) => { setEditName(e.target.value); if (editError) setEditError(null); }}
                     placeholder="e.g. Starter, Premium"
-                    className="w-full rounded-lg border border-[#e5e7eb] bg-white px-4 py-2.5 text-sm focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
+                    className="w-full rounded-lg border border-[#e5e7eb] bg-white px-4 py-2.5 text-sm text-[#111827] focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 dark:border-[#2a2a2a] dark:bg-[#262626] dark:text-[#f5f5f5]"
                   />
                 </div>
                 <div>
-                  <label htmlFor="edit-min" className="mb-1.5 block text-sm font-medium text-[#374151]">Minimum amount ($)</label>
+                  <label htmlFor="edit-min" className="mb-1.5 block text-sm font-medium text-[#374151] dark:text-[#e5e5e5]">Minimum amount ($)</label>
                   <input
                     id="edit-min"
                     type="number"
@@ -938,11 +938,11 @@ export default function AdminPlansPage() {
                     value={editMinAmount}
                     onChange={(e) => { setEditMinAmount(e.target.value); if (editError) setEditError(null); }}
                     placeholder="0"
-                    className="w-full rounded-lg border border-[#e5e7eb] bg-white px-4 py-2.5 text-sm focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
+                    className="w-full rounded-lg border border-[#e5e7eb] bg-white px-4 py-2.5 text-sm text-[#111827] focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 dark:border-[#2a2a2a] dark:bg-[#262626] dark:text-[#f5f5f5]"
                   />
                 </div>
                 <div>
-                  <label htmlFor="edit-return" className="mb-1.5 block text-sm font-medium text-[#374151]">Expected return ($)</label>
+                  <label htmlFor="edit-return" className="mb-1.5 block text-sm font-medium text-[#374151] dark:text-[#e5e5e5]">Expected return ($)</label>
                   <input
                     id="edit-return"
                     type="number"
@@ -951,11 +951,11 @@ export default function AdminPlansPage() {
                     value={editExpectedReturn}
                     onChange={(e) => { setEditExpectedReturn(e.target.value); if (editError) setEditError(null); }}
                     placeholder="0"
-                    className="w-full rounded-lg border border-[#e5e7eb] bg-white px-4 py-2.5 text-sm focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
+                    className="w-full rounded-lg border border-[#e5e7eb] bg-white px-4 py-2.5 text-sm text-[#111827] focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 dark:border-[#2a2a2a] dark:bg-[#262626] dark:text-[#f5f5f5]"
                   />
                 </div>
                 <div>
-                  <label htmlFor="edit-days" className="mb-1.5 block text-sm font-medium text-[#374151]">Return in (days)</label>
+                  <label htmlFor="edit-days" className="mb-1.5 block text-sm font-medium text-[#374151] dark:text-[#e5e5e5]">Return in (days)</label>
                   <input
                     id="edit-days"
                     type="number"
@@ -964,7 +964,7 @@ export default function AdminPlansPage() {
                     value={editReturnDays}
                     onChange={(e) => { setEditReturnDays(e.target.value); if (editError) setEditError(null); }}
                     placeholder="0"
-                    className="w-full rounded-lg border border-[#e5e7eb] bg-white px-4 py-2.5 text-sm focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
+                    className="w-full rounded-lg border border-[#e5e7eb] bg-white px-4 py-2.5 text-sm text-[#111827] focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 dark:border-[#2a2a2a] dark:bg-[#262626] dark:text-[#f5f5f5]"
                   />
                 </div>
                 <div className="flex gap-3 pt-2">
@@ -972,7 +972,7 @@ export default function AdminPlansPage() {
                     type="button"
                     onClick={() => !editSubmitting && setEditingTemplate(null)}
                     disabled={editSubmitting}
-                    className="flex-1 rounded-lg border border-[#e5e7eb] bg-white py-2.5 text-sm font-medium text-[#374151] hover:bg-[#f9fafb] disabled:opacity-60"
+                    className="flex-1 rounded-lg border border-[#e5e7eb] bg-white py-2.5 text-sm font-medium text-[#374151] hover:bg-[#f9fafb] disabled:opacity-60 dark:border-[#2a2a2a] dark:bg-[#262626] dark:text-[#f5f5f5] dark:hover:bg-[#404040]"
                   >
                     Cancel
                   </button>

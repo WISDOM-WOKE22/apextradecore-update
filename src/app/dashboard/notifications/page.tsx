@@ -34,20 +34,20 @@ function NotificationRow({
     <button
       type="button"
       onClick={onSelect}
-      className={`w-full rounded-lg border border-[#e5e7eb] p-4 text-left transition hover:border-[#d1d5db] hover:bg-[#f9fafb] ${
-        !n.read ? "bg-[#eef2ff]/40 border-accent/30" : "bg-white"
+      className={`w-full rounded-lg border border-[#e5e7eb] p-4 text-left transition hover:border-[#d1d5db] hover:bg-[#f9fafb] dark:border-[#2a2a2a] dark:hover:border-[#404040] dark:hover:bg-[#262626] ${
+        !n.read ? "bg-[#eef2ff]/40 border-accent/30 dark:bg-accent/10 dark:border-accent/30" : "bg-white dark:bg-[#1a1a1a]"
       }`}
     >
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
-            <p className="text-sm font-semibold text-[#111827]">{n.title}</p>
+            <p className="text-sm font-semibold text-[#111827] dark:text-[#f5f5f5]">{n.title}</p>
             {!n.read && (
               <span className="inline-block h-2 w-2 shrink-0 rounded-full bg-accent" aria-label="Unread" />
             )}
           </div>
-          <p className="mt-1 text-sm text-text-secondary">{n.body}</p>
-          <p className="mt-2 text-xs text-text-secondary">{formatDate(n.createdAt)}</p>
+          <p className="mt-1 text-sm text-text-secondary dark:text-[#a3a3a3]">{n.body}</p>
+          <p className="mt-2 text-xs text-text-secondary dark:text-[#737373]">{formatDate(n.createdAt)}</p>
         </div>
         {n.link && (
           <span className="shrink-0 text-accent">
@@ -73,7 +73,7 @@ export default function DashboardNotificationsPage() {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#f9fafb]">
+    <div className="flex min-h-screen bg-[#f9fafb] dark:bg-[#0f0f0f]">
       <DashboardSidebar
         mobileOpen={mobileMenuOpen}
         onClose={() => setMobileMenuOpen(false)}
@@ -83,17 +83,17 @@ export default function DashboardNotificationsPage() {
         <main className="flex-1 p-4 sm:p-6 lg:p-8">
           <div className="mx-auto w-full">
             <div className="mb-6 flex items-center justify-between">
-              <h1 className="text-xl font-bold text-[#111827]">Notifications</h1>
+              <h1 className="text-xl font-bold text-[#111827] dark:text-[#f5f5f5]">Notifications</h1>
               <Link
                 href="/dashboard"
-                className="text-sm font-medium text-accent hover:underline"
+                className="text-sm font-medium text-accent hover:underline dark:hover:text-accent/90"
               >
                 Back to dashboard
               </Link>
             </div>
 
             {error && (
-              <div className="mb-4 rounded-lg border border-[#fecaca] bg-[#fef2f2] px-4 py-3 text-sm text-[#b91c1c]">
+              <div className="mb-4 rounded-lg border border-[#fecaca] bg-[#fef2f2] px-4 py-3 text-sm text-[#b91c1c] dark:border-[#7f1d1d] dark:bg-[#450a0a] dark:text-[#fca5a5]">
                 {error}
               </div>
             )}
@@ -103,14 +103,14 @@ export default function DashboardNotificationsPage() {
                 <div className="h-10 w-10 animate-spin rounded-full border-2 border-accent border-t-transparent" />
               </div>
             ) : notifications.length === 0 ? (
-              <div className="rounded-lg border border-[#e5e7eb] bg-white p-12 text-center">
-                <p className="text-text-secondary">No notifications yet.</p>
-                <p className="mt-1 text-sm text-text-secondary">
+              <div className="rounded-lg border border-[#e5e7eb] bg-white p-12 text-center dark:border-[#2a2a2a] dark:bg-[#1a1a1a]">
+                <p className="text-text-secondary dark:text-[#a3a3a3]">No notifications yet.</p>
+                <p className="mt-1 text-sm text-text-secondary dark:text-[#a3a3a3]">
                   You’ll see updates here when deposits or withdrawals are approved or rejected, or when plan profits are added.
                 </p>
                 <Link
                   href="/dashboard"
-                  className="mt-4 inline-block text-sm font-medium text-accent hover:underline"
+                  className="mt-4 inline-block text-sm font-medium text-accent hover:underline dark:hover:text-accent/90"
                 >
                   Go to dashboard
                 </Link>

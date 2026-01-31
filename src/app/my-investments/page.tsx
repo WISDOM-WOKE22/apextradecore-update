@@ -9,7 +9,7 @@ export default function MyInvestmentsPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <div className="flex min-h-screen bg-[#f9fafb]">
+    <div className="flex min-h-screen bg-[#f9fafb] dark:bg-[#0f0f0f]">
       <DashboardSidebar
         mobileOpen={mobileMenuOpen}
         onClose={() => setMobileMenuOpen(false)}

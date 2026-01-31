@@ -121,8 +121,8 @@ function DepositFlowInner() {
         transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
         className="mb-8"
       >
-        <h1 className="text-2xl font-bold text-[#111827] sm:text-3xl">Deposit funds</h1>
-        <p className="mt-1 text-sm text-text-secondary">Follow the steps to add funds to your account</p>
+        <h1 className="text-2xl font-bold text-[#111827] dark:text-[#f5f5f5] sm:text-3xl">Deposit funds</h1>
+        <p className="mt-1 text-sm text-text-secondary dark:text-[#a3a3a3]">Follow the steps to add funds to your account</p>
       </motion.div>
 
       {/* Step indicator */}
@@ -139,7 +139,7 @@ function DepositFlowInner() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.3, delay: 0.05 + i * 0.04, ease: [0.22, 1, 0.36, 1] }}
             className={`flex shrink-0 items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors duration-200 ${
-              step >= s.num ? "bg-accent text-white shadow-sm" : "bg-[#f3f4f6] text-text-secondary"
+              step >= s.num ? "bg-accent text-white shadow-sm" : "bg-[#f3f4f6] text-text-secondary dark:bg-[#262626] dark:text-[#a3a3a3]"
             }`}
           >
             <span className="flex h-6 w-6 items-center justify-center rounded-full bg-white/20 text-xs font-medium">
@@ -159,22 +159,22 @@ function DepositFlowInner() {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
             transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-            className="rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm"
+            className="rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm dark:border-[#2a2a2a] dark:bg-[#1a1a1a]"
           >
-            <h2 className="mb-4 text-lg font-semibold text-[#111827]">Select deposit wallet</h2>
+            <h2 className="mb-4 text-lg font-semibold text-[#111827] dark:text-[#f5f5f5]">Select deposit wallet</h2>
             {walletsLoading ? (
               <div className="flex flex-col items-center justify-center gap-3 py-12">
                 <div className="h-8 w-8 animate-spin rounded-full border-2 border-accent border-t-transparent" />
-                <p className="text-sm text-text-secondary">Loading options…</p>
+                <p className="text-sm text-text-secondary dark:text-[#a3a3a3]">Loading options…</p>
               </div>
             ) : walletsError ? (
-              <div className="rounded-lg border border-[#fecaca] bg-[#fef2f2] px-4 py-3 text-sm text-[#b91c1c]">
+              <div className="rounded-lg border border-[#fecaca] bg-[#fef2f2] px-4 py-3 text-sm text-[#b91c1c] dark:border-[#f87171] dark:bg-[#450a0a] dark:text-[#fca5a5]">
                 {walletsError}
               </div>
             ) : wallets.length === 0 ? (
               <div className="py-12 text-center">
-                <p className="text-text-secondary">No deposit options available at the moment.</p>
-                <p className="mt-1 text-sm text-text-secondary">Please try again later or contact support.</p>
+                <p className="text-text-secondary dark:text-[#a3a3a3]">No deposit options available at the moment.</p>
+                <p className="mt-1 text-sm text-text-secondary dark:text-[#a3a3a3]">Please try again later or contact support.</p>
               </div>
             ) : (
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
@@ -187,15 +187,15 @@ function DepositFlowInner() {
                     whileTap={{ scale: 0.98 }}
                     className={`rounded-xl border-2 p-4 text-left transition-colors ${
                       walletId === w.id
-                        ? "border-accent bg-[#eef2ff]"
-                        : "border-[#e5e7eb] bg-[#f9fafb] hover:border-accent/50 hover:bg-[#f9fafb]"
+                        ? "border-accent bg-[#eef2ff] dark:bg-accent/20"
+                        : "border-[#e5e7eb] bg-[#f9fafb] hover:border-accent/50 hover:bg-[#f9fafb] dark:border-[#2a2a2a] dark:bg-[#262626] dark:hover:border-accent/50 dark:hover:bg-[#262626]"
                     }`}
                   >
-                    <span className="block text-sm font-semibold text-[#111827]">{w.name}</span>
+                    <span className="block text-sm font-semibold text-[#111827] dark:text-[#f5f5f5]">{w.name}</span>
                     {w.networkChain ? (
                       <span className="mt-1 block text-xs font-medium text-accent">{w.networkChain}</span>
                     ) : null}
-                    <span className="mt-1 block truncate text-xs font-mono text-text-secondary" title={w.address}>
+                    <span className="mt-1 block truncate text-xs font-mono text-text-secondary dark:text-[#a3a3a3]" title={w.address}>
                       {w.address.slice(0, 12)}…
                     </span>
                   </motion.button>
@@ -213,12 +213,12 @@ function DepositFlowInner() {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
             transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-            className="rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm"
+            className="rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm dark:border-[#2a2a2a] dark:bg-[#1a1a1a]"
           >
             <button
               type="button"
               onClick={() => goToStep(1)}
-              className="mb-4 flex items-center gap-2 text-sm font-medium text-text-secondary hover:text-[#111827]"
+              className="mb-4 flex items-center gap-2 text-sm font-medium text-text-secondary hover:text-[#111827] dark:text-[#a3a3a3] dark:hover:text-[#f5f5f5]"
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <polyline points="15 18 9 12 15 6" />
@@ -227,18 +227,18 @@ function DepositFlowInner() {
             </button>
             {!selectedWallet ? (
               <div className="py-8 text-center">
-                <p className="text-text-secondary">This wallet is no longer available.</p>
+                <p className="text-text-secondary dark:text-[#a3a3a3]">This wallet is no longer available.</p>
                 <Button type="button" onClick={() => goToStep(1)} className="mt-4 bg-accent text-white">
                   Choose another wallet
                 </Button>
               </div>
             ) : (
               <>
-                <h2 className="mb-4 text-lg font-semibold text-[#111827]">Enter amount</h2>
-                <p className="mb-4 text-sm text-text-secondary">
+                <h2 className="mb-4 text-lg font-semibold text-[#111827] dark:text-[#f5f5f5]">Enter amount</h2>
+                <p className="mb-4 text-sm text-text-secondary dark:text-[#a3a3a3]">
                   Wallet: {selectedWallet.name}
                   {selectedWallet.networkChain ? (
-                    <span className="ml-2 rounded bg-[#eef2ff] px-2 py-0.5 text-xs font-medium text-accent">
+                    <span className="ml-2 rounded bg-[#eef2ff] px-2 py-0.5 text-xs font-medium text-accent dark:bg-accent/20">
                       {selectedWallet.networkChain}
                     </span>
                   ) : null}
@@ -252,7 +252,7 @@ function DepositFlowInner() {
               className="space-y-4"
             >
               <div>
-                <label htmlFor="amount" className="mb-2 block text-sm font-medium text-[#374151]">
+                <label htmlFor="amount" className="mb-2 block text-sm font-medium text-[#374151] dark:text-[#e5e5e5]">
                   Amount
                 </label>
                 <input
@@ -263,7 +263,7 @@ function DepositFlowInner() {
                   value={amountDisplay}
                   onChange={(e) => setAmountInput(e.target.value)}
                   placeholder="0.00"
-                  className="w-full rounded-lg border border-[#e5e7eb] bg-[#f9fafb] px-4 py-3 text-lg focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
+                  className="w-full rounded-lg border border-[#e5e7eb] bg-[#f9fafb] px-4 py-3 text-lg text-[#111827] focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 dark:border-[#2a2a2a] dark:bg-[#262626] dark:text-[#f5f5f5]"
                 />
               </div>
               <Button type="submit" className="w-full bg-accent text-white">
@@ -283,12 +283,12 @@ function DepositFlowInner() {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
             transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-            className="rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm"
+            className="rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm dark:border-[#2a2a2a] dark:bg-[#1a1a1a]"
           >
             <button
               type="button"
               onClick={() => goToStep(2)}
-              className="mb-4 flex items-center gap-2 text-sm font-medium text-text-secondary hover:text-[#111827]"
+              className="mb-4 flex items-center gap-2 text-sm font-medium text-text-secondary hover:text-[#111827] dark:text-[#a3a3a3] dark:hover:text-[#f5f5f5]"
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <polyline points="15 18 9 12 15 6" />
@@ -297,33 +297,33 @@ function DepositFlowInner() {
             </button>
             {!selectedWallet ? (
               <div className="py-8 text-center">
-                <p className="text-text-secondary">This wallet is no longer available.</p>
+                <p className="text-text-secondary dark:text-[#a3a3a3]">This wallet is no longer available.</p>
                 <Button type="button" onClick={() => goToStep(1)} className="mt-4 bg-accent text-white">
                   Choose another wallet
                 </Button>
               </div>
             ) : (
               <>
-                <h2 className="mb-2 text-lg font-semibold text-[#111827]">Deposit address</h2>
+                <h2 className="mb-2 text-lg font-semibold text-[#111827] dark:text-[#f5f5f5]">Deposit address</h2>
                 {selectedWallet.networkChain ? (
-                  <div className="mb-4 rounded-lg border-2 border-accent/30 bg-[#eef2ff] px-4 py-3">
+                  <div className="mb-4 rounded-lg border-2 border-accent/30 bg-[#eef2ff] px-4 py-3 dark:bg-accent/20">
                     <p className="text-xs font-semibold uppercase tracking-wider text-accent">Use this network only</p>
-                    <p className="mt-1 text-sm font-semibold text-[#111827]">{selectedWallet.networkChain}</p>
-                    <p className="mt-1 text-xs text-text-secondary">
+                    <p className="mt-1 text-sm font-semibold text-[#111827] dark:text-[#f5f5f5]">{selectedWallet.networkChain}</p>
+                    <p className="mt-1 text-xs text-text-secondary dark:text-[#a3a3a3]">
                       Send only on this network. Wrong network may result in permanent loss of funds.
                     </p>
                   </div>
                 ) : null}
-                <p className="mb-4 text-sm text-text-secondary">
+                <p className="mb-4 text-sm text-text-secondary dark:text-[#a3a3a3]">
                   Send exactly {amount} to this address for {selectedWallet.name}. Wrong address may result in loss.
                 </p>
 
-                <div className="mb-4 flex justify-center rounded-xl bg-[#f9fafb] p-4">
+                <div className="mb-4 flex justify-center rounded-xl bg-[#f9fafb] p-4 dark:bg-[#262626]">
                   <img src={qrUrl} alt="QR code for wallet address" className="h-[220px] w-[220px] rounded-lg" />
                 </div>
 
                 <div className="mb-4">
-                  <label className="mb-2 block text-xs font-medium text-text-secondary">
+                  <label className="mb-2 block text-xs font-medium text-text-secondary dark:text-[#a3a3a3]">
                     Wallet address{selectedWallet.networkChain ? ` (${selectedWallet.networkChain})` : ""}
                   </label>
                   <div className="flex gap-2">
@@ -331,12 +331,12 @@ function DepositFlowInner() {
                       type="text"
                       readOnly
                       value={walletAddress}
-                      className="flex-1 rounded-lg border border-[#e5e7eb] bg-[#f9fafb] px-4 py-2.5 font-mono text-sm"
+                      className="flex-1 rounded-lg border border-[#e5e7eb] bg-[#f9fafb] px-4 py-2.5 font-mono text-sm text-[#111827] dark:border-[#2a2a2a] dark:bg-[#262626] dark:text-[#f5f5f5]"
                     />
                     <Button
                       type="button"
                       onClick={handleCopy}
-                      className="shrink-0 bg-[#111827] text-white hover:bg-[#374151]"
+                      className="shrink-0 bg-[#111827] text-white hover:bg-[#374151] dark:bg-[#262626] dark:hover:bg-[#404040]"
                     >
                       {copied ? "Copied!" : "Copy"}
                     </Button>
@@ -359,22 +359,22 @@ function DepositFlowInner() {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
             transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-            className="rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm"
+            className="rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm dark:border-[#2a2a2a] dark:bg-[#1a1a1a]"
           >
             <button
               type="button"
               onClick={() => goToStep(3)}
-              className="mb-4 flex items-center gap-2 text-sm font-medium text-text-secondary transition-colors hover:text-[#111827]"
+              className="mb-4 flex items-center gap-2 text-sm font-medium text-text-secondary transition-colors hover:text-[#111827] dark:text-[#a3a3a3] dark:hover:text-[#f5f5f5]"
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <polyline points="15 18 9 12 15 6" />
               </svg>
               Back
             </button>
-            <h2 className="mb-2 text-lg font-semibold text-[#111827]">
-              Proof of payment <span className="font-normal text-text-secondary">(optional)</span>
+            <h2 className="mb-2 text-lg font-semibold text-[#111827] dark:text-[#f5f5f5]">
+              Proof of payment <span className="font-normal text-text-secondary dark:text-[#a3a3a3]">(optional)</span>
             </h2>
-            <p className="mb-4 text-sm text-text-secondary">
+            <p className="mb-4 text-sm text-text-secondary dark:text-[#a3a3a3]">
               Add a screenshot or receipt to speed up verification. You can also submit without it.
             </p>
 
@@ -382,7 +382,7 @@ function DepositFlowInner() {
               <motion.div
                 initial={{ opacity: 0, y: -4 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="mb-4 rounded-lg border border-[#fecaca] bg-[#fef2f2] px-4 py-3 text-sm text-[#b91c1c]"
+                className="mb-4 rounded-lg border border-[#fecaca] bg-[#fef2f2] px-4 py-3 text-sm text-[#b91c1c] dark:border-[#f87171] dark:bg-[#450a0a] dark:text-[#fca5a5]"
                 role="alert"
               >
                 {submitError}
@@ -395,8 +395,8 @@ function DepositFlowInner() {
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.1 }}
               >
-                <label className="mb-2 block text-sm font-medium text-[#374151]">Upload file (optional)</label>
-                <label className="flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-[#e5e7eb] bg-[#f9fafb] p-8 transition-all duration-200 hover:border-accent/60 hover:bg-[#eef2ff]/40">
+                <label className="mb-2 block text-sm font-medium text-[#374151] dark:text-[#e5e5e5]">Upload file (optional)</label>
+                <label className="flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-[#e5e7eb] bg-[#f9fafb] p-8 transition-all duration-200 hover:border-accent/60 hover:bg-[#eef2ff]/40 dark:border-[#2a2a2a] dark:bg-[#262626] dark:hover:border-accent/50 dark:hover:bg-accent/10">
                   <input
                     type="file"
                     accept="image/*,.pdf"
@@ -410,13 +410,13 @@ function DepositFlowInner() {
                     <span className="text-sm font-medium text-accent">{proofFile.name}</span>
                   ) : (
                     <>
-                      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="mb-2 text-text-secondary" aria-hidden>
+                      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="mb-2 text-text-secondary dark:text-[#a3a3a3]" aria-hidden>
                         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
                         <polyline points="17 8 12 3 7 8" />
                         <line x1="12" y1="3" x2="12" y2="15" />
                       </svg>
-                      <span className="text-sm text-text-secondary">Click to upload or drag and drop</span>
-                      <span className="mt-1 text-xs text-text-secondary">PNG, JPG, PDF up to 10MB</span>
+                      <span className="text-sm text-text-secondary dark:text-[#a3a3a3]">Click to upload or drag and drop</span>
+                      <span className="mt-1 text-xs text-text-secondary dark:text-[#a3a3a3]">PNG, JPG, PDF up to 10MB</span>
                     </>
                   )}
                 </label>
@@ -450,22 +450,22 @@ function DepositFlowInner() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.96 }}
               transition={{ type: "tween", duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-              className="fixed left-1/2 top-1/2 z-50 w-full max-w-md -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-white p-8 shadow-2xl"
+              className="fixed left-1/2 top-1/2 z-50 w-full max-w-md -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-white p-8 shadow-2xl dark:bg-[#1a1a1a]"
             >
               <div className="text-center">
                 <motion.div
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   transition={{ type: "spring", stiffness: 200, damping: 15, delay: 0.1 }}
-                  className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[#d1fae5]"
+                  className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[#d1fae5] text-[#059669] dark:bg-[#064e3b] dark:text-[#34d399]"
                 >
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#059669" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                     <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
                     <polyline points="22 4 12 14.01 9 11.01" />
                   </svg>
                 </motion.div>
-                <h3 className="mb-2 text-xl font-bold text-[#111827]">Deposit submitted</h3>
-                <p className="mb-6 text-sm text-text-secondary">
+                <h3 className="mb-2 text-xl font-bold text-[#111827] dark:text-[#f5f5f5]">Deposit submitted</h3>
+                <p className="mb-6 text-sm text-text-secondary dark:text-[#a3a3a3]">
                   Your deposit is pending approval. You&apos;ll be notified once the admin verifies your payment.
                 </p>
                 <Button type="button" onClick={closeSuccess} className="w-full bg-accent text-white">
@@ -482,7 +482,7 @@ function DepositFlowInner() {
 
 export function DepositFlow() {
   return (
-    <Suspense fallback={<div className="mx-auto animate-pulse rounded-xl bg-[#f3f4f6] p-8" />}>
+    <Suspense fallback={<div className="mx-auto animate-pulse rounded-xl bg-[#f3f4f6] p-8 dark:bg-[#262626]" />}>
       <DepositFlowInner />
     </Suspense>
   );

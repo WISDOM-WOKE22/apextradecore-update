@@ -22,10 +22,10 @@ export function UserWelcome() {
           {loading ? "…" : initials}
         </div>
         <div>
-          <h1 className="text-xl font-bold text-[#111827] sm:text-2xl">
+          <h1 className="text-xl font-bold text-[#111827] dark:text-[#f5f5f5] sm:text-2xl">
             {loading ? "Loading…" : `Welcome back, ${displayName.split(" ")[0] || displayName}`}
           </h1>
-          <p className="text-sm text-text-secondary">
+          <p className="text-sm text-text-secondary dark:text-[#a3a3a3]">
             Here&apos;s your investment overview for today
           </p>
         </div>
