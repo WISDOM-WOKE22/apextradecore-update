@@ -118,8 +118,11 @@ function sumProfitAmounts(
 const LOAD_USER_TIMEOUT_MS = 15_000;
 const AUTH_INIT_TIMEOUT_MS = 8_000;
 
+const SUSPENDED_MESSAGE =
+  "Your account has been suspended. Please contact the administrator or company personnel.";
+
 export function useLoadUserData() {
-  const { setUser, setAccountStats, setLoading, setError, reset } = useAppStore();
+  const { setUser, setAccountStats, setLoading, setError, setSuspendedMessage, reset } = useAppStore();
 
   useEffect(() => {
     let authInitTimeoutId: ReturnType<typeof setTimeout> | null = setTimeout(() => {
@@ -152,11 +155,20 @@ export function useLoadUserData() {
       try {
         const userSnap = await get(ref(database, DB.user(uid)));
         if (timedOut) return;
-        const userData = parseRtdbUser(uid, userSnap.val());
+        const userVal = userSnap.val() as Record<string, unknown> | null;
+        const userData = parseRtdbUser(uid, userVal);
         if (!userData) {
           setUser(null);
           clearTimeout(timeoutId);
           setLoading(false);
+          return;
+        }
+        if (userVal && userVal.suspended === true) {
+          clearTimeout(timeoutId);
+          setSuspendedMessage(SUSPENDED_MESSAGE);
+          setUser(null);
+          setLoading(false);
+          // Guard will redirect to /account-blocked via client-side navigation (no reload)
           return;
         }
         setUser(userData);
@@ -202,5 +214,5 @@ export function useLoadUserData() {
       if (authInitTimeoutId) clearTimeout(authInitTimeoutId);
       unsubscribe();
     };
-  }, [setUser, setAccountStats, setLoading, setError, reset]);
+  }, [setUser, setAccountStats, setLoading, setError, setSuspendedMessage, reset]);
 }

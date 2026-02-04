@@ -33,11 +33,14 @@ interface AppState {
   currentInvestments: number;
   loading: boolean;
   error: string | null;
+  /** Shown on login when user was signed out due to suspension. */
+  suspendedMessage: string | null;
 
   setUser: (user: UserData | null) => void;
   setAccountStats: (stats: Partial<AccountStats>) => void;
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
+  setSuspendedMessage: (message: string | null) => void;
   reset: () => void;
 }
 
@@ -50,6 +53,7 @@ const initialState = {
   currentInvestments: 0,
   loading: true,
   error: null,
+  suspendedMessage: null,
 };
 
 export const useAppStore = create<AppState>((set) => ({
@@ -70,7 +74,14 @@ export const useAppStore = create<AppState>((set) => ({
 
   setError: (error) => set({ error }),
 
-  reset: () => set({ ...initialState, loading: false }),
+  setSuspendedMessage: (suspendedMessage) => set({ suspendedMessage }),
+
+  reset: () =>
+    set((state) => ({
+      ...initialState,
+      loading: false,
+      suspendedMessage: state.suspendedMessage,
+    })),
 }));
 
 /** Format currency for display */

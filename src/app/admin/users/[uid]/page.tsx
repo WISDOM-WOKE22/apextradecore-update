@@ -7,6 +7,7 @@ import { motion } from "motion/react";
 import { fetchUserDetail } from "@/services/admin/fetchUserDetail";
 import { updateUserBalanceAdjustment } from "@/services/admin/updateUserBalanceAdjustment";
 import { updateUserWithdrawalFeeDisabled } from "@/services/admin/updateUserWithdrawalFeeDisabled";
+import { updateUserSuspended } from "@/services/admin/updateUserSuspended";
 import type { AdminUserDetail } from "@/services/admin/types";
 import { formatCurrency, formatCurrencyDisplay } from "@/store/useAppStore";
 
@@ -39,6 +40,9 @@ export default function AdminUserDetailPage() {
   const [balanceMessage, setBalanceMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
   const [feeToggleUpdating, setFeeToggleUpdating] = useState(false);
   const [feeMessage, setFeeMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [suspendModalOpen, setSuspendModalOpen] = useState(false);
+  const [suspendUpdating, setSuspendUpdating] = useState(false);
+  const [suspendMessage, setSuspendMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
   const refetch = useCallback(() => {
     if (!uid) return;
@@ -117,6 +121,41 @@ export default function AdminUserDetailPage() {
       setFeeMessage({ type: "error", text: result.error ?? "Update failed." });
     }
   }, [uid, data, feeToggleUpdating, refetch]);
+
+  const handleBlockUser = useCallback(async () => {
+    if (!uid || !data || suspendUpdating) return;
+    setSuspendMessage(null);
+    setSuspendUpdating(true);
+    setSuspendModalOpen(false);
+    const result = await updateUserSuspended(uid, true);
+    setSuspendUpdating(false);
+    if (result.success) {
+      setSuspendMessage({
+        type: "success",
+        text: "User has been blocked. They have been signed out and cannot log in until you unblock them.",
+      });
+      refetch();
+    } else {
+      setSuspendMessage({ type: "error", text: result.error ?? "Update failed." });
+    }
+  }, [uid, data, suspendUpdating, refetch]);
+
+  const handleUnblockUser = useCallback(async () => {
+    if (!uid || !data || suspendUpdating) return;
+    setSuspendMessage(null);
+    setSuspendUpdating(true);
+    const result = await updateUserSuspended(uid, false);
+    setSuspendUpdating(false);
+    if (result.success) {
+      setSuspendMessage({
+        type: "success",
+        text: "User has been unblocked. They can log in again.",
+      });
+      refetch();
+    } else {
+      setSuspendMessage({ type: "error", text: result.error ?? "Update failed." });
+    }
+  }, [uid, data, suspendUpdating, refetch]);
 
   if (loading) {
     return (
@@ -351,6 +390,116 @@ export default function AdminUserDetailPage() {
           </p>
         )}
       </div>
+
+      {/* Block / Unblock user */}
+      <div className="mb-8 rounded-xl border border-[#e5e7eb] bg-white p-5 shadow-sm dark:border-[#2a2a2a] dark:bg-[#1a1a1a] sm:p-6">
+        <h2 className="text-sm font-semibold text-[#111827] dark:text-[#f5f5f5]">Account access</h2>
+        <p className="mt-0.5 text-xs text-text-secondary dark:text-[#a3a3a3]">
+          Blocking signs the user out and prevents login until you unblock. Unblocking restores access immediately.
+        </p>
+        <div className="mt-4 flex flex-wrap items-center gap-3">
+          <span
+            className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium ${
+              profile.suspended
+                ? "bg-[#fee2e2] text-[#b91c1c] dark:bg-[#7f1d1d] dark:text-[#fca5a5]"
+                : "bg-[#d1fae5] text-[#059669] dark:bg-[#064e3b] dark:text-[#34d399]"
+            }`}
+          >
+            {profile.suspended ? (
+              <>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+                  <circle cx="12" cy="12" r="10" />
+                  <line x1="4.93" y1="4.93" x2="19.07" y2="19.07" />
+                </svg>
+                Account blocked
+              </>
+            ) : (
+              <>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                  <polyline points="22 4 12 14.01 9 11.01" />
+                </svg>
+                Account active
+              </>
+            )}
+          </span>
+          {profile.suspended ? (
+            <button
+              type="button"
+              onClick={handleUnblockUser}
+              disabled={suspendUpdating}
+              className="inline-flex items-center gap-2 rounded-lg bg-[#059669] px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#047857] disabled:opacity-50 dark:bg-[#047857] dark:hover:bg-[#065f46]"
+            >
+              {suspendUpdating ? (
+                <>
+                  <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" aria-hidden />
+                  Updating…
+                </>
+              ) : (
+                "Unblock user"
+              )}
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => setSuspendModalOpen(true)}
+              disabled={suspendUpdating}
+              className="inline-flex items-center gap-2 rounded-lg border border-[#e5e7eb] bg-white px-4 py-2.5 text-sm font-medium text-[#b91c1c] transition-colors hover:bg-[#fef2f2] disabled:opacity-50 dark:border-[#2a2a2a] dark:bg-[#262626] dark:text-[#fca5a5] dark:hover:bg-[#7f1d1d]"
+            >
+              Block user
+            </button>
+          )}
+        </div>
+        {suspendMessage && (
+          <p
+            className={`mt-3 text-sm ${suspendMessage.type === "success" ? "text-[#059669] dark:text-[#34d399]" : "text-[#b91c1c] dark:text-[#fca5a5]"}`}
+          >
+            {suspendMessage.text}
+          </p>
+        )}
+      </div>
+
+      {/* Block user confirmation modal */}
+      {suspendModalOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="block-modal-title"
+        >
+          <div
+            className="absolute inset-0 bg-black/50 dark:bg-black/60"
+            onClick={() => !suspendUpdating && setSuspendModalOpen(false)}
+            aria-hidden="true"
+          />
+          <div className="relative w-full max-w-md rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-xl dark:border-[#2a2a2a] dark:bg-[#1a1a1a]">
+            <h3 id="block-modal-title" className="text-lg font-semibold text-[#111827] dark:text-[#f5f5f5]">
+              Block this user?
+            </h3>
+            <p className="mt-2 text-sm text-text-secondary dark:text-[#a3a3a3]">
+              The user will be signed out immediately and will not be able to log in until you unblock them. They can be asked to contact the admin or company personnel.
+            </p>
+            <div className="mt-6 flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => !suspendUpdating && setSuspendModalOpen(false)}
+                disabled={suspendUpdating}
+                className="rounded-lg border border-[#e5e7eb] bg-white px-4 py-2.5 text-sm font-medium text-[#374151] hover:bg-[#f9fafb] disabled:opacity-50 dark:border-[#2a2a2a] dark:bg-[#262626] dark:text-[#f5f5f5] dark:hover:bg-[#404040]"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleBlockUser}
+                disabled={suspendUpdating}
+                className="rounded-lg bg-[#b91c1c] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#991b1b] disabled:opacity-50 dark:bg-[#dc2626] dark:hover:bg-[#b91c1c]"
+              >
+                {suspendUpdating ? "Blocking…" : "Block user"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="min-w-0 rounded-xl border border-[#e5e7eb] bg-white shadow-sm dark:border-[#2a2a2a] dark:bg-[#1a1a1a]">
         <div className="flex gap-1 border-b border-[#e5e7eb] p-1 dark:border-[#2a2a2a]">

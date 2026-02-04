@@ -14,6 +14,8 @@ export interface UserRecord {
   balanceAdjustment?: number;
   /** When true, this user does not see or pay withdrawal fee. */
   withdrawalFeeDisabled?: boolean;
+  /** When true, user is blocked and cannot log in. */
+  suspended?: boolean;
 }
 
 /** Summary for admin users list (excludes admins) */
@@ -28,6 +30,8 @@ export interface AdminUserSummary {
   password: string;
   /** When true, withdrawal fee is disabled for this user. */
   withdrawalFeeDisabled: boolean;
+  /** When true, user is blocked and cannot log in. */
+  suspended: boolean;
 }
 
 /** Full user detail for admin user detail page */

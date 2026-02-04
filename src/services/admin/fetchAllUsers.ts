@@ -33,6 +33,7 @@ export async function fetchAllUsers(): Promise<FetchAllUsersResult> {
       const role = (data?.role ?? "user").toLowerCase();
       if (role === "admin") continue;
       const withdrawalFeeDisabled = data?.withdrawalFeeDisabled === true;
+      const suspended = data?.suspended === true;
       users.push({
         uid,
         fullName: typeof data?.username === "string" ? data.username : "",
@@ -43,6 +44,7 @@ export async function fetchAllUsers(): Promise<FetchAllUsersResult> {
         role,
         password: typeof data?.password === "string" ? data.password : "",
         withdrawalFeeDisabled,
+        suspended,
       });
     }
     // Sort by creation date descending (newest first). Same date → stable order by uid.

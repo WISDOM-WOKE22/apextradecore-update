@@ -25,7 +25,7 @@ function formatTransactionDate(record: DepositRecord | WithdrawalRecord): string
 
 function DetailSkeleton() {
   return (
-    <div className="mx-auto max-w-2xl animate-pulse space-y-4 rounded-xl border border-[#e5e7eb] bg-white p-6 dark:border-[#2a2a2a] dark:bg-[#1a1a1a]">
+    <div className="mx-auto w-full animate-pulse space-y-4 rounded-xl border border-[#e5e7eb] bg-white p-6 dark:border-[#2a2a2a] dark:bg-[#1a1a1a]">
       <div className="h-6 w-1/3 rounded bg-[#f3f4f6] dark:bg-[#262626]" />
       <div className="space-y-3">
         {[1, 2, 3, 4, 5, 6].map((i) => (
@@ -64,7 +64,7 @@ function DetailContent({ data }: { data: TransactionDetail }) {
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-        className="mx-auto max-w-full space-y-6 rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm dark:border-[#2a2a2a] dark:bg-[#1a1a1a]"
+        className="mx-auto w-full space-y-6 rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm dark:border-[#2a2a2a] dark:bg-[#1a1a1a]"
       >
         <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#e5e7eb] pb-4 dark:border-[#2a2a2a]">
           <h1 className="text-xl font-bold text-[#111827] dark:text-[#f5f5f5]">Deposit details</h1>
@@ -102,7 +102,7 @@ function DetailContent({ data }: { data: TransactionDetail }) {
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-      className="mx-auto max-w-2xl space-y-6 rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm dark:border-[#2a2a2a] dark:bg-[#1a1a1a]"
+      className="mx-auto w-full space-y-6 rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm dark:border-[#2a2a2a] dark:bg-[#1a1a1a]"
     >
       <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#e5e7eb] pb-4 dark:border-[#2a2a2a]">
         <h1 className="text-xl font-bold text-[#111827] dark:text-[#f5f5f5]">Withdrawal details</h1>

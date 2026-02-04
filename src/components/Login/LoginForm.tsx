@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
+import { useAppStore } from "@/store/useAppStore";
 import { useLoginService } from "@/services/auth/login";
 
 interface FormFieldProps {
@@ -71,11 +72,19 @@ const SESSION_API = "/api/auth/session";
 
 export function LoginForm() {
   const router = useRouter();
+  const suspendedMessage = useAppStore((s) => s.suspendedMessage);
+  const setSuspendedMessage = useAppStore((s) => s.setSuspendedMessage);
   const { login, error: authError, loading, clearError } = useLoginService();
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
+
+  useEffect(() => {
+    return () => {
+      setSuspendedMessage(null);
+    };
+  }, [setSuspendedMessage]);
 
   useEffect(() => {
     if (authError) setSubmitError(authError);
@@ -156,6 +165,14 @@ export function LoginForm() {
       </div>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-5" noValidate>
+        {suspendedMessage && (
+          <div
+            className="rounded-lg border border-[#fecaca] bg-[#fef2f2] px-4 py-3 text-sm text-[#b91c1c]"
+            role="alert"
+          >
+            {suspendedMessage}
+          </div>
+        )}
         {submitError && (
           <div
             className="rounded-lg border border-[#fecaca] bg-[#fef2f2] px-4 py-3 text-sm text-[#b91c1c]"

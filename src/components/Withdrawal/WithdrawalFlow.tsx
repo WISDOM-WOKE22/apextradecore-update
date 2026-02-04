@@ -1,10 +1,12 @@
 "use client";
 
+import { reauthenticateWithCredential, EmailAuthProvider } from "firebase/auth";
 import { motion, AnimatePresence } from "motion/react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { useState, useCallback, useEffect, Suspense } from "react";
 import { Button } from "@/components/ui/Button";
 import { auth } from "@/lib/firebase";
+import { getAuthErrorMessage } from "@/lib/auth-errors";
 import { useAppStore, formatCurrencyDisplay, formatCurrency } from "@/store/useAppStore";
 import { getWithdrawalFeePercent } from "@/services/admin/withdrawalFeeSettings";
 import { createWithdrawal } from "@/services/withdrawals/createWithdrawal";
@@ -67,6 +69,8 @@ function WithdrawalFlowInner() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [showInsufficientModal, setShowInsufficientModal] = useState(false);
+  const [showWrongPasswordModal, setShowWrongPasswordModal] = useState(false);
+  const [wrongPasswordMessage, setWrongPasswordMessage] = useState("");
   const [feePercent, setFeePercent] = useState(0);
   const [feePercentLoading, setFeePercentLoading] = useState(true);
   const [showFeeCalcModal, setShowFeeCalcModal] = useState(false);
@@ -104,12 +108,13 @@ function WithdrawalFlowInner() {
   const handleAuthorizeSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setPasswordError("");
+    setShowWrongPasswordModal(false);
     if (!password.trim()) {
       setPasswordError("Please enter your password to authorize the withdrawal.");
       return;
     }
-    const user = auth.currentUser;
-    if (!user) {
+    const currentUser = auth.currentUser;
+    if (!currentUser || !currentUser.email) {
       setPasswordError("You must be signed in to request a withdrawal.");
       return;
     }
@@ -124,9 +129,19 @@ function WithdrawalFlowInner() {
     }
     setIsSubmitting(true);
     try {
+      const credential = EmailAuthProvider.credential(currentUser.email, password.trim());
+      await reauthenticateWithCredential(currentUser, credential);
+    } catch (err) {
+      const message = getAuthErrorMessage(err);
+      setWrongPasswordMessage(message);
+      setShowWrongPasswordModal(true);
+      setIsSubmitting(false);
+      return;
+    }
+    try {
       const walletType = CURRENCIES.find((c) => c.id === currency)?.name ?? currency;
       const result = await createWithdrawal({
-        userId: user.uid,
+        userId: currentUser.uid,
         amount,
         withdrawalMode: currency,
         walletType,
@@ -566,6 +581,59 @@ function WithdrawalFlowInner() {
                   type="button"
                   onClick={() => setShowInsufficientModal(false)}
                   className="w-full bg-accent text-white"
+                >
+                  OK
+                </Button>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
+      {/* Wrong password modal */}
+      <AnimatePresence>
+        {showWrongPasswordModal && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="fixed inset-0 z-50 bg-black/50"
+              onClick={() => setShowWrongPasswordModal(false)}
+              aria-hidden
+            />
+            <motion.div
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="wrong-password-title"
+              initial={{ opacity: 0, scale: 0.96 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.96 }}
+              transition={{ type: "tween", duration: 0.2 }}
+              className="fixed left-1/2 top-1/2 z-50 w-full max-w-sm -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-[#fecaca] bg-white p-6 shadow-xl dark:border-[#7f1d1d] dark:bg-[#1a1a1a]"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="text-center">
+                <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-[#fef2f2] text-[#b91c1c] dark:bg-[#450a0a] dark:text-[#fca5a5]">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                  </svg>
+                </div>
+                <h3 id="wrong-password-title" className="text-lg font-bold text-[#111827] dark:text-[#f5f5f5]">
+                  Invalid password
+                </h3>
+                <p className="mt-2 text-sm text-text-secondary dark:text-[#a3a3a3]">
+                  {wrongPasswordMessage || "The password you entered is incorrect. Please try again."}
+                </p>
+                <Button
+                  type="button"
+                  onClick={() => {
+                    setShowWrongPasswordModal(false);
+                    setWrongPasswordMessage("");
+                  }}
+                  className="mt-6 w-full bg-accent text-white"
                 >
                   OK
                 </Button>

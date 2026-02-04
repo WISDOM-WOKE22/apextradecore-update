@@ -8,7 +8,8 @@ import { getDefaultRedirect } from "@/lib/routes";
 
 /**
  * Wraps user-only routes (dashboard, deposit, withdrawal, etc.).
- * Redirects admins to /admin; redirects unauthenticated to /login.
+ * Redirects suspended users to /account-blocked; admins to /admin; unauthenticated to /login.
+ * Uses client-side navigation (no full page reload).
  */
 export function UserAreaGuard({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -16,17 +17,22 @@ export function UserAreaGuard({ children }: { children: React.ReactNode }) {
   useLoadUserData();
   const user = useAppStore((s) => s.user);
   const loading = useAppStore((s) => s.loading);
+  const suspendedMessage = useAppStore((s) => s.suspendedMessage);
 
   useEffect(() => {
     if (loading || !pathname) return;
     if (!user) {
-      router.replace("/login");
+      if (suspendedMessage) {
+        router.replace("/account-blocked");
+      } else {
+        router.replace("/login");
+      }
       return;
     }
     if (user.role === "admin") {
       router.replace(getDefaultRedirect("admin"));
     }
-  }, [user, loading, pathname, router]);
+  }, [user, loading, pathname, suspendedMessage, router]);
 
   if (loading) {
     return (
@@ -37,7 +43,14 @@ export function UserAreaGuard({ children }: { children: React.ReactNode }) {
   }
 
   if (!user || user.role === "admin") {
-    return null;
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center gap-3 bg-[#f9fafb] dark:bg-[#0f0f0f]">
+        <div className="h-10 w-10 animate-spin rounded-full border-2 border-accent border-t-transparent" />
+        <p className="text-sm text-text-secondary dark:text-[#a3a3a3]">
+          {suspendedMessage ? "Taking you to account blocked…" : "Redirecting to login…"}
+        </p>
+      </div>
+    );
   }
 
   return <>{children}</>;

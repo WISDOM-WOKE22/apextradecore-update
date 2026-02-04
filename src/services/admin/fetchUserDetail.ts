@@ -55,6 +55,7 @@ export async function fetchUserDetail(uid: string): Promise<FetchUserDetailResul
 
     const role = (userVal.role ?? "user").toLowerCase();
     const withdrawalFeeDisabled = userVal.withdrawalFeeDisabled === true;
+    const suspended = userVal.suspended === true;
     const profile: AdminUserSummary = {
       uid,
       fullName: typeof userVal.username === "string" ? userVal.username : "",
@@ -65,6 +66,7 @@ export async function fetchUserDetail(uid: string): Promise<FetchUserDetailResul
       role,
       password: typeof userVal.password === "string" ? userVal.password : "",
       withdrawalFeeDisabled,
+      suspended,
     };
 
     const depositsVal = depositsSnap.val() as Record<string, DepositRecord> | null;
