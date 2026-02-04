@@ -5,6 +5,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/Button";
+import { resetPassword } from "@/services/auth/resetPassword";
 
 interface FormFieldProps {
   label: string;
@@ -65,13 +66,14 @@ function FormField({
 
 export function ResetPasswordForm() {
   const searchParams = useSearchParams();
-  const token = searchParams.get("token");
+  const oobCode = searchParams.get("oobCode") ?? searchParams.get("token");
 
   const [formData, setFormData] = useState({
     password: "",
     confirmPassword: "",
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -108,13 +110,20 @@ export function ResetPasswordForm() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!validateForm()) return;
+    if (!oobCode) {
+      setSubmitError("Invalid or expired reset link. Please request a new password reset.");
+      return;
+    }
 
+    setSubmitError(null);
     setIsSubmitting(true);
-    // Simulate API call with token
-    setTimeout(() => {
-      setIsSubmitting(false);
+    const result = await resetPassword(oobCode, formData.password);
+    setIsSubmitting(false);
+    if (result.success) {
       setIsSuccess(true);
-    }, 1500);
+    } else {
+      setSubmitError(result.error);
+    }
   };
 
   if (isSuccess) {
@@ -276,6 +285,12 @@ export function ResetPasswordForm() {
             )}
           </button>
         </div>
+
+        {submitError && (
+          <p className="text-sm text-[#ef4444]" role="alert">
+            {submitError}
+          </p>
+        )}
 
         <Button
           type="submit"

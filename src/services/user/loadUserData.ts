@@ -53,6 +53,8 @@ function parseRtdbUser(uid: string, data: Record<string, unknown> | null): UserD
   const roleRaw = data.role;
   const role: UserData["role"] =
     roleRaw === "admin" ? "admin" : "user";
+  const withdrawalFeeDisabled =
+    data.withdrawalFeeDisabled === true || data.withdrawalFeeDisabled === "true";
   return {
     uid,
     email: typeof data.email === "string" ? data.email : "",
@@ -64,6 +66,7 @@ function parseRtdbUser(uid: string, data: Record<string, unknown> | null): UserD
         ? data.referralCode
         : null,
     role,
+    withdrawalFeeDisabled: withdrawalFeeDisabled || undefined,
   };
 }
 

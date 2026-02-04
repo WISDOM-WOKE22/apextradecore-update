@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
-import { useAppStore, formatCurrency } from "@/store/useAppStore";
+import { useAppStore, formatCurrencyDisplay } from "@/store/useAppStore";
 
 const STATS_CONFIG = [
   {
@@ -80,8 +80,14 @@ export function DashboardStats() {
               {icon}
             </span>
           </div>
-          <p className="text-2xl font-bold tracking-tight text-[#111827] dark:text-[#f5f5f5] sm:text-3xl">
-            {loading ? "—" : formatCurrency(values[key])}
+          <p
+            className={`text-2xl font-bold tracking-tight sm:text-3xl ${
+              !loading && key === "accountBalance" && Math.max(0, values[key]) === 0
+                ? "text-[#b91c1c] dark:text-[#fca5a5]"
+                : "text-[#111827] dark:text-[#f5f5f5]"
+            }`}
+          >
+            {loading ? "—" : formatCurrencyDisplay(values[key])}
           </p>
           <p className="mt-1 text-sm font-medium text-text-secondary dark:text-[#a3a3a3]">
             From your account

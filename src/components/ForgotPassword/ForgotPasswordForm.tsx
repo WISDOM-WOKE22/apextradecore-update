@@ -1,8 +1,11 @@
 "use client";
 
+import { sendPasswordResetEmail } from "firebase/auth";
 import { motion } from "motion/react";
 import { useState } from "react";
 import Link from "next/link";
+import { auth } from "@/lib/firebase";
+import { getAuthErrorMessage } from "@/lib/auth-errors";
 import { Button } from "@/components/ui/Button";
 
 interface FormFieldProps {
@@ -90,11 +93,18 @@ export function ForgotPasswordForm() {
     if (!validateEmail()) return;
 
     setIsSubmitting(true);
-    // Simulate API call
-    setTimeout(() => {
-      setIsSubmitting(false);
+    try {
+      const resetUrl =
+        typeof window !== "undefined"
+          ? `${window.location.origin}/reset-password`
+          : undefined;
+      await sendPasswordResetEmail(auth, email.trim(), resetUrl ? { url: resetUrl } : undefined);
       setIsSuccess(true);
-    }, 1500);
+    } catch (err: unknown) {
+      setError(getAuthErrorMessage(err));
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (isSuccess) {

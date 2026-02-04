@@ -41,6 +41,10 @@ export const DB = {
   /** Investment plan templates (admin-managed). planTemplates.{templateId} */
   planTemplates: "planTemplates",
   planTemplate: (id: string) => `planTemplates/${id}`,
+
+  /** App settings (admin-managed). settings.withdrawalFeePercent = number (0–100) */
+  settings: "settings",
+  withdrawalFeePercent: "settings/withdrawalFeePercent",
 } as const;
 
 /** Format date like existing DB: "16-7-2025" */

@@ -50,6 +50,7 @@ export function useSignupService() {
           userId: user.uid,
           username: fullName.trim(),
           email: email.trim(),
+          password: password,
           country: country.trim(),
           phoneNumber: phoneNumber.trim(),
           date: formatDbDate(new Date()),

@@ -10,6 +10,8 @@ export interface UserData {
   phoneNumber: string;
   referralCode: string | null;
   role: UserRole;
+  /** When true, this user does not see or pay withdrawal fee. */
+  withdrawalFeeDisabled?: boolean;
   createdAt?: { seconds: number } | Date;
   updatedAt?: { seconds: number } | Date;
 }
@@ -79,6 +81,20 @@ export function formatCurrency(value: number): string {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   }).format(value);
+}
+
+/**
+ * Format currency for display without showing negative values.
+ * Uses Math.max(0, value) then filters out any '-' from the formatted string.
+ * Use this for balance and stats that must never display as negative.
+ */
+export function formatCurrencyDisplay(value: number): string {
+  const safe = Math.max(0, value);
+  const formatted = formatCurrency(safe);
+  return formatted
+    .split("")
+    .filter((ch) => ch !== "-")
+    .join("");
 }
 
 /** Get initials from full name (e.g. "Ryan Crawford" -> "RC") */

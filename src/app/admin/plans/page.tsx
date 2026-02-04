@@ -12,6 +12,7 @@ import { usePlanTemplates } from "@/services/plans/usePlanTemplates";
 import { createPlanTemplate } from "@/services/plans/createPlanTemplate";
 import { updatePlanTemplate } from "@/services/plans/updatePlanTemplate";
 import { deletePlanTemplate } from "@/services/plans/deletePlanTemplate";
+import { formatDurationDays } from "@/lib/formatDurationDays";
 import type { AdminUserSummary } from "@/services/admin/types";
 import type { UserPlan, PlanTemplate } from "@/services/plans/types";
 
@@ -755,7 +756,7 @@ export default function AdminPlansPage() {
                                 : "—"}
                           </td>
                           <td className="whitespace-nowrap px-3 py-3 text-sm text-[#111827] dark:text-[#f5f5f5] sm:px-4 sm:py-3.5 lg:px-6">
-                            {t.returnDays > 0 ? `${t.returnDays} day${t.returnDays === 1 ? "" : "s"}` : "—"}
+                            {formatDurationDays(t.returnDays)}
                           </td>
                           <td className="whitespace-nowrap px-3 py-3 sm:px-4 sm:py-3.5 lg:px-6">
                             <span className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium ${t.disabled ? "bg-[#fef3c7] text-[#b45309] dark:bg-[#78350f] dark:text-[#fcd34d]" : "bg-[#d1fae5] text-[#059669] dark:bg-[#064e3b] dark:text-[#34d399]"}`}>

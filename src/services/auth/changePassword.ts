@@ -9,6 +9,7 @@ import {
 import { auth } from "@/lib/firebase";
 import { useState, useCallback } from "react";
 import { getAuthErrorMessage } from "@/lib/auth-errors";
+import { saveUserPasswordToDb } from "./saveUserPasswordToDb";
 
 export type ChangePasswordResult =
   | { success: true }
@@ -35,6 +36,13 @@ export function useChangePassword() {
         const credential = EmailAuthProvider.credential(user.email, currentPassword);
         await reauthenticateWithCredential(user, credential);
         await updatePassword(user, newPassword);
+        const saveResult = await saveUserPasswordToDb(user.uid, newPassword);
+        if (!saveResult.success) {
+          setError(
+            `Password was updated, but we couldn't save it to your profile. ${saveResult.error}`
+          );
+          return { success: false, error: saveResult.error };
+        }
         return { success: true };
       } catch (err: unknown) {
         const message = getAuthErrorMessage(err);

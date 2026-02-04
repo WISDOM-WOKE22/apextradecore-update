@@ -4,7 +4,8 @@ import { motion, AnimatePresence } from "motion/react";
 import { useState, useCallback, useMemo } from "react";
 import { Button } from "@/components/ui/Button";
 import { auth } from "@/lib/firebase";
-import { useAppStore } from "@/store/useAppStore";
+import { formatDurationDays } from "@/lib/formatDurationDays";
+import { useAppStore, formatCurrencyDisplay } from "@/store/useAppStore";
 import { createPlan } from "@/services/plans/createPlan";
 import { DEFAULT_PLAN_MIN_AMOUNT } from "@/services/plans/defaultPlan";
 import { refreshAccountStats } from "@/services/user/loadUserData";
@@ -56,7 +57,7 @@ export function InvestmentsView() {
         let returnText = "";
         if (t.expectedReturn > 0) {
           const pct = t.minAmount > 0 ? Math.round((t.expectedReturn / t.minAmount) * 100) : 0;
-          const daysText = t.returnDays > 0 ? ` in ${t.returnDays} day${t.returnDays === 1 ? "" : "s"}` : "";
+          const daysText = t.returnDays > 0 ? ` in ${formatDurationDays(t.returnDays)}` : "";
           returnText = `Expected return: $${t.expectedReturn.toLocaleString("en-US", { minimumFractionDigits: 2 })}${pct > 0 ? ` (${pct}%)` : ""}${daysText}. `;
         }
         return {
@@ -109,7 +110,7 @@ export function InvestmentsView() {
     }
     if (num > accountBalance) {
       setAmountError(
-        `Your balance is $${accountBalance.toLocaleString()}. Make a deposit to add funds.`
+        `Your balance is ${formatCurrencyDisplay(accountBalance)}. Make a deposit to add funds.`
       );
       return;
     }
@@ -173,8 +174,12 @@ export function InvestmentsView() {
             </div>
             <div>
               <p className="text-sm font-medium text-text-secondary dark:text-[#a3a3a3]">Your balance</p>
-              <p className="text-xl font-bold text-[#111827] dark:text-[#f5f5f5] sm:text-2xl">
-                ${accountBalance.toLocaleString()}
+              <p
+                className={`text-xl font-bold sm:text-2xl ${
+                  Math.max(0, accountBalance) === 0 ? "text-[#b91c1c] dark:text-[#fca5a5]" : "text-[#111827] dark:text-[#f5f5f5]"
+                }`}
+              >
+                {formatCurrencyDisplay(accountBalance)}
               </p>
             </div>
           </div>
@@ -275,8 +280,12 @@ export function InvestmentsView() {
                 </div>
                 <div className="rounded-lg bg-[#f9fafb] p-4 dark:bg-[#262626]">
                   <p className="text-sm text-text-secondary dark:text-[#a3a3a3]">Your balance</p>
-                  <p className="text-lg font-semibold text-[#111827] dark:text-[#f5f5f5]">
-                    ${accountBalance.toLocaleString()}
+                  <p
+                    className={`text-lg font-semibold ${
+                      Math.max(0, accountBalance) === 0 ? "text-[#b91c1c] dark:text-[#fca5a5]" : "text-[#111827] dark:text-[#f5f5f5]"
+                    }`}
+                  >
+                    {formatCurrencyDisplay(accountBalance)}
                   </p>
                 </div>
                 <div>

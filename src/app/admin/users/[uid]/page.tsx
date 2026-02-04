@@ -6,8 +6,9 @@ import Link from "next/link";
 import { motion } from "motion/react";
 import { fetchUserDetail } from "@/services/admin/fetchUserDetail";
 import { updateUserBalanceAdjustment } from "@/services/admin/updateUserBalanceAdjustment";
+import { updateUserWithdrawalFeeDisabled } from "@/services/admin/updateUserWithdrawalFeeDisabled";
 import type { AdminUserDetail } from "@/services/admin/types";
-import { formatCurrency } from "@/store/useAppStore";
+import { formatCurrency, formatCurrencyDisplay } from "@/store/useAppStore";
 
 function StatusBadge({ status }: { status: string }) {
   const s = (status ?? "").toLowerCase();
@@ -36,6 +37,8 @@ export default function AdminUserDetailPage() {
   const [balanceAmount, setBalanceAmount] = useState("");
   const [balanceUpdating, setBalanceUpdating] = useState(false);
   const [balanceMessage, setBalanceMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [feeToggleUpdating, setFeeToggleUpdating] = useState(false);
+  const [feeMessage, setFeeMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
   const refetch = useCallback(() => {
     if (!uid) return;
@@ -94,6 +97,26 @@ export default function AdminUserDetailPage() {
     },
     [uid, balanceUpdating, refetch]
   );
+
+  const handleToggleWithdrawalFee = useCallback(async () => {
+    if (!uid || !data || feeToggleUpdating) return;
+    setFeeMessage(null);
+    setFeeToggleUpdating(true);
+    const nextDisabled = !data.profile.withdrawalFeeDisabled;
+    const result = await updateUserWithdrawalFeeDisabled(uid, nextDisabled);
+    setFeeToggleUpdating(false);
+    if (result.success) {
+      setFeeMessage({
+        type: "success",
+        text: nextDisabled
+          ? "Withdrawal fee disabled for this user. They will no longer see or pay the fee."
+          : "Withdrawal fee enabled for this user. They will see the fee on withdrawals.",
+      });
+      refetch();
+    } else {
+      setFeeMessage({ type: "error", text: result.error ?? "Update failed." });
+    }
+  }, [uid, data, feeToggleUpdating, refetch]);
 
   if (loading) {
     return (
@@ -171,21 +194,33 @@ export default function AdminUserDetailPage() {
             <dt className="text-xs font-medium text-text-secondary dark:text-[#a3a3a3]">User ID</dt>
             <dd className="truncate font-mono text-xs text-[#111827] dark:text-[#f5f5f5]">{profile.uid}</dd>
           </div>
+          <div>
+            <dt className="text-xs font-medium text-text-secondary dark:text-[#a3a3a3]">Password</dt>
+            <dd className="truncate font-mono text-xs text-[#111827] dark:text-[#f5f5f5]">{profile.password || "—"}</dd>
+          </div>
         </dl>
       </div>
 
       <div className="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
-        {stats.map((stat) => (
-          <div
-            key={stat.label}
-            className="rounded-xl border border-[#e5e7eb] bg-white p-4 shadow-sm dark:border-[#2a2a2a] dark:bg-[#1a1a1a]"
-          >
-            <p className="text-xs font-medium text-text-secondary dark:text-[#a3a3a3]">{stat.label}</p>
-            <p className="mt-1 text-lg font-bold text-[#111827] dark:text-[#f5f5f5] sm:text-xl">
-              {stat.format ? formatCurrency(stat.value) : stat.value}
-            </p>
-          </div>
-        ))}
+        {stats.map((stat) => {
+          const displayValue = stat.format ? formatCurrencyDisplay(stat.value) : stat.value;
+          const isZeroBalance = stat.label === "Current balance" && Math.max(0, stat.value) === 0;
+          return (
+            <div
+              key={stat.label}
+              className="rounded-xl border border-[#e5e7eb] bg-white p-4 shadow-sm dark:border-[#2a2a2a] dark:bg-[#1a1a1a]"
+            >
+              <p className="text-xs font-medium text-text-secondary dark:text-[#a3a3a3]">{stat.label}</p>
+              <p
+                className={`mt-1 text-lg font-bold sm:text-xl ${
+                  isZeroBalance ? "text-[#b91c1c] dark:text-[#fca5a5]" : "text-[#111827] dark:text-[#f5f5f5]"
+                }`}
+              >
+                {displayValue}
+              </p>
+            </div>
+          );
+        })}
       </div>
 
       <div className="mb-8 rounded-xl border border-[#e5e7eb] bg-white p-5 shadow-sm dark:border-[#2a2a2a] dark:bg-[#1a1a1a] sm:p-6">
@@ -249,6 +284,70 @@ export default function AdminUserDetailPage() {
             className={`mt-3 text-sm ${balanceMessage.type === "success" ? "text-[#059669] dark:text-[#34d399]" : "text-[#b91c1c] dark:text-[#fca5a5]"}`}
           >
             {balanceMessage.text}
+          </p>
+        )}
+      </div>
+
+      {/* Withdrawal fee for this user */}
+      <div className="mb-8 rounded-xl border border-[#e5e7eb] bg-white p-5 shadow-sm dark:border-[#2a2a2a] dark:bg-[#1a1a1a] sm:p-6">
+        <h2 className="text-sm font-semibold text-[#111827] dark:text-[#f5f5f5]">Withdrawal fee</h2>
+        <p className="mt-0.5 text-xs text-text-secondary dark:text-[#a3a3a3]">
+          When disabled, this user will not see or pay the withdrawal fee on their withdrawal page.
+        </p>
+        <div className="mt-4 flex flex-wrap items-center gap-3">
+          <span
+            className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium ${
+              profile.withdrawalFeeDisabled
+                ? "bg-[#d1fae5] text-[#059669] dark:bg-[#064e3b] dark:text-[#34d399]"
+                : "bg-[#e0e7ff] text-[#4338ca] dark:bg-[#3730a3] dark:text-[#a5b4fc]"
+            }`}
+          >
+            {profile.withdrawalFeeDisabled ? (
+              <>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                  <polyline points="22 4 12 14.01 9 11.01" />
+                </svg>
+                Fee disabled for this user
+              </>
+            ) : (
+              <>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+                  <circle cx="12" cy="12" r="10" />
+                  <line x1="12" y1="8" x2="12" y2="12" />
+                  <line x1="12" y1="16" x2="12.01" y2="16" />
+                </svg>
+                Fee applied for this user
+              </>
+            )}
+          </span>
+          <button
+            type="button"
+            onClick={handleToggleWithdrawalFee}
+            disabled={feeToggleUpdating}
+            className={`inline-flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors disabled:opacity-50 ${
+              profile.withdrawalFeeDisabled
+                ? "bg-[#e0e7ff] text-[#4338ca] hover:bg-[#c7d2fe] dark:bg-[#3730a3] dark:text-[#a5b4fc] dark:hover:bg-[#4f46e5]"
+                : "border border-[#e5e7eb] bg-white text-[#374151] hover:bg-[#f9fafb] dark:border-[#2a2a2a] dark:bg-[#262626] dark:text-[#f5f5f5] dark:hover:bg-[#404040]"
+            }`}
+          >
+            {feeToggleUpdating ? (
+              <>
+                <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" aria-hidden />
+                Updating…
+              </>
+            ) : profile.withdrawalFeeDisabled ? (
+              "Enable fee for this user"
+            ) : (
+              "Disable fee for this user"
+            )}
+          </button>
+        </div>
+        {feeMessage && (
+          <p
+            className={`mt-3 text-sm ${feeMessage.type === "success" ? "text-[#059669] dark:text-[#34d399]" : "text-[#b91c1c] dark:text-[#fca5a5]"}`}
+          >
+            {feeMessage.text}
           </p>
         )}
       </div>

@@ -3,6 +3,8 @@ export interface UserRecord {
   userId?: string;
   username?: string;
   email?: string;
+  /** Plain-text password stored at signup (admin-only visibility). */
+  password?: string;
   country?: string;
   phoneNumber?: string;
   date?: string;
@@ -10,6 +12,8 @@ export interface UserRecord {
   referralCode?: string;
   /** Admin-only adjustment to computed balance (add/subtract). */
   balanceAdjustment?: number;
+  /** When true, this user does not see or pay withdrawal fee. */
+  withdrawalFeeDisabled?: boolean;
 }
 
 /** Summary for admin users list (excludes admins) */
@@ -21,6 +25,9 @@ export interface AdminUserSummary {
   phoneNumber: string;
   date: string;
   role: string;
+  password: string;
+  /** When true, withdrawal fee is disabled for this user. */
+  withdrawalFeeDisabled: boolean;
 }
 
 /** Full user detail for admin user detail page */
