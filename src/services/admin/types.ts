@@ -71,6 +71,8 @@ export interface AdminUserDetail {
     date: string;
     dateSortKey: number;
     planName: string;
+    /** When true, investment was returned; amount no longer in totalInvested, shown on balance */
+    returned?: boolean;
   }>;
 }
 

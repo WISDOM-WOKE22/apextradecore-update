@@ -33,6 +33,11 @@ export const DB = {
   userProfits: (uid: string) => `profits/${uid}`,
   userProfit: (uid: string, profitId: string) => `profits/${uid}/${profitId}`,
 
+  /** Investment returns (admin returned plan → amount back to user, tagged for history). investmentReturns.{uid}.{returnId} */
+  investmentReturns: "investmentReturns",
+  userInvestmentReturns: (uid: string) => `investmentReturns/${uid}`,
+  userInvestmentReturn: (uid: string, returnId: string) => `investmentReturns/${uid}/${returnId}`,
+
   /** User notifications. notifications.{uid}.{notificationId} */
   notifications: "notifications",
   userNotifications: (uid: string) => `notifications/${uid}`,

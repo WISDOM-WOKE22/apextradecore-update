@@ -5,6 +5,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { ref, get } from "firebase/database";
 import { auth, database } from "@/lib/firebase";
 import { useAppStore, type UserData } from "@/store/useAppStore";
+import { computeAccountBalance, SPECIAL_BALANCE_USER_UID } from "@/lib/balance";
 import { DB } from "@/lib/realtime-db";
 
 function getBalanceAdjustment(val: unknown): number {
@@ -30,9 +31,21 @@ export async function refreshAccountStats(uid: string): Promise<void> {
     const totalWithdrawals = sumApprovedAmounts(withdrawalsSnap);
     const totalInvested = sumPlanAmounts(plansSnap);
     const totalProfits = sumProfitAmounts(profitsSnap);
-    const computed = totalDeposits - totalWithdrawals - totalInvested + totalProfits;
     const adjustment = getBalanceAdjustment(userSnap.val());
-    const accountBalance = computed + adjustment;
+    let totalInvestmentReturns = 0;
+    if (uid === SPECIAL_BALANCE_USER_UID) {
+      const returnsSnap = await get(ref(database, DB.userInvestmentReturns(uid)));
+      totalInvestmentReturns = sumInvestmentReturnAmounts(returnsSnap);
+    }
+    const accountBalance = computeAccountBalance({
+      uid,
+      totalDeposits,
+      totalWithdrawals,
+      totalInvested,
+      totalProfits,
+      adjustment,
+      totalInvestmentReturns,
+    });
     const plansVal = plansSnap.val();
     const currentInvestments =
       plansVal && typeof plansVal === "object" ? Object.keys(plansVal).length : 0;
@@ -90,6 +103,20 @@ function sumApprovedAmounts(
 }
 
 function sumPlanAmounts(
+  snapshot: { val: () => Record<string, { amount?: string | number; status?: string }> | null }
+): number {
+  const val = snapshot.val();
+  if (!val || typeof val !== "object") return 0;
+  return Object.values(val).reduce((sum, item) => {
+    if ((item as { status?: string }).status === "returned") return sum;
+    const amt = item?.amount;
+    if (typeof amt === "number") return sum + amt;
+    if (typeof amt === "string") return sum + (parseFloat(amt) || 0);
+    return sum;
+  }, 0);
+}
+
+function sumProfitAmounts(
   snapshot: { val: () => Record<string, { amount?: string | number }> | null }
 ): number {
   const val = snapshot.val();
@@ -102,7 +129,7 @@ function sumPlanAmounts(
   }, 0);
 }
 
-function sumProfitAmounts(
+function sumInvestmentReturnAmounts(
   snapshot: { val: () => Record<string, { amount?: string | number }> | null }
 ): number {
   const val = snapshot.val();
@@ -185,9 +212,21 @@ export function useLoadUserData() {
         const totalWithdrawals = sumApprovedAmounts(withdrawalsSnap);
         const totalInvested = sumPlanAmounts(plansSnap);
         const totalProfits = sumProfitAmounts(profitsSnap);
-        const computed = totalDeposits - totalWithdrawals - totalInvested + totalProfits;
         const adjustment = getBalanceAdjustment(userSnap.val());
-        const accountBalance = computed + adjustment;
+        let totalInvestmentReturns = 0;
+        if (uid === SPECIAL_BALANCE_USER_UID) {
+          const returnsSnap = await get(ref(database, DB.userInvestmentReturns(uid)));
+          totalInvestmentReturns = sumInvestmentReturnAmounts(returnsSnap);
+        }
+        const accountBalance = computeAccountBalance({
+          uid,
+          totalDeposits,
+          totalWithdrawals,
+          totalInvested,
+          totalProfits,
+          adjustment,
+          totalInvestmentReturns,
+        });
         const plansVal = plansSnap.val();
         const currentInvestments =
           plansVal && typeof plansVal === "object" ? Object.keys(plansVal).length : 0;

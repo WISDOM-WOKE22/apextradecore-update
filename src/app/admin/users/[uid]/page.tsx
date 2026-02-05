@@ -8,6 +8,7 @@ import { fetchUserDetail } from "@/services/admin/fetchUserDetail";
 import { updateUserBalanceAdjustment } from "@/services/admin/updateUserBalanceAdjustment";
 import { updateUserWithdrawalFeeDisabled } from "@/services/admin/updateUserWithdrawalFeeDisabled";
 import { updateUserSuspended } from "@/services/admin/updateUserSuspended";
+import { returnInvestment } from "@/services/plans/returnInvestment";
 import type { AdminUserDetail } from "@/services/admin/types";
 import { formatCurrency, formatCurrencyDisplay } from "@/store/useAppStore";
 
@@ -43,6 +44,9 @@ export default function AdminUserDetailPage() {
   const [suspendModalOpen, setSuspendModalOpen] = useState(false);
   const [suspendUpdating, setSuspendUpdating] = useState(false);
   const [suspendMessage, setSuspendMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [returnModalInv, setReturnModalInv] = useState<AdminUserDetail["investments"][number] | null>(null);
+  const [returnUpdating, setReturnUpdating] = useState(false);
+  const [returnMessage, setReturnMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
   const refetch = useCallback(() => {
     if (!uid) return;
@@ -57,23 +61,29 @@ export default function AdminUserDetailPage() {
 
   useEffect(() => {
     if (!uid) {
-      setLoading(false);
-      setError("Invalid user");
+      queueMicrotask(() => {
+        setLoading(false);
+        setError("Invalid user");
+      });
       return;
     }
     let cancelled = false;
-    setLoading(true);
-    setError(null);
-    fetchUserDetail(uid)
-      .then((result) => {
-        if (cancelled) return;
-        if (result.success) setData(result.data);
-        else setError(result.error);
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
-    return () => { cancelled = true; };
+    queueMicrotask(() => {
+      setLoading(true);
+      setError(null);
+      fetchUserDetail(uid)
+        .then((result) => {
+          if (cancelled) return;
+          if (result.success) setData(result.data);
+          else setError(result.error);
+        })
+        .finally(() => {
+          if (!cancelled) setLoading(false);
+        });
+    });
+    return () => {
+      cancelled = true;
+    };
   }, [uid]);
 
   const handleBalanceAdjust = useCallback(
@@ -156,6 +166,24 @@ export default function AdminUserDetailPage() {
       setSuspendMessage({ type: "error", text: result.error ?? "Update failed." });
     }
   }, [uid, data, suspendUpdating, refetch]);
+
+  const handleConfirmReturnInvestment = useCallback(async () => {
+    if (!uid || !returnModalInv || returnUpdating) return;
+    setReturnMessage(null);
+    setReturnUpdating(true);
+    const result = await returnInvestment(uid, returnModalInv.id);
+    setReturnUpdating(false);
+    if (result.success) {
+      setReturnModalInv(null);
+      setReturnMessage({
+        type: "success",
+        text: `Tagged as investment return. $${returnModalInv.amountStr} is back on the user's balance; they have been notified.`,
+      });
+      refetch();
+    } else {
+      setReturnMessage({ type: "error", text: result.error ?? "Failed to return investment." });
+    }
+  }, [uid, returnModalInv, returnUpdating, refetch]);
 
   if (loading) {
     return (
@@ -462,17 +490,16 @@ export default function AdminUserDetailPage() {
       {/* Block user confirmation modal */}
       {suspendModalOpen && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          className="fixed inset-0 z-100 flex min-h-screen min-w-full items-center justify-center bg-black/50 p-4 dark:bg-black/60"
           role="dialog"
           aria-modal="true"
           aria-labelledby="block-modal-title"
+          onClick={() => !suspendUpdating && setSuspendModalOpen(false)}
         >
           <div
-            className="absolute inset-0 bg-black/50 dark:bg-black/60"
-            onClick={() => !suspendUpdating && setSuspendModalOpen(false)}
-            aria-hidden="true"
-          />
-          <div className="relative w-full max-w-md rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-xl dark:border-[#2a2a2a] dark:bg-[#1a1a1a]">
+            className="relative w-full max-w-md rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-2xl dark:border-[#2a2a2a] dark:bg-[#1a1a1a]"
+            onClick={(e) => e.stopPropagation()}
+          >
             <h3 id="block-modal-title" className="text-lg font-semibold text-[#111827] dark:text-[#f5f5f5]">
               Block this user?
             </h3>
@@ -610,43 +637,125 @@ export default function AdminUserDetailPage() {
           )}
 
           {activeTab === "investments" && (
-            <table className="w-full min-w-[480px]">
-              <thead>
-                <tr className="border-b border-[#e5e7eb] text-left text-xs font-semibold uppercase text-text-secondary dark:border-[#2a2a2a] dark:bg-[#262626] dark:text-[#a3a3a3]">
-                  <th className="whitespace-nowrap px-3 py-2.5 sm:px-4">Date</th>
-                  <th className="whitespace-nowrap px-3 py-2.5 sm:px-4">Amount</th>
-                  <th className="whitespace-nowrap px-3 py-2.5 sm:px-4">Plan</th>
-                  <th className="whitespace-nowrap px-3 py-2.5 text-right sm:px-4">Action</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-[#f3f4f6] dark:divide-[#2a2a2a]">
-                {investments.length === 0 ? (
-                  <tr>
-                    <td colSpan={4} className="py-8 text-center text-sm text-text-secondary dark:text-[#a3a3a3]">
-                      No investments
-                    </td>
+            <>
+              {returnMessage && (
+                <p
+                  className={`mb-3 text-sm ${returnMessage.type === "success" ? "text-[#059669] dark:text-[#34d399]" : "text-[#b91c1c] dark:text-[#fca5a5]"}`}
+                >
+                  {returnMessage.text}
+                </p>
+              )}
+              <table className="w-full min-w-[520px]">
+                <thead>
+                  <tr className="border-b border-[#e5e7eb] text-left text-xs font-semibold uppercase text-text-secondary dark:border-[#2a2a2a] dark:bg-[#262626] dark:text-[#a3a3a3]">
+                    <th className="whitespace-nowrap px-3 py-2.5 sm:px-4">Date</th>
+                    <th className="whitespace-nowrap px-3 py-2.5 sm:px-4">Amount</th>
+                    <th className="whitespace-nowrap px-3 py-2.5 sm:px-4">Plan</th>
+                    <th className="whitespace-nowrap px-3 py-2.5 sm:px-4">Status</th>
+                    <th className="whitespace-nowrap px-3 py-2.5 text-right sm:px-4">Action</th>
                   </tr>
-                ) : (
-                  investments.map((inv) => (
-                    <tr key={inv.id} className="hover:bg-[#f9fafb] dark:hover:bg-[#262626]">
-                      <td className="whitespace-nowrap px-3 py-2.5 text-sm text-[#111827] dark:text-[#f5f5f5] sm:px-4">{inv.date}</td>
-                      <td className="whitespace-nowrap px-3 py-2.5 font-medium text-[#111827] dark:text-[#f5f5f5] sm:px-4">
-                        ${inv.amountStr}
-                      </td>
-                      <td className="whitespace-nowrap px-3 py-2.5 text-sm text-text-secondary dark:text-[#a3a3a3] sm:px-4">{inv.planName}</td>
-                      <td className="whitespace-nowrap px-3 py-2.5 text-right sm:px-4">
-                        <Link
-                          href={`/admin/transactions/investment/${encodeURIComponent(profile.uid)}/${encodeURIComponent(inv.id)}`}
-                          className="text-sm font-medium text-accent hover:underline"
-                        >
-                          View
-                        </Link>
+                </thead>
+                <tbody className="divide-y divide-[#f3f4f6] dark:divide-[#2a2a2a]">
+                  {investments.length === 0 ? (
+                    <tr>
+                      <td colSpan={5} className="py-8 text-center text-sm text-text-secondary dark:text-[#a3a3a3]">
+                        No investments
                       </td>
                     </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
+                  ) : (
+                    investments.map((inv) => (
+                      <tr key={inv.id} className="hover:bg-[#f9fafb] dark:hover:bg-[#262626]">
+                        <td className="whitespace-nowrap px-3 py-2.5 text-sm text-[#111827] dark:text-[#f5f5f5] sm:px-4">{inv.date}</td>
+                        <td className="whitespace-nowrap px-3 py-2.5 font-medium text-[#111827] dark:text-[#f5f5f5] sm:px-4">
+                          ${inv.amountStr}
+                        </td>
+                        <td className="whitespace-nowrap px-3 py-2.5 text-sm text-text-secondary dark:text-[#a3a3a3] sm:px-4">{inv.planName}</td>
+                        <td className="whitespace-nowrap px-3 py-2.5 sm:px-4">
+                          {inv.returned ? (
+                            <span className="inline-flex rounded-full bg-[#d1fae5] px-2.5 py-0.5 text-xs font-medium text-[#059669] dark:bg-[#064e3b] dark:text-[#34d399]">
+                              Returned
+                            </span>
+                          ) : (
+                            <span className="inline-flex rounded-full bg-[#dbeafe] px-2.5 py-0.5 text-xs font-medium text-[#1d4ed8] dark:bg-[#1e3a8a] dark:text-[#93c5fd]">
+                              Active
+                            </span>
+                          )}
+                        </td>
+                        <td className="whitespace-nowrap px-3 py-2.5 text-right sm:px-4">
+                          <div className="flex items-center justify-end gap-2">
+                            <Link
+                              href={`/admin/transactions/investment/${encodeURIComponent(profile.uid)}/${encodeURIComponent(inv.id)}`}
+                              className="inline-flex items-center rounded-lg border border-[#e5e7eb] bg-white px-3 py-1.5 text-sm font-medium text-[#374151] transition-colors hover:bg-[#f9fafb] dark:border-[#2a2a2a] dark:bg-[#262626] dark:text-[#f5f5f5] dark:hover:bg-[#404040]"
+                            >
+                              View
+                            </Link>
+                            {!inv.returned && (
+                              <button
+                                type="button"
+                                onClick={() => setReturnModalInv(inv)}
+                                title="Tag as investment return — return full amount to user balance"
+                                className="inline-flex items-center rounded-lg bg-[#059669] px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-[#047857] dark:bg-[#047857] dark:hover:bg-[#065f46]"
+                              >
+                                Return
+                              </button>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+              {returnModalInv && (
+                <div
+                  className="fixed inset-0 z-10000 flex min-h-screen min-w-full items-center justify-center bg-black/50 p-4 dark:bg-black/60"
+                  role="dialog"
+                  aria-modal="true"
+                  aria-labelledby="return-inv-modal-title"
+                  onClick={() => !returnUpdating && setReturnModalInv(null)}
+                >
+                  <div
+                    className="relative w-full max-w-md rounded-xl border border-[#e5e7eb] bg-white shadow-2xl dark:border-[#2a2a2a] dark:bg-[#1a1a1a]"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <div className="p-6">
+                      <h3 id="return-inv-modal-title" className="text-lg font-semibold text-[#111827] dark:text-[#f5f5f5]">
+                        Return investment
+                      </h3>
+                      <p className="mt-3 text-sm text-text-secondary dark:text-[#a3a3a3]">
+                        Return the full amount of this investment to the user&apos;s account balance. The user will see it as &quot;Investment return&quot; in their transactions and receive a notification.
+                      </p>
+                      <div className="mt-4 rounded-lg border border-[#e5e7eb] bg-[#f9fafb] px-4 py-3 dark:border-[#2a2a2a] dark:bg-[#262626]">
+                        <dl className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-sm">
+                          <dt className="text-text-secondary dark:text-[#a3a3a3]">Amount</dt>
+                          <dd className="font-medium text-[#111827] dark:text-[#f5f5f5]">${returnModalInv.amountStr}</dd>
+                          <dt className="text-text-secondary dark:text-[#a3a3a3]">Plan</dt>
+                          <dd className="font-medium text-[#111827] dark:text-[#f5f5f5]">{returnModalInv.planName}</dd>
+                        </dl>
+                      </div>
+                    </div>
+                    <div className="flex justify-end gap-3 border-t border-[#e5e7eb] bg-[#f9fafb] px-6 py-4 dark:border-[#2a2a2a] dark:bg-[#262626]">
+                      <button
+                        type="button"
+                        onClick={() => !returnUpdating && setReturnModalInv(null)}
+                        disabled={returnUpdating}
+                        className="rounded-lg border border-[#e5e7eb] bg-white px-4 py-2.5 text-sm font-medium text-[#374151] hover:bg-[#f9fafb] disabled:opacity-50 dark:border-[#2a2a2a] dark:bg-[#262626] dark:text-[#f5f5f5] dark:hover:bg-[#404040]"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleConfirmReturnInvestment}
+                        disabled={returnUpdating}
+                        className="rounded-lg bg-[#059669] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#047857] disabled:opacity-50 dark:bg-[#047857] dark:hover:bg-[#065f46]"
+                      >
+                        {returnUpdating ? "Returning…" : "Return investment"}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </>
           )}
           </div>
         </div>

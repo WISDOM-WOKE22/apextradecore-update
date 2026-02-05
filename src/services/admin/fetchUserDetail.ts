@@ -3,6 +3,7 @@
 import { get, ref } from "firebase/database";
 import { database } from "@/lib/firebase";
 import { DB } from "@/lib/realtime-db";
+import { computeAccountBalance, SPECIAL_BALANCE_USER_UID } from "@/lib/balance";
 import type { AdminUserDetail, AdminUserSummary, UserRecord } from "./types";
 import type { DepositRecord, WithdrawalRecord } from "@/services/transactions/types";
 import type { PlanRecord } from "@/services/plans/types";
@@ -127,8 +128,9 @@ export async function fetchUserDetail(uid: string): Promise<FetchUserDetailResul
     let totalInvested = 0;
     if (plansVal && typeof plansVal === "object") {
       for (const [id, p] of Object.entries(plansVal)) {
+        const returned = (p as { status?: string }).status === "returned";
         const amount = parseFloat(String(p?.amount ?? 0)) || 0;
-        totalInvested += amount;
+        if (!returned) totalInvested += amount;
         const dateStr = p?.date ?? "";
         const dateSortKey =
           typeof (p as { createdAt?: number }).createdAt === "number"
@@ -141,6 +143,7 @@ export async function fetchUserDetail(uid: string): Promise<FetchUserDetailResul
           date: formatDateStr(dateStr, dateSortKey),
           dateSortKey,
           planName: p?.plan ?? "Starter",
+          returned: returned || undefined,
         });
       }
     }
@@ -155,12 +158,31 @@ export async function fetchUserDetail(uid: string): Promise<FetchUserDetailResul
       }
     }
 
-    const computedBalance = totalDepositsApproved - totalWithdrawalsApproved - totalInvested + totalProfits;
+    let totalInvestmentReturns = 0;
+    if (uid === SPECIAL_BALANCE_USER_UID) {
+      const returnsSnap = await get(ref(database, DB.userInvestmentReturns(uid)));
+      const returnsVal = returnsSnap.val() as Record<string, { amount?: string | number }> | null;
+      if (returnsVal && typeof returnsVal === "object") {
+        for (const data of Object.values(returnsVal)) {
+          const amt = data?.amount;
+          totalInvestmentReturns += typeof amt === "number" ? amt : (parseFloat(String(amt ?? 0)) || 0);
+        }
+      }
+    }
+
     const adjustment =
       typeof userVal.balanceAdjustment === "number"
         ? userVal.balanceAdjustment
         : parseFloat(String(userVal.balanceAdjustment ?? 0)) || 0;
-    const accountBalance = computedBalance + adjustment;
+    const accountBalance = computeAccountBalance({
+      uid,
+      totalDeposits: totalDepositsApproved,
+      totalWithdrawals: totalWithdrawalsApproved,
+      totalInvested,
+      totalProfits,
+      adjustment,
+      totalInvestmentReturns,
+    });
 
     const data: AdminUserDetail = {
       profile,

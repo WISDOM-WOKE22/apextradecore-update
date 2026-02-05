@@ -10,6 +10,9 @@ export interface PlanRecord {
   plan: string;
   /** Running total of profit credited to this plan (admin-added) */
   totalProfit?: number;
+  /** When set to "returned", plan is excluded from totalInvested and amount is back on balance */
+  status?: "active" | "returned";
+  returnedAt?: number;
 }
 
 /** Unified plan for UI: from DB or default */
@@ -26,6 +29,8 @@ export interface UserPlan {
   isDefault: boolean;
   /** Total profit credited to this plan */
   totalProfit: number;
+  /** True when investment was returned; amount is back on balance, excluded from totalInvested */
+  returned?: boolean;
   /** Full record for detail view */
   record: PlanRecord;
 }

@@ -29,6 +29,7 @@ function parsePlans(snapshot: { val: () => Record<string, PlanRecord> | null }):
     const totalProfit = typeof (data as { totalProfit?: number }).totalProfit === "number"
       ? (data as { totalProfit?: number }).totalProfit!
       : 0;
+    const returned = data.status === "returned";
     return {
       id: planKey,
       planName: data.plan ?? "Starter",
@@ -39,6 +40,7 @@ function parsePlans(snapshot: { val: () => Record<string, PlanRecord> | null }):
       name: typeof data.name === "number" ? data.name : 0,
       isDefault: false,
       totalProfit,
+      returned: returned || undefined,
       record: data,
     };
   });

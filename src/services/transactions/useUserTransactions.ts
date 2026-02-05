@@ -6,7 +6,7 @@ import { auth } from "@/lib/firebase";
 import { fetchUserTransactions, type FetchUserTransactionsResult } from "./fetchUserTransactions";
 import type { UnifiedTransaction } from "./types";
 
-export type TransactionFilter = "all" | "deposit" | "withdrawal" | "investment" | "profit";
+export type TransactionFilter = "all" | "deposit" | "withdrawal" | "investment" | "profit" | "investment_return";
 
 export interface UseUserTransactionsResult {
   data: FetchUserTransactionsResult | null;
@@ -68,7 +68,9 @@ export function useUserTransactions(): UseUserTransactionsResult {
             ? data.withdrawals
             : filter === "profit"
               ? data.profits ?? []
-              : data.investments ?? [];
+              : filter === "investment_return"
+                ? data.investmentReturns ?? []
+                : data.investments ?? [];
 
   return { data, loading, error, refetch: load, filtered, filter, setFilter };
 }

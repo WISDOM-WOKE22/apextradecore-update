@@ -199,7 +199,8 @@ export async function fetchAdminDashboardStats(): Promise<FetchAdminDashboardSta
         if (!nonAdminUids.has(uid) || !planMap || typeof planMap !== "object") continue;
         const { fullName = "", email = "" } = userNames[uid] ?? {};
         for (const [id, p] of Object.entries(planMap)) {
-          plansCount += 1;
+          const returned = (p as { status?: string }).status === "returned";
+          if (!returned) plansCount += 1;
           const amount = parseFloat(String(p?.amount ?? 0)) || 0;
           const dateStr = p?.date ?? "";
           const dateSortKey =
@@ -216,7 +217,7 @@ export async function fetchAdminDashboardStats(): Promise<FetchAdminDashboardSta
             amountStr: amount.toFixed(2),
             date: formatDateStr(dateStr, dateSortKey),
             dateSortKey,
-            status: "active",
+            status: returned ? "returned" : "active",
             asset: p?.plan ?? "Starter",
           });
         }

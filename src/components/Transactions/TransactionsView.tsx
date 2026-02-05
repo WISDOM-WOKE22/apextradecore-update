@@ -15,6 +15,7 @@ const TABS: { key: TransactionFilter; label: string }[] = [
   { key: "deposit", label: "Deposits" },
   { key: "withdrawal", label: "Withdrawals" },
   { key: "investment", label: "Investments" },
+  { key: "investment_return", label: "Investment returns" },
   { key: "profit", label: "Profits" },
 ];
 
@@ -32,16 +33,22 @@ function formatDate(dateSortKey: number): string {
 function formatAmount(amount: string, kind: TransactionKind): string {
   const num = parseFloat(amount) || 0;
   const formatted = num.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  return kind === "deposit" || kind === "profit" ? `+$${formatted}` : `−$${formatted}`;
+  const isCredit = kind === "deposit" || kind === "profit" || kind === "investment_return";
+  return isCredit ? `+$${formatted}` : `−$${formatted}`;
 }
 
 function txTypeLabel(kind: TransactionKind): string {
-  return kind === "deposit" ? "Deposit" : kind === "withdrawal" ? "Withdrawal" : kind === "profit" ? "Profit" : "Investment";
+  if (kind === "deposit") return "Deposit";
+  if (kind === "withdrawal") return "Withdrawal";
+  if (kind === "profit") return "Profit";
+  if (kind === "investment_return") return "Investment return";
+  return "Investment";
 }
 
 function txDetailHref(tx: UnifiedTransaction): string {
   if (tx.kind === "investment") return `/my-investments/${encodeURIComponent(tx.id)}`;
   if (tx.kind === "profit") return `/my-investments/${encodeURIComponent(tx.reference)}`;
+  if (tx.kind === "investment_return") return `/dashboard`;
   return `/dashboard/transactions/${tx.kind}/${encodeURIComponent(tx.id)}`;
 }
 
@@ -50,6 +57,8 @@ function StatusBadge({ status }: { status: string }) {
   const styles: Record<string, string> = {
     completed: "bg-[#d1fae5] text-[#059669] dark:bg-[#064e3b] dark:text-[#34d399]",
     approved: "bg-[#d1fae5] text-[#059669] dark:bg-[#064e3b] dark:text-[#34d399]",
+    credited: "bg-[#d1fae5] text-[#059669] dark:bg-[#064e3b] dark:text-[#34d399]",
+    returned: "bg-[#d1fae5] text-[#059669] dark:bg-[#064e3b] dark:text-[#34d399]",
     active: "bg-[#dbeafe] text-[#1d4ed8] dark:bg-[#1e3a8a] dark:text-[#93c5fd]",
     pending: "bg-[#fef3c7] text-[#b45309] dark:bg-[#78350f] dark:text-[#fcd34d]",
     failed: "bg-[#fee2e2] text-[#dc2626] dark:bg-[#7f1d1d] dark:text-[#fca5a5]",
@@ -200,7 +209,9 @@ export function TransactionsView() {
                         <td className="whitespace-nowrap px-3 py-3 sm:px-4 sm:py-3.5 lg:px-6">
                           <span
                             className={`text-sm font-semibold ${
-                              tx.kind === "deposit" || tx.kind === "profit" ? "text-[#059669] dark:text-[#34d399]" : "text-[#111827] dark:text-[#f5f5f5]"
+                              tx.kind === "deposit" || tx.kind === "profit" || tx.kind === "investment_return"
+                                ? "text-[#059669] dark:text-[#34d399]"
+                                : "text-[#111827] dark:text-[#f5f5f5]"
                             }`}
                           >
                             {formatAmount(tx.amount, tx.kind)}

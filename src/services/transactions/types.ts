@@ -34,8 +34,18 @@ export interface ProfitRecord {
   createdAt: number;
 }
 
-/** Unified transaction for list view (deposits, withdrawals, investments, profits) */
-export type TransactionKind = "deposit" | "withdrawal" | "investment" | "profit";
+/** Investment return record from investmentReturns/{uid}/{returnId} — admin returned plan, amount back on balance */
+export interface InvestmentReturnRecord {
+  amount: string;
+  planKey: string;
+  planName: string;
+  date: string;
+  createdAt: number;
+  type?: string;
+}
+
+/** Unified transaction for list view (deposits, withdrawals, investments, profits, investment returns) */
+export type TransactionKind = "deposit" | "withdrawal" | "investment" | "profit" | "investment_return";
 
 export interface UnifiedTransaction {
   kind: TransactionKind;
@@ -45,10 +55,10 @@ export interface UnifiedTransaction {
   date: string;
   dateSortKey: number;
   status: string;
-  /** Deposit: paymentMethod; Withdrawal: withdrawalMode; Investment: plan name; Profit: plan name */
+  /** Deposit: paymentMethod; Withdrawal: withdrawalMode; Investment: plan name; Profit: plan name; Investment return: plan name */
   asset: string;
-  /** Deposit: transactionId; Withdrawal: timestamp; Investment: plan id; Profit: plan id */
+  /** Deposit: transactionId; Withdrawal: timestamp; Investment: plan id; Profit: plan id; Investment return: plan key */
   reference: string;
   /** Full record for detail page */
-  record: DepositRecord | WithdrawalRecord | PlanRecord | ProfitRecord;
+  record: DepositRecord | WithdrawalRecord | PlanRecord | ProfitRecord | InvestmentReturnRecord;
 }
